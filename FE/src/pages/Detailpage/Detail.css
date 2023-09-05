@@ -1,0 +1,9 @@
+/* Add this CSS class to provide a hover effect */
+.color-button:hover {
+    transform: scale(1.1); /* Increase size on hover */
+    transition: transform 0.3s ease; /* Add a smooth transition effect */
+  }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
