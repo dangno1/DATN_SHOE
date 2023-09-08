@@ -7,10 +7,6 @@ import Dashboard from "./components/pages/admin/dashboard"
 import Signin from "./features/auth/components/Signin"
 import Signup from "./features/auth/components/Signup"
 import AdminProduct from "./components/pages/admin/product"
-import User from "./components/pages/admin/User"
-import Statistical from "./components/pages/admin/statistical"
-import Oder from "./components/pages/admin/order"
-
 
 
 export const router = createBrowserRouter([
@@ -37,21 +33,7 @@ export const router = createBrowserRouter([
             {
                 path: "product",
                 element: <AdminProduct />,
-            },
-            {
-                path: "user",
-                element: <User />,
-            },
-            {
-                path: "statistical",
-                element: <Statistical />,
-            },
-      
-            {
-                path: "oder",
-                element: <Oder />,
-            },
-           
+            } 
         ],
     },
    
