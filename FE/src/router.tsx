@@ -7,11 +7,13 @@ import Dashboard from "./components/pages/admin/dashboard"
 import Signin from "./features/auth/components/Signin"
 import Signup from "./features/auth/components/Signup"
 import AdminProduct from "./components/pages/admin/product"
+import Detail from "./components/pages/detail/Detail"
 
 
 export const router = createBrowserRouter([
     {path: "/", element: <LayoutWebsite/>,children:[
         {index: true, element:<HomePage/>},
+        {path:"detail",element:<Detail/>},
         {
             path: "signin",
             element: <Signin />,
