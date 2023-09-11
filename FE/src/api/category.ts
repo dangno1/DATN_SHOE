@@ -5,7 +5,7 @@ const categoryApi = createApi({
   reducerPath: "categoryes",
   tagTypes: ["Category"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000`,
+    baseUrl: `http://localhost:8000/api`,
   }),
   endpoints: (builder) => ({
     getCategoryes: builder.query<ICategory[], void>({
