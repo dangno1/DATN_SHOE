@@ -1,11 +1,20 @@
-import React from 'react'
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useSigninMutation } from '../../../../api/auth'; 
+import { ISignin } from '../../../../interface/signin';
 
-type Props = {}
-
-const Signin = (props: Props) => {
+const Signin = () => {
+  const { handleSubmit, register} = useForm<ISignin>();
+  const [signin] = useSigninMutation();
+  const navigate = useNavigate();
+  const onSubmit =  (data : ISignin) => {    
+    signin(data)
+      .unwrap()
+      .then(() => alert("Đăng nhập thành công"));
+    navigate('/admin');
+  }
   return (
     <>
-  {/* source:https://codepen.io/owaiswiz/pen/jOPvEPB */}
   <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
     <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
       <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
@@ -48,26 +57,29 @@ const Signin = (props: Props) => {
               </div>
             </div>
             <div className="mx-auto max-w-xs">
-                
+            <form onSubmit={handleSubmit(onSubmit)}>
               <input
                 className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                 type="email"
                 placeholder="Email"
+                {...register('email')}
               />
               <input
                 className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                type="pas"
+                type="password"
                 placeholder="Passworld"
+                {...register('password')}
               />
+        
          
-         
-              <button className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-            
-                <span className="ml- text-white	">Sign Up</span>
+              <button type="submit" className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                <span className="ml- text-white	">Sign in</span>
               </button>
+              </form>
               <button className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-               <a href="/signup" className='text-white'>Sign in</a>
+               <a href="/signup" className='text-white'>Sign up</a>
               </button>
+             
               <p className="mt-6 text-xs text-gray-600 text-center">
                 I agree to abide by Cartesian Kinetics
                 <a href="#" className="border-b border-gray-500 border-dotted">

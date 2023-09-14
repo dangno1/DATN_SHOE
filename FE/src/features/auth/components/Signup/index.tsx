@@ -1,13 +1,21 @@
-import React from 'react'
 
-type Props = {}
 
-const Signup = (props: Props) => {
+const Signup = () => {
   return (
     <>
   {/* source:https://codepen.io/owaiswiz/pen/jOPvEPB */}
   <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
-    <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+    <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-2">
+    <div className="flex-1 bg-black text-center hidden lg:flex">
+        <div
+          className="m-8 xl:m-10 w-full bg-contain bg-center bg-no-repeat"
+          style={{
+            backgroundImage:
+              'url("https://images.unsplash.com/photo-1518002171953-a080ee817e1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTJ8fHxlbnwwfHx8fHw%3D&w=1000&q=80")'
+          }}
+        ></div>
+        
+      </div>
       <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
         <div>
           <img
@@ -73,9 +81,9 @@ const Signup = (props: Props) => {
             
                 <span className="ml- text-white	">Sign Up</span>
               </button>
-              <button className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-               <a href="/signin" className='text-white'>Sign in</a>
-              </button>
+              <a href="/signin" className='text-white'><button className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+               Sign in
+              </button></a>
               <p className="mt-6 text-xs text-gray-600 text-center">
                 I agree to abide by Cartesian Kinetics
                 <a href="#" className="border-b border-gray-500 border-dotted">
@@ -89,17 +97,6 @@ const Signup = (props: Props) => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex-1 bg-black text-center hidden lg:flex">
-        
-        <div
-          className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
-          style={{
-            backgroundImage:
-              'url("https://phuongnam24h.com/img_data/images/y-nghia-logo-adidas-va-su-thay-doi-qua-tung-thoi-ky.jpg")'
-          }}
-        ></div>
-        
       </div>
     </div>
   </div>

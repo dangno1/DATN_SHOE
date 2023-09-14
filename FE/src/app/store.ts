@@ -1,5 +1,6 @@
 
 import { Action, ThunkAction, combineReducers, configureStore } from "@reduxjs/toolkit";
+import { authReducer } from "../api/auth";
 import {
     FLUSH,
     PAUSE,
@@ -11,6 +12,8 @@ import {
     persistStore,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import userApi from "../api/auth";
+
 
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
@@ -18,7 +21,9 @@ const persistConfig = {
     storage,
     whitelist: ['cart']
 }
-const rootReducer = combineReducers({})
+const rootReducer = combineReducers({
+    [userApi.reducerPath]:authReducer
+})
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
@@ -28,7 +33,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(),
+        }).concat(userApi.middleware),
 })
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>
