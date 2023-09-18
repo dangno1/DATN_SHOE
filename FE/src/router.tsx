@@ -8,12 +8,14 @@ import Signin from "./features/auth/components/Signin"
 import Signup from "./features/auth/components/Signup"
 import AdminProduct from "./components/pages/admin/product"
 import Detail from "./components/pages/detail/Detail"
+import Kids from "./components/pages/kids/kids"
 
 
 export const router = createBrowserRouter([
     {path: "/", element: <LayoutWebsite/>,children:[
         {index: true, element:<HomePage/>},
         {path:"detail",element:<Detail/>},
+        {path:"kids",element:<Kids/>},
         {
             path: "signin",
             element: <Signin />,

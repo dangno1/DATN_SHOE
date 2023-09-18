@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [searchInput, setSearchInput] = useState(true);
@@ -245,7 +246,8 @@ const Header = () => {
                 {/* Kids */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1">Kids</span>
+                  <Link to="../kids/kids.tsx"><span className="mr-1">Kids</span></Link>
+                    
                     
                   </button>
                   <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
