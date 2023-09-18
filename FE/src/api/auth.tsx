@@ -18,8 +18,6 @@ const userApi = createApi({
       providesTags: ["User"],
     }),
 
-
-
     signin: builder.mutation<
       {
         success: boolean;
@@ -35,11 +33,16 @@ const userApi = createApi({
       }),
     }),
 
-
-    
-    signup: builder.mutation<IUser, IUser>({
+    signup: builder.mutation<
+      {
+        success: boolean;
+        messages: [];
+        user: { role: string };
+      },
+      IUser
+    >({
       query: (user) => ({
-        url: "/api/auth/signup",
+        url: `/api/auth/signup`,
         method: "POST",
         body: user,
       }),

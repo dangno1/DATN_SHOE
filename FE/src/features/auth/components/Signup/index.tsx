@@ -1,109 +1,25 @@
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { IUser } from "../../../../interface/auth";
 import { useSignupMutation } from "../../../../api/auth";
-// import { useState } from "react";
 
 const Signup = () => {
-    const { handleSubmit,register} = useForm<IUser>();
-    const navigate = useNavigate();
-    // const [signup] = useSignupMutation();
-    const onSubmit = async (data:IUser) => {
-      try {
-        const response = await axios.post('http://localhost:8000/api/auth/signup', data);
-        console.log('Phản hồi từ API:', response.data);
-   // Gửi dữ liệu đăng ký đến API
+  const { handleSubmit, register } = useForm<IUser>();
+  const [signup] = useSignupMutation();
 
-        if (response.data.success) {
-          alert('Đăng ký thành công');
-          navigate('/signin'); // Chuyển hướng sau khi đăng ký thành công
+  const onSubmit = (data: IUser) => {
+    signup(data)
+      .unwrap()
+      .then((res) => {
+        if (res.success == true) {
+          signup(data)
+          console.log("ok"); 
         } else {
-          alert('Đăng ký thất bại');
+          console.log(res.messages);
+          
         }
-      } catch (error) {
-        console.error('Lỗi đăng ký:', error);
-        console.log(data)
-        alert('Đã xảy ra lỗi khi đăng ký');
-      }
-    };
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm<IUser>();
-  // const [serverErrors, setServerErrors] = useState([]);
-  // const navigate = useNavigate();
-  // const onSubmit = async (data: IUser) => {
-  //   // Kiểm tra dữ liệu ở phía client trước khi gửi lên server
-  //   const clientErrors = [];
+      });
 
-  //   if (!data.fullname || data.fullname.length < 5) {
-  //     clientErrors.push("Fullname phải có ít nhất 5 ký tự");
-  //   }
-
-  //   if (
-  //     !data.username ||
-  //     data.username.length < 5 ||
-  //     !/^[a-zA-Z0-9]+$/.test(data.username)
-  //   ) {
-  //     clientErrors.push(
-  //       "Username phải có ít nhất 5 ký tự và chỉ được chứa các ký tự chữ cái, số Và viết liền không dấu"
-  //     );
-  //   }
-
-  //   if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-  //     clientErrors.push("Email không hợp lệ, email phải có @ và .");
-  //   }
-
-  //   if (!data.phone || !/^[0-9]{10}$/.test(data.phone)) {
-  //     clientErrors.push("Số điện thoại phải có đúng 10 chữ số");
-  //   }
-
-  //   if (!data.password || data.password.length < 5) {
-  //     clientErrors.push("Password phải có ít nhất 5 ký tự");
-  //   }
-
-  //   if (!data.confirmPassword || data.confirmPassword !== data.password) {
-  //     clientErrors.push("Mật khẩu không trùng khớp, hãy nhập lại");
-  //   }
-
-  //   if (!data.address || data.address.length < 5) {
-  //     clientErrors.push("Address phải có ít nhất 5 ký tự");
-  //   }
-
-  //   if (clientErrors.length > 0) {
-  //     setServerErrors(clientErrors );
-  //     return;
-  //   }
-
-  //   // Gửi dữ liệu đăng ký đến API nếu không có lỗi phía client
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8000/api/auth/signup",
-  //       data
-  //     );
-  //      console.log("Phản hồi từ API:", response.data);
-  //     if (response.data) {
-  //       alert("Đăng ký thành công");
-  //       navigate("/signin"); // Chuyển hướng sau khi đăng ký thành công
-  //     } else {
-  //       alert('Đăng ký thất bại');
-  //     }
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       if (error.response) {
-  //         console.error('Lỗi Axios:', error.response.status);
-  //         console.error('Thông điệp lỗi:', error.response.data);
-  //       } else {
-  //         console.error('Phản hồi không tồn tại');
-  //       }
-  //     } else {
-  //       console.error('Lỗi không phải từ Axios:', error);
-  //     }
-  //     alert('Đã xảy ra lỗi khi đăng ký');
-  //   }
-  // };
+  };
 
   return (
     <>
@@ -165,7 +81,6 @@ const Signup = () => {
                         id="fullname"
                         {...register("fullname")}
                       />
-                      {errors.fullname && <p>{errors.fullname.message}</p>}
                     </div>
                     <div className="mb-4">
                       <input
@@ -175,7 +90,6 @@ const Signup = () => {
                         id="username"
                         {...register("username")}
                       />
-                    {errors.username && <p>{errors.username.message}</p>}
                     </div>
                     <div className="mb-4">
                       <input
@@ -185,7 +99,6 @@ const Signup = () => {
                         id="email"
                         {...register("email")}
                       />
-                      {errors.email && <p>{errors.email.message}</p>}
                     </div>
                     <div className="inputForm">
                       <input
@@ -195,7 +108,6 @@ const Signup = () => {
                         id="phone"
                         {...register("phone")}
                       />
-                      {errors.phone && <p>{errors.phone.message}</p>}
                     </div>
                     <div className="inputForm">
                       <input
@@ -205,7 +117,6 @@ const Signup = () => {
                         id="address"
                         {...register("address")}
                       />
-                      {errors.address && <p>{errors.address.message}</p>}
                     </div>
                     <div className="inputForm">
                       <input
@@ -215,7 +126,6 @@ const Signup = () => {
                         id="password"
                         {...register("password")}
                       />
-                      {errors.password && <p>{errors.password.message}</p>}
                     </div>
                     <div className="inputForm">
                       <input
@@ -224,17 +134,7 @@ const Signup = () => {
                         placeholder="Cofirm Password"
                         {...register("confirmPassword")}
                       />
-                      {errors.confirmPassword && (
-                        <p>{errors.confirmPassword.message}</p>
-                      )}
                     </div>
-                    {serverErrors.length > 0 && (
-                      <div>
-                        {serverErrors.map((error, index) => (
-                          <p key={index}>{error}</p>
-                        ))}
-                      </div>
-                    )}
                     <button
                       type="submit"
                       className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
