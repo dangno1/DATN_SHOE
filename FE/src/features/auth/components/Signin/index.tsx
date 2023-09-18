@@ -10,13 +10,36 @@ const Signin = () => {
   const onSubmit =  (data : ISignin) => {    
     signin(data)
       .unwrap()
-      .then(() => alert("Đăng nhập thành công"));
-    navigate('/admin');
+      .then((res) => {
+        if (res && res.success) {
+          if (res.user && res.user.role && res.user.role == 'member') {
+            alert("Đăng nhập thành công");
+            navigate('/');
+          } else if (res.user && res.user.role && res.user.role == 'admin') {
+            alert("Đăng nhập thành công");
+            navigate('/admin');
+          }
+          else{
+            alert('Bạn không có quyền truy cập trang này')
+          }
+        }
+      });
   }
   return (
     <>
   <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
-    <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+    <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-2">
+    <div className="flex-1 bg-black text-center hidden lg:flex">
+        
+        <div
+          className="m-8 xl:m-10 w-full bg-contain bg-center bg-no-repeat"
+          style={{
+            backgroundImage:
+            'url("https://images.unsplash.com/photo-1518002171953-a080ee817e1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTJ8fHxlbnwwfHx8fHw%3D&w=1000&q=80")'
+          }}
+        ></div>
+        
+      </div>
       <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
         <div>
           <img
@@ -94,17 +117,7 @@ const Signin = () => {
           </div>
         </div>
       </div>
-      <div className="flex-1 bg-black text-center hidden lg:flex">
-        
-        <div
-          className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
-          style={{
-            backgroundImage:
-              'url("https://phuongnam24h.com/img_data/images/y-nghia-logo-adidas-va-su-thay-doi-qua-tung-thoi-ky.jpg")'
-          }}
-        ></div>
-        
-      </div>
+      
     </div>
   </div>
 </>

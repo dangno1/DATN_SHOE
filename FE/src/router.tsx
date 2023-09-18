@@ -8,6 +8,8 @@ import Signin from "./features/auth/components/Signin"
 import Signup from "./features/auth/components/Signup"
 import AdminProduct from "./components/pages/admin/product"
 import Detail from "./components/pages/detail/Detail"
+import AdminUser from "./components/pages/admin/user"
+
 
 
 export const router = createBrowserRouter([
@@ -35,7 +37,11 @@ export const router = createBrowserRouter([
             {
                 path: "product",
                 element: <AdminProduct />,
-            } 
+            },
+            {
+                path: "user",
+                element: <AdminUser />,
+            }, 
         ],
     },
    

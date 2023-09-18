@@ -6,11 +6,11 @@ const userApi = createApi({
   reducerPath: "users",
   tagTypes: ["User"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api/auth`,
+    baseUrl: `http://localhost:8000`,
   }),
   endpoints: (builder) => ({
     getUser: builder.query<IUser[], void>({
-      query: () => `/users`,
+      query: () => `/api/users/`,
       providesTags: ["User"],
     }),
     getUserById: builder.query<IUser, number | string>({
@@ -19,28 +19,40 @@ const userApi = createApi({
     }),
 
 
+
     signin: builder.mutation<
-      { accessToken: string; user: string },
+      {
+        success: boolean;
+        accessToken: string;
+        user: { role: string };
+      },
       ISignin
     >({
       query: (credentials) => ({
-        url: `/signin`,
+        url: `/api/auth/signin`,
         method: "POST",
         body: credentials,
       }),
     }),
+
+
+    
     signup: builder.mutation<IUser, IUser>({
       query: (user) => ({
-        url: '/user',
-        method: 'POST',
+        url: "/api/auth/signup",
+        method: "POST",
         body: user,
       }),
-      invalidatesTags: ['User']
+      invalidatesTags: ["User"],
     }),
   }),
 });
 
-export const {useGetUserQuery, useGetUserByIdQuery, useSigninMutation, useSignupMutation } =
-  userApi;
+export const {
+  useGetUserQuery,
+  useGetUserByIdQuery,
+  useSigninMutation,
+  useSignupMutation,
+} = userApi;
 export const authReducer = userApi.reducer;
 export default userApi;
