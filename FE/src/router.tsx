@@ -6,7 +6,10 @@ import HomePage from "./components/pages/home/homePage";
 import Dashboard from "./components/pages/admin/dashboard";
 import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
-import AdminProduct from "./components/pages/admin/product";
+import List from "./features/products/components/list";
+import AddProduct from "./features/products/pages/add";
+import UpdateProduct from "./features/products/components/update";
+// import AdminProduct from "./components/pages/admin/product";
 
 export const router = createBrowserRouter([
   {
@@ -35,8 +38,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "product",
-        element: <AdminProduct />,
+        element: <List />,
       },
+      { path: "product/add", element: <AddProduct /> },
+      { path: "product/update/:id", element: <UpdateProduct /> },
     ],
   },
 ]);

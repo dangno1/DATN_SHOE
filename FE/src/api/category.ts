@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ICategory } from "../interface/category";
+import { ICategory } from "@/interface/category";
 
 const categoryApi = createApi({
   reducerPath: "categoryes",
@@ -33,7 +33,7 @@ const categoryApi = createApi({
     }),
     updateCategory: builder.mutation<ICategory, ICategory>({
       query: (category) => ({
-        url: `/categoryes/${category.id}`,
+        url: `/categoryes/${category._id}`,
         method: "PATCH",
         body: category,
       }),
