@@ -1,28 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { BsArrowRight } from "react-icons/bs";
+import React from "react";
 
-function Slider() {
- 
-
+const Banner1 = () => {
   return (
     <div>
       {/* banner men */}
       <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden py-6">
         <div className="absolute inset-0">
           <img
-            src="https://the-post-assets.sgp1.digitaloceanspaces.com/2021/01/Ultraboost-1896x800.jpg"
+            src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/9cc687115782055.6054c8f8c76a9.jpg"
             alt="Background Image"
             className="object-cover object-center w-full h-full"
           />
-          <div className="absolute inset-0 bg-black opacity-50" />
+          <div className="absolute inset-0" />
         </div>
-        <div className="relative z-10 flex flex-col justify-center items-center h-full text-center">
+        {/* <div className="relative z-10 flex flex-col justify-center items-center h-full text-center">
           <h1 className="text-5xl font-bold leading-tight mb-4">
             Welcome to Our Awesome Website
           </h1>
           <p className="text-lg text-gray-300 mb-8">
-          Here we have great products.
+            Discover amazing features and services that await you.
           </p>
           <a
             href="#"
@@ -30,11 +26,11 @@ function Slider() {
           >
             Get Started
           </a>
-        </div>
+        </div> */}
       </div>
       {/* banner men */}
     </div>
   );
-}
+};
 
-export default Slider;
+export default Banner1;
