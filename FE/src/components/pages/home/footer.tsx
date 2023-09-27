@@ -14,7 +14,7 @@ const Footer = () => {
                     />
                 </svg>
             </div>
-            <p className="text-sm leading-none text-gray-800 mt-4">Copyright © 2021 Luxe</p>
+            <p className="text-sm leading-none text-gray-800 mt-4">Copyright © 2021 Sneaker</p>
             <p className="text-sm leading-none text-gray-800 mt-4">All rights reserved</p>
             <div className="flex items-center gap-x-4 mt-12">
                 <div className="opacity-50 w-8 h-8 flex-shrink-0 bg-gray-800 cursor-pointer hover:bg-gray-700 rounded-full flex items-center justify-center">
