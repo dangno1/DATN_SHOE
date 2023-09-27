@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [searchInput, setSearchInput] = useState(true);
@@ -10,24 +11,11 @@ const Header = () => {
     setMdOptionsToggle(!mdOptionsToggle);
   };
 
-  //chuc nang phan tu con
-  // const [isDropdownOpen, setDropdownOpen] = useState(false);
-  // const [selectedItem, setSelectedItem] = useState(null);
-
-  // const toggleDropdowns = () => {
-  //   setDropdownOpen(!isDropdownOpen);
-  // };
-
-  // const handleItemClick = (item: any) => {
-  //   setSelectedItem(item);
-  //   setDropdownOpen(false); // Đóng dropdown sau khi chọn phần tử con
-  // };
-
   return (
     <div className="dark:bg-gray-900">
       <div>
         <div className="relative">
-          {/* For md screen size */}
+          {/* For ipad screen size */}
           <div
             id="md-searchbar"
             className={`${
@@ -102,233 +90,77 @@ const Header = () => {
                   />
                 </svg>
               </button>
-              <button
-                className="text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-xl"
-              >
+              <button className="text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-xl">
                 <AiOutlineUser />
               </button>
             </div>
           </div>
-          {/* For md screen size */}
-          {/* For large screens */}
+          {/* For ipad screen size */}
+          {/* For laptop screens */}
           <div className="dark:bg-gray-900 bg-gray-50 ">
             <div className="container mx-auto flex items-center justify-between">
               <h1
                 className="md:w-2/12 cursor-pointer text-gray-800 dark:text-white"
                 aria-label="the Crib."
               >
-                <img
-                  className="fill-stroke px-2 py-2"
-                  width={93}
-                  height={19}
-                  src="https://cdn-icons-png.flaticon.com/256/731/731962.png"
-                  alt=""
-                />
+                <Link to="/">
+                  <img
+                    className="fill-stroke px-2 py-2"
+                    width={93}
+                    height={19}
+                    src="https://cdn-icons-png.flaticon.com/256/731/731962.png"
+                    alt=""
+                  />
+                </Link>
               </h1>
               <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8">
-                {/* New */}   
+                {/* New */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
-                    <span className="mr-1">New & Featured</span>
-                  
+                    <span className="mr-1 hover:underline">New & Featured</span>
                   </button>
-                  <ul className="dropdown-menu absolute hidden text-gray-700 pt-1 ">
-                    <li className="">
-                      <a
-                        className="rounded-t bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        One
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Two
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className="rounded-b bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Three 
-                      </a>
-                    </li>
-                  </ul>
                 </li>
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      "\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n",
-                  }}
-                />
                 {/* Men */}
 
                 <li className="dropdown inline-block relative">
-                  <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1">Men</span>
-                  </button>
-                  <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
-                    <li className="">
-                      <a
-                        className="rounded-t  bg-gray-200    hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        One
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className=" hover:bg-gray-400  bg-gray-200  py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Two
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className="rounded-b  bg-gray-200   hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Three
-                      </a>
-                    </li>
-                  </ul>
+                  <Link
+                    to="/menPage"
+                    className="  text-gray-700 font-semibold rounded inline-flex items-center"
+                  >
+                    <span className="mr-1 hover:underline">Men</span>
+                  </Link>
                 </li>
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      "\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n",
-                  }}
-                />
+
                 {/* women */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1">Women</span>
+                    <span className="mr-1 hover:underline">Women</span>
                   </button>
-                  <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
-                    <li className="">
-                      <a
-                        className="rounded-t  bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        One
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className=" hover:bg-gray-400  bg-gray-200  py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Two
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className="rounded-b  bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Three
-                      </a>
-                    </li>
-                  </ul>
                 </li>
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      "\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n",
-                  }}
-                />
+
                 {/* Kids */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1">Kids</span>
+                  <Link to="../kids/kids.tsx"><span className="mr-1">Kids</span></Link>
                     
-                  </button>
-                  <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
-                    <li className="">
-                      <a
-                        className="rounded-t bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        One
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className=" bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Two
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className="rounded-b bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Three
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      "\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n",
-                  }}
-                />
-                {/* sale */}
-
-                 <li className="dropdown inline-block relative">
-                  <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1">Sale</span>
                    
                   </button>
-                  <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
-                    <li className="">
-                      <a
-                        className="rounded-t  bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        One
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className=" bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Two
-                      </a>
-                    </li>
-                    <li className="">
-                      <a
-                        className="rounded-b  bg-gray-200  hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Three
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      "\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n",
-                  }}
-                />
-                {/* support */}
-                 <li className="dropdown inline-block relative">
-                  <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1">Support</span>
-                    
-                  </button> 
                 </li>
 
+                {/* sale */}
+
+                <li className="dropdown inline-block relative">
+                  <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
+                    <span className="mr-1 hover:underline">Sale</span>
+                  </button>
+                </li>
+
+                {/* support */}
+                <li className="dropdown inline-block relative ">
+                  <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
+                    <span className="mr-1 hover:underline">Support</span>
+                  </button>
+                </li>
               </ul>
 
               <div className="md:w-2/12 justify-end flex items-center space-x-4 xl:space-x-8 pr-8">
@@ -368,7 +200,7 @@ const Header = () => {
                     placeholder="search"
                     className={` ${
                       searchInput ? "hidden" : ""
-                    } text-sm dark:bg-gray-900 dark:placeholder-gray-300 text-gray-600 rounded ml-1 border border-transparent focus:outline-none focus:border-gray-400 px-1`}
+                    } w-24 border-black text-sm dark:bg-gray-900 dark:placeholder-gray-300 text-gray-600 rounded ml-1 border border-transparent focus:outline-none focus:border-gray-400 px-1`}
                   />
                 </div>
                 <div className="hidden lg:flex items-center space-x-4 xl:space-x-8">
@@ -491,12 +323,13 @@ const Header = () => {
               </div>
             </div>
           </div>
+          {/* For laptop screens */}
           {/* For small screen */}
           <div
             id="mobile-menu"
             className={`${
               showMenu ? "flex" : "hidden"
-            } absolute dark:bg-gray-900 z-10 inset-0 md:hidden bg-white flex-col h-screen w-full`}
+            } absolute dark:bg-gray-900  inset-0 md:hidden bg-white flex-col h-screen w-full z-[9999]`}
           >
             <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4 p-4">
               <div className="flex items-center space-x-3">
@@ -561,9 +394,10 @@ const Header = () => {
             </div>
             <div className="mt-6 p-4">
               <ul className="flex flex-col space-y-6">
-                <li>
-                  <a
-                    href="javascript:void(0)"
+                <li onClick={() => setShowMenu(false)}
+                aria-label="close menu">
+                  <Link
+                    to="/"
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
                     Home
@@ -585,11 +419,11 @@ const Header = () => {
                         />
                       </svg>
                     </div>
-                  </a>
+                  </Link>
                 </li>
-                <li>
-                  <a
-                    href="javascript:void(0)"
+                <li onClick={() => setShowMenu(false)} aria-label="close menu">
+                  <Link
+                    to="/menPage"
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
                     Men
@@ -611,9 +445,10 @@ const Header = () => {
                         />
                       </svg>
                     </div>
-                  </a>
+                  </Link>
                 </li>
-                <li>
+                <li onClick={() => setShowMenu(false)}
+                aria-label="close menu">
                   <a
                     href="javascript:void(0)"
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
@@ -639,7 +474,8 @@ const Header = () => {
                     </div>
                   </a>
                 </li>
-                <li>
+                <li onClick={() => setShowMenu(false)}
+                aria-label="close menu">
                   <a
                     href="javascript:void(0)"
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
@@ -665,7 +501,8 @@ const Header = () => {
                     </div>
                   </a>
                 </li>
-                <li>
+                <li onClick={() => setShowMenu(false)}
+                aria-label="close menu">
                   <a
                     href="javascript:void(0)"
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
@@ -693,8 +530,8 @@ const Header = () => {
                 </li>
               </ul>
             </div>
-            <div className="h-full flex items-end">
-              <ul className="flex flex-col space-y-8 bg-gray-50 w-full py-10 p-4 dark:bg-gray-800">
+            <div className=" flex items-end">
+              <ul className="flex flex-col space-y-8 bg-gray-50 w-full py-10  p-4 dark:bg-gray-800">
                 <li>
                   <a
                     href="javascript:void(0)"
@@ -749,6 +586,7 @@ const Header = () => {
               </ul>
             </div>
           </div>
+          {/* For small screen */}
         </div>
       </div>
     </div>

@@ -1,13 +1,17 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import Header from "../home/header";
+import Footer from "../home/footer";
 
-type Props = {};
 
-const LayoutWebsite = (props: Props) => {
+
+const LayoutWebsite = () => {
     return (
         <div>
             {/* LayoutWebsite */}
+            <Header/>
             <Outlet />
+            <Footer/>
         </div>
     );
 };
