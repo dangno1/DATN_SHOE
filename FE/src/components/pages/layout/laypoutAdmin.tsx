@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Layout, Menu } from "antd";
 import {
   AiOutlineDashboard,
@@ -26,21 +26,21 @@ const AdminLayout = () => {
         onCollapse={toggleSidebar}
         width={250}
         theme="dark"
-        className="new-sidebar" // Tạo màu mới cho sidebar
+        className="new-sidebar"
       >
         <div className="logo">
           {collapsed ? (
-            <span className="logo-text">L</span> // Thay đổi logo
+            <span className="logo-text">L</span>
           ) : (
-            <span className="logo-text">Admin</span> // Thay đổi logo
+            <span className="logo-text">Admin</span>
           )}
         </div>
         <Menu
           theme="dark"
           defaultSelectedKeys={["1"]}
           mode="vertical"
-          className="new-menu" // Tạo màu mới cho menu
-          style={{ backgroundColor: "#2d4059" }} // Thay đổi màu nền của menu
+          className="new-menu"
+          style={{ backgroundColor: "#2d4059" }}
         >
           <Menu.Item key="1" icon={<AiOutlineDashboard />}>
             <Link to="/admin/dashboard">Dashboard</Link>
@@ -57,7 +57,6 @@ const AdminLayout = () => {
           <Menu.Item key="5" icon={<AiOutlineSetting />}>
             <Link to="/admin/settings">Settings</Link>
           </Menu.Item>
-          {/* Thêm các mục menu tùy chỉnh ở đây */}
           <Menu.Item key="6" icon={<AiOutlineShopping />}>
             <Link to="/admin/orders">Orders</Link>
           </Menu.Item>
@@ -67,26 +66,20 @@ const AdminLayout = () => {
         </Menu>
       </Sider>
       <Layout className="new-site-layout">
-  <Content style={{ margin: "16px" }}>
-    <div
-      className="content-background"
-      style={{
-        padding: 24,
-        minHeight: 240, // Điều chỉnh chiều cao theo mong muốn
-        backgroundImage: `url('https://t4.ftcdn.net/jpg/03/57/57/37/240_F_357573760_5pMK2dlamGFXwFPtPm3Lvu7HNWWTCXw7.jpg')`, // Thay đổi đường dẫn đến hình ảnh của bạn
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover", // Sử dụng "cover" để hình ảnh bao phủ toàn bộ phần nền và vẫn đủ chiều ngang
-        backgroundPosition: "center center", // Căn chỉnh vị trí hình ảnh ở giữa
-      }}
-    >
-      {/* Content for your admin pages */}
-      {/* You can render different content based on your route */}
-    </div>
-  </Content>
-</Layout>
-
-
-
+        <Content style={{ margin: "16px" }}>
+          <div
+            className="content-background"
+            style={{
+              padding: 24,
+              minHeight: 240,
+              backgroundImage: `url('https://t4.ftcdn.net/jpg/03/57/57/37/240_F_357573760_5pMK2dlamGFXwFPtPm3Lvu7HNWWTCXw7.jpg')`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center center",
+            }}
+          ></div>
+        </Content>
+      </Layout>
     </Layout>
   );
 };

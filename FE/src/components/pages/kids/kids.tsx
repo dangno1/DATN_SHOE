@@ -1,16 +1,12 @@
-import Kidcontent from './kidcontent'
-import Header from '../home/header'
-import Footer from '../home/footer'
-import Kiditem from './kiditem'
+import Kidcontent from "./kidcontent";
+import Kiditem from "./kiditem";
 const Kids = () => {
   return (
     <div>
-        <Header/>
-        <Kidcontent/>
-        <Kiditem/>
-        <Footer/>
+      <Kidcontent />
+      <Kiditem />
     </div>
-  )
-}
+  );
+};
 
-export default Kids
+export default Kids;
