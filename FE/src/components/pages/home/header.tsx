@@ -141,7 +141,9 @@ const Header = () => {
                 {/* Kids */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1 hover:underline">Kids</span>
+                  <Link to="../kids/kids.tsx"><span className="mr-1">Kids</span></Link>
+                    
+                   
                   </button>
                 </li>
 
