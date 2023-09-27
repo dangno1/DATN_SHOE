@@ -11,19 +11,6 @@ const Header = () => {
     setMdOptionsToggle(!mdOptionsToggle);
   };
 
-  //chuc nang phan tu con
-  // const [isDropdownOpen, setDropdownOpen] = useState(false);
-  // const [selectedItem, setSelectedItem] = useState(null);
-
-  // const toggleDropdowns = () => {
-  //   setDropdownOpen(!isDropdownOpen);
-  // };
-
-  // const handleItemClick = (item: any) => {
-  //   setSelectedItem(item);
-  //   setDropdownOpen(false); // Đóng dropdown sau khi chọn phần tử con
-  // };
-
   return (
     <div className="dark:bg-gray-900">
       <div>

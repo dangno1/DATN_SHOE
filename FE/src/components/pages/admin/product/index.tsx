@@ -1,7 +1,10 @@
 
 const AdminProduct = () => {
   return (
-    <div>Products</div>
+    <div>
+      Products
+    </div>
+    
   )
 }
 
