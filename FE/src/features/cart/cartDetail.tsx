@@ -1,10 +1,6 @@
-import Footer from "../../components/pages/home/footer";
-import Header from "../../components/pages/home/header";
-
 const CartDetail = () => {
   return (
     <>
-      <Header />
       <div className="container m-auto gap-20 grid grid-cols-[2fr,1fr] pb-32">
         <div className="pt-20 pl-36">
           <div className="text-2xl font-semibold font-sans leading-10">
@@ -270,7 +266,6 @@ const CartDetail = () => {
           </button>
         </div>
       </div>
-      <Footer />
     </>
   );
 };
