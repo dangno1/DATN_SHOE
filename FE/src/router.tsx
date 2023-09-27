@@ -11,12 +11,12 @@ import AdminProduct from "./components/pages/admin/product"
 import Detail from "./components/pages/detail/Detail"
 import Kids from "./components/pages/kids/kids"
 import Women from "./components/pages/women/home"
-
-
+import Cart from "./features/cart/cart";
+import CartDetail from "./features/cart/cartDetail";
 
 export const router = createBrowserRouter([
-    {path: "/", element: <LayoutWebsite/>,children:[
-        {index: true, element:<HomePage/>},
+  {
+    path: "/",{index: true, element:<HomePage/>},
         {path: "menPage", element:<Men/>},
         {path:"detail",element:<Detail/>},
         {path:"kids",element:<Kids/>},
@@ -29,22 +29,29 @@ export const router = createBrowserRouter([
             path: "signup",
             element: <Signup />,
         },
-
-    ]},
-    {
-        path: "/admin",
-        element: <LayoutAdmin />,
-        children: [
-            { index: true, element: <Navigate to="dashboard" /> },
-            {
-                path: "dashboard",
-                element: <Dashboard />,
-            },
-            {
-                path: "product",
-                element: <AdminProduct />,
-            } 
-        ],
-    },
-   
+        {
+          path: "cart",
+          element: <Cart />,
+        },
+        {
+          path: "cartDetail",
+          element: <CartDetail />,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <LayoutAdmin />,
+    children: [
+      { index: true, element: <Navigate to="dashboard" /> },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "product",
+        element: <AdminProduct />,
+      },
+    ],
+  },
 ]);
