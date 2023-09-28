@@ -3,7 +3,6 @@ import LayoutWebsite from "./components/pages/layout/layoutWebsites";
 import LayoutAdmin from "./components/pages/layout/laypoutAdmin";
 import { Navigate } from "react-router-dom";
 import HomePage from "./components/pages/home/homePage";
-import Men from "./components/pages/home/menPage";
 import Dashboard from "./components/pages/admin/dashboard";
 import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
@@ -13,6 +12,7 @@ import Kids from "./components/pages/kids/kids";
 import Women from "./components/pages/women/home";
 import Cart from "./features/cart/cart";
 import CartDetail from "./features/cart/cartDetail";
+import Men from "./components/pages/men/menPage";
 
 export const router = createBrowserRouter([
   {

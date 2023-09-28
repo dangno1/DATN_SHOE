@@ -23,7 +23,7 @@ function Slider() {
               href="#"
               className="bg-white py-4 px-8 text-black font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800"
             >
-              Mua ngay
+              Buy Now
             </a>
           </div>
         </div>
