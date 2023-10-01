@@ -11,10 +11,14 @@ import AddProduct from "./features/products/pages/add";
 import UpdateProduct from "./features/products/components/update";
 import AddSize from "./features/size/pages/addSize";
 import SizeList from "./features/size/components/list";
-import AllSize from "./features/size/components/allsize";
 import DetailSize from "./features/size/components/detailSize";
-import UpdateSize from "./features/size/pages/update";
-// import AdminProduct from "./components/pages/admin/product";
+import UpdateSize from "./features/size/pages/updateSize";
+import ColorList from "./features/color/components/list";
+import AllColor from "./features/color/components/allColor";
+import DetailColor from "./features/color/components/detailColor";
+import UpdateColor from "./features/color/pages/updateColor";
+import AllSize from "./features/size/components/allSize";
+import AddColor from "./features/color/pages/addColor";
 
 export const router = createBrowserRouter([
   {
@@ -57,6 +61,16 @@ export const router = createBrowserRouter([
       },
       { path: "size/add", element: <AddSize /> },
       { path: "size/update/:id", element: <UpdateSize /> },
+      {
+        path: "color",
+        element: <ColorList />,
+        children: [
+          { index: true, element: <AllColor /> },
+          { path: ":id", element: <DetailColor /> },
+        ],
+      },
+      { path: "color/add", element: <AddColor /> },
+      { path: "color/update/:id", element: <UpdateColor /> },
     ],
   },
 ]);

@@ -1,29 +1,29 @@
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import sizeSchema from "@/schemas/size";
-import { useAddSizeMutation } from "@/api/size";
-import { ISize } from "@/interface/size";
 import ButtonSubmit from "./button.submit";
+import colorSchema from "@/schemas/color";
+import { IColor } from "@/interface/color";
+import { useAddColorMutation } from "@/api/color";
 
 interface IState {
   contentButton: string;
   disabled: false;
 }
 
-const SizeForm = ({ contentButton, disabled }: IState) => {
+const ColorForm = ({ contentButton, disabled }: IState) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ISize>({
-    resolver: joiResolver(sizeSchema),
+  } = useForm<IColor>({
+    resolver: joiResolver(colorSchema),
   });
 
-  const [addSize, { isLoading }] = useAddSizeMutation();
+  const [addColor, { isLoading }] = useAddColorMutation();
 
-  const onSubmit = (dataSize: ISize) => {
-    addSize(dataSize)
+  const onSubmit = (dataColor: IColor) => {
+    addColor(dataColor)
       .unwrap()
       .then(() => alert("Thêm thành công"));
     reset();
@@ -34,13 +34,13 @@ const SizeForm = ({ contentButton, disabled }: IState) => {
         <label
           className="block text-gray-700 text-sm font-bold mb-2 capitalize"
           htmlFor="value">
-          Product size
+          Product color
         </label>
         <input
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="number"
+          type="text"
           {...register("value")}
-          placeholder="40..."
+          placeholder="Trắng..."
         />
         {errors.value && (
           <p className="text-red-500 text-[13px]">{errors.value.message}</p>
@@ -51,4 +51,4 @@ const SizeForm = ({ contentButton, disabled }: IState) => {
   );
 };
 
-export default SizeForm;
+export default ColorForm;
