@@ -1,14 +1,14 @@
-import ProductForm from "../components/form";
+import SizeForm from "../components/form";
 
-const AddProduct = () => {
+const UpdateSize = () => {
   return (
     <div className="w-full h-max max-w-5xl mx-auto">
       <h2 className="text-blue-500 font-bold text-[30px] text-center mt-[10px]">
-        Thêm mới sản phẩm
+        Cập nhật Size
       </h2>
-      <ProductForm />
+      <SizeForm contentButton="Cập nhật size" />
     </div>
   );
 };
 
-export default AddProduct;
+export default UpdateSize;

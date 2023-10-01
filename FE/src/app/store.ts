@@ -17,6 +17,7 @@ import {
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import productApi, { productReducer } from "../api/product";
 import categoryApi, { categoryReducer } from "../api/category";
+import sizeApi, { sizeReducer } from "../api/size";
 
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
@@ -27,6 +28,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [productApi.reducerPath]: productReducer,
   [categoryApi.reducerPath]: categoryReducer,
+  [sizeApi.reducerPath]: sizeReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -37,7 +39,11 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(productApi.middleware, categoryApi.middleware),
+    }).concat(
+      productApi.middleware,
+      categoryApi.middleware,
+      sizeApi.middleware
+    ),
 });
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

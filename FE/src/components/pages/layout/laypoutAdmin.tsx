@@ -21,7 +21,7 @@ const LayoutAdmin = () => {
   } = theme.useToken();
 
   return (
-    <Layout className="h-max">
+    <Layout className="h-screen">
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <Menu

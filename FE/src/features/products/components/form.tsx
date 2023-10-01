@@ -23,6 +23,7 @@ const ProductForm = () => {
           price: null,
           quantity: null,
           status: 1,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       ],
     },
@@ -33,7 +34,6 @@ const ProductForm = () => {
   });
   const { data: listCategory } = useGetCategoryesQuery();
   const [addProduct, { isLoading }] = useAddProductMutation();
-  console.log(isLoading);
 
   const onSubmit = (data: IProduct) => {
     addProduct(data)
@@ -269,6 +269,7 @@ const ProductForm = () => {
             price: null,
             quantity: null,
             status: 1,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any)
         }>
         Thêm biến thể

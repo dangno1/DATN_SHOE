@@ -1,14 +1,14 @@
-import ProductForm from "../components/form";
+import { Outlet } from "react-router-dom";
 
-const AddProduct = () => {
+const SizeList = () => {
   return (
     <div className="w-full h-max max-w-5xl mx-auto">
       <h2 className="text-blue-500 font-bold text-[30px] text-center mt-[10px]">
-        Thêm mới sản phẩm
+        Quản lý size
       </h2>
-      <ProductForm />
+      <Outlet />
     </div>
   );
 };
 
-export default AddProduct;
+export default SizeList;

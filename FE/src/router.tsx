@@ -9,6 +9,11 @@ import Signup from "./features/auth/components/Signup";
 import List from "./features/products/components/list";
 import AddProduct from "./features/products/pages/add";
 import UpdateProduct from "./features/products/components/update";
+import AddSize from "./features/size/pages/addSize";
+import SizeList from "./features/size/components/list";
+import AllSize from "./features/size/components/allsize";
+import DetailSize from "./features/size/components/detailSize";
+import UpdateSize from "./features/size/pages/update";
 // import AdminProduct from "./components/pages/admin/product";
 
 export const router = createBrowserRouter([
@@ -42,6 +47,16 @@ export const router = createBrowserRouter([
       },
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
+      {
+        path: "size",
+        element: <SizeList />,
+        children: [
+          { index: true, element: <AllSize /> },
+          { path: ":id", element: <DetailSize /> },
+        ],
+      },
+      { path: "size/add", element: <AddSize /> },
+      { path: "size/update/:id", element: <UpdateSize /> },
     ],
   },
 ]);

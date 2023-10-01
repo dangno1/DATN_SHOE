@@ -23,6 +23,7 @@ const AddProduct = () => {
           price: null,
           quantity: null,
           status: 1,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       ],
     },
@@ -274,6 +275,7 @@ const AddProduct = () => {
               price: null,
               quantity: null,
               status: 1,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any)
           }>
           Thêm biến thể
