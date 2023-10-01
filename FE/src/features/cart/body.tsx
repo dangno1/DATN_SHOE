@@ -41,8 +41,8 @@ const BodyCart = () => {
 
   return (
     <>
-      <div className="container m-auto gap-10 grid grid-cols-[2fr,1fr] pb-32">
-        <div className="pt-20 pl-36">
+      <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr] gap-10 pb-32">
+        <div className="pt-20 lg:pl-36">
           <h2 className="text-4xl font-semibold font-sans leading-10">
             YOUR BAG
           </h2>
@@ -68,7 +68,7 @@ const BodyCart = () => {
 
           {carts?.data.map((item: any) => (
             <div className="pt-7" key={item._id}>
-              <div className="border border-black gap-3 grid grid-cols-[5fr,10fr,1fr]">
+              <div className="border border-black gap-3 grid grid-cols-1 lg:grid-cols-[5fr,10fr,1fr]">
                 <img
                   src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/315c0690b9e24b4ba66bae60012b1921_9366/HA4314_220_HA4314_21_model.jpg.jpg?sh=364&strip=false&sw=364"
                   alt=""
@@ -246,7 +246,7 @@ const BodyCart = () => {
             </div>
           </div>
         </div>
-        <div className="pt-20 pr-24">
+        <div className="pt-20 lg:pr-24">
           <div className="border border-black">
             <a href="/cartDetail">
               <div className="bg-black flex justify-between items-center p-1 pl-3 pr-3 mr-1 mb-1">

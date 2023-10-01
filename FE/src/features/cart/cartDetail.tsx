@@ -1,8 +1,8 @@
 const CartDetail = () => {
   return (
     <>
-      <div className="container m-auto gap-20 grid grid-cols-[2fr,1fr] pb-32">
-        <div className="pt-20 pl-36">
+      <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr]  lg:gap-20 pb-32">
+        <div className="pt-20 lg:pl-36">
           <div className="text-2xl font-semibold font-sans leading-10">
             SHIPPING ADDRESS
           </div>
@@ -173,7 +173,7 @@ const CartDetail = () => {
             </div>
           </div>
         </div>
-        <div className="pt-20 pr-24">
+        <div className="pt-20 lg:pr-24">
           <div className="text-xl font-semibold font-sans leading-10">
             ORDER SUMMARY
           </div>
