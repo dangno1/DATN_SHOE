@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Menu } from "antd";
+import {Layout, Menu } from "antd";
 import {
   AiOutlineDashboard,
   AiOutlineUser,
@@ -7,7 +7,8 @@ import {
   AiOutlineBarChart,
   AiOutlineSetting,
 } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+
 
 const { Sider, Content } = Layout;
 
@@ -66,8 +67,12 @@ const AdminLayout = () => {
         </Menu>
       </Sider>
       <Layout className="new-site-layout">
-        <Content style={{ margin: "16px" }}>
-          <div
+        <Content style={{
+                        margin: "24px 16px",
+                        padding: 24,
+                        minHeight: 280,
+                    }}>
+          {/* <div
             className="content-background"
             style={{
               padding: 24,
@@ -77,7 +82,8 @@ const AdminLayout = () => {
               backgroundSize: "cover",
               backgroundPosition: "center center",
             }}
-          ></div>
+          ></div> */}
+            <Outlet />
         </Content>
       </Layout>
     </Layout>
