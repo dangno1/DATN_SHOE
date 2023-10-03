@@ -1,4 +1,4 @@
-import {createBrowserRouter} from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom"
 import LayoutWebsite from "./components/pages/layout/layoutWebsites"
 import LayoutAdmin from "./components/pages/layout/laypoutAdmin"
 import { Navigate } from "react-router-dom"
@@ -11,23 +11,22 @@ import Detail from "./components/pages/detail/Detail"
 import UserPage from "./components/pages/userinformation/userPage"
 
 
-
-
 export const router = createBrowserRouter([
-    {path: "/", element: <LayoutWebsite/>,children:[
-        {index: true, element:<HomePage/>},
-        {path:"detail",element:<Detail/>},
-        {path:"user",element:<UserPage/>},
-        {path:"userPage",element:<UserPage/>},
-        {
-            path: "signin",
-            element: <Signin />,
-        },
-        {
-            path: "signup",
-            element: <Signup />,
-        },
-    ]},
+    {
+        path: "/", element: <LayoutWebsite />, children: [
+            { index: true, element: <HomePage /> },
+            { path: "detail", element: <Detail /> },
+            { path: "user", element: <UserPage /> },
+            {
+                path: "signin",
+                element: <Signin />,
+            },
+            {
+                path: "signup",
+                element: <Signup />,
+            },
+        ]
+    },
     {
         path: "/admin",
         element: <LayoutAdmin />,
@@ -40,8 +39,8 @@ export const router = createBrowserRouter([
             {
                 path: "product",
                 element: <AdminProduct />,
-            } 
+            }
         ],
     },
-   
+
 ]);
