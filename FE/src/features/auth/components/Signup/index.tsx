@@ -74,7 +74,7 @@ const Signup = (props: Props) => {
                 <span className="ml- text-white	">Sign Up</span>
               </button>
               <button className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-               <a href="/signin" className='text-white'>Sign in</a>
+               <a href="/Signin" className='text-white'>Sign In</a>
               </button>
               <p className="mt-6 text-xs text-gray-600 text-center">
                 I agree to abide by Cartesian Kinetics
@@ -90,13 +90,13 @@ const Signup = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex-1 bg-black text-center hidden lg:flex">
+      <div className="flex-1 bg-white text-center hidden lg:flex">
         
         <div
           className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
           style={{
             backgroundImage:
-              'url("https://phuongnam24h.com/img_data/images/y-nghia-logo-adidas-va-su-thay-doi-qua-tung-thoi-ky.jpg")'
+              'url("https://cdn-icons-png.flaticon.com/256/731/731962.png")'
           }}
         ></div>
         
