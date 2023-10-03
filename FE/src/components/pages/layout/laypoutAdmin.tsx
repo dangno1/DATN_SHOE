@@ -6,11 +6,11 @@ import {
   AiOutlineShopping,
   AiOutlineBarChart,
   AiOutlineSetting,
+  AiOutlineShoppingCart
 } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 
-
-const { Sider, Content } = Layout;
+const { Sider } = Layout;
 
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -64,27 +64,13 @@ const AdminLayout = () => {
           <Menu.Item key="7" icon={<AiOutlineUser />}>
             <Link to="/admin/teams">Teams</Link>
           </Menu.Item>
+          <Menu.Item key="8" icon={<AiOutlineShoppingCart />}>
+            <Link to="/admin/carts">Cart</Link>
+          </Menu.Item>
         </Menu>
       </Sider>
       <Layout className="new-site-layout">
-        <Content style={{
-                        margin: "24px 16px",
-                        padding: 24,
-                        minHeight: 280,
-                    }}>
-          {/* <div
-            className="content-background"
-            style={{
-              padding: 24,
-              minHeight: 240,
-              backgroundImage: `url('https://t4.ftcdn.net/jpg/03/57/57/37/240_F_357573760_5pMK2dlamGFXwFPtPm3Lvu7HNWWTCXw7.jpg')`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              backgroundPosition: "center center",
-            }}
-          ></div> */}
-            <Outlet />
-        </Content>
+        <Outlet />
       </Layout>
     </Layout>
   );

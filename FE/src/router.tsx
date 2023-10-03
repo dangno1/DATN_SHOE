@@ -12,9 +12,12 @@ import Kids from "./components/pages/kids/kids";
 import Women from "./components/pages/women/home";
 import Cart from "./features/cart/cart";
 import CartDetail from "./features/cart/cartDetail";
+import Carts from "./components/pages/admin/cart";
+import CartAdminDetail from "./components/pages/admin/cart/cartDetail";
 import Men from "./components/pages/men/menPage";
 import AddAdmin from "./components/pages/admin/user/addUser";
 import AdminUser from "./components/pages/admin/user";
+
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +61,13 @@ export const router = createBrowserRouter([
         element: <AdminProduct />,
       },
       {
+        path: "carts",
+        element: <Carts />
+      },
+      {
+        path: "cart/user/:id",
+        element: <CartAdminDetail />
+      },
         path: "users",
         element: <AdminUser />,
       },
