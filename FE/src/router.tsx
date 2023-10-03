@@ -18,7 +18,6 @@ import Men from "./components/pages/men/menPage";
 import AddAdmin from "./components/pages/admin/user/addUser";
 import AdminUser from "./components/pages/admin/user";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -62,19 +61,20 @@ export const router = createBrowserRouter([
       },
       {
         path: "carts",
-        element: <Carts />
+        element: <Carts />,
       },
       {
         path: "cart/user/:id",
-        element: <CartAdminDetail />
+        element: <CartAdminDetail />,
       },
+      {
         path: "users",
         element: <AdminUser />,
       },
       {
         path: "add",
         element: <AddAdmin />,
-    },
+      },
     ],
   },
 ]);
