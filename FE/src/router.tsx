@@ -17,6 +17,7 @@ import CartAdminDetail from "./components/pages/admin/cart/cartDetail";
 import Men from "./components/pages/men/menPage";
 import AddAdmin from "./components/pages/admin/user/addUser";
 import AdminUser from "./components/pages/admin/user";
+import OderHistory from "./components/pages/oderHistory/oderHistory"
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
         path: "cartDetail",
         element: <CartDetail />,
       },
+      {
+        path: "oder&history",
+        element: <OderHistory/>
+      }
     ],
   },
   {
