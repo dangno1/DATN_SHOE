@@ -6,6 +6,7 @@ const Header = () => {
   const [searchInput, setSearchInput] = useState(true);
   const [mdOptionsToggle, setMdOptionsToggle] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
+
   // const toggleDropdown = () => {
   //   setMdOptionsToggle(!mdOptionsToggle);
   // };
