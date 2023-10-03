@@ -1,9 +1,10 @@
+import Banner from "../userinformation/banner";
 
 const OderHistory = () => {
   return (
     <div>
+      <Banner />
       <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
-        {/*- more free and premium Tailwind CSS components at https://tailwinduikit.com/ -*/}
         <div className="flex justify-start item-start space-y-2 flex-col">
           <h1 className="text-3xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
             Order #13432
@@ -14,7 +15,6 @@ const OderHistory = () => {
         </div>
         <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
           <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
-            {/* sp */}
             <div className="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
               <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">
                 Customer’s Cart
@@ -63,18 +63,20 @@ const OderHistory = () => {
                         Light Blue
                       </p>
                       <p className="text-base dark:text-white xl:text-lg leading-6">
-                      $36.00{" "}
-                      <span className="text-red-300 line-through"> $45.00</span>
-                    </p>
+                        $36.00{" "}
+                        <span className="text-red-300 line-through">
+                          {" "}
+                          $45.00
+                        </span>
+                      </p>
                     </div>
                   </div>
                   <div className="flex justify-between space-x-8 items-start w-full">
-                    
                     <button className="mt-[110px] py-3 w-[150px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                    View product
+                      View product
                     </button>
                     <button className="mt-[110px] py-3 w-[140px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                    Buy again
+                      Buy again
                     </button>
                   </div>
                 </div>
@@ -123,18 +125,20 @@ const OderHistory = () => {
                         Light Blue
                       </p>
                       <p className="text-base dark:text-white xl:text-lg leading-6">
-                      $36.00{" "}
-                      <span className="text-red-300 line-through"> $45.00</span>
-                    </p>
+                        $36.00{" "}
+                        <span className="text-red-300 line-through">
+                          {" "}
+                          $45.00
+                        </span>
+                      </p>
                     </div>
                   </div>
                   <div className="flex justify-between space-x-8 items-start w-full">
-                    
                     <button className="mt-[110px] py-3 w-[150px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                    View product
+                      View product
                     </button>
                     <button className="mt-[110px] py-3 w-[140px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                    Buy again
+                      Buy again
                     </button>
                   </div>
                 </div>

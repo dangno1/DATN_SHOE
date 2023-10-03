@@ -1,4 +1,3 @@
-
 import Banner from './banner'
 import Account from './account'
 
@@ -7,7 +6,6 @@ const UserPage = () => {
     <div>
       <Banner />
       <Account />
-
     </div>
   )
 }
