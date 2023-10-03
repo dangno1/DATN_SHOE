@@ -3,7 +3,6 @@ import LayoutWebsite from "./components/pages/layout/layoutWebsites";
 import LayoutAdmin from "./components/pages/layout/laypoutAdmin";
 import { Navigate } from "react-router-dom";
 import HomePage from "./components/pages/home/homePage";
-import Men from "./components/pages/home/menPage";
 import Dashboard from "./components/pages/admin/dashboard";
 import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
@@ -15,6 +14,10 @@ import Cart from "./features/cart/cart";
 import CartDetail from "./features/cart/cartDetail";
 import Carts from "./components/pages/admin/cart";
 import CartAdminDetail from "./components/pages/admin/cart/cartDetail";
+import Men from "./components/pages/men/menPage";
+import AddAdmin from "./components/pages/admin/user/addUser";
+import AdminUser from "./components/pages/admin/user";
+
 
 export const router = createBrowserRouter([
   {
@@ -64,7 +67,14 @@ export const router = createBrowserRouter([
       {
         path: "cart/user/:id",
         element: <CartAdminDetail />
-      }
+      },
+        path: "users",
+        element: <AdminUser />,
+      },
+      {
+        path: "add",
+        element: <AddAdmin />,
+    },
     ],
   },
 ]);

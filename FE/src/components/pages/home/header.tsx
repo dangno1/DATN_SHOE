@@ -58,38 +58,40 @@ const Header = () => {
                 aria-label="go to cart"
                 className="text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800"
               >
-                <svg
-                  className="fill-stroke"
-                  width={18}
-                  height={18}
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3.66667 1L1 4.2V15.4C1 15.8243 1.1873 16.2313 1.5207 16.5314C1.8541 16.8314 2.30628 17 2.77778 17H15.2222C15.6937 17 16.1459 16.8314 16.4793 16.5314C16.8127 16.2313 17 15.8243 17 15.4V4.2L14.3333 1H3.66667Z"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M1 4.2002H17"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12.5564 7.3999C12.5564 8.2486 12.1818 9.06253 11.515 9.66264C10.8482 10.2628 9.94386 10.5999 9.00087 10.5999C8.05788 10.5999 7.15351 10.2628 6.48671 9.66264C5.81991 9.06253 5.44531 8.2486 5.44531 7.3999"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <Link to="/cart">
+                  <svg
+                    className="fill-stroke"
+                    width={18}
+                    height={18}
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.66667 1L1 4.2V15.4C1 15.8243 1.1873 16.2313 1.5207 16.5314C1.8541 16.8314 2.30628 17 2.77778 17H15.2222C15.6937 17 16.1459 16.8314 16.4793 16.5314C16.8127 16.2313 17 15.8243 17 15.4V4.2L14.3333 1H3.66667Z"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M1 4.2002H17"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M12.5564 7.3999C12.5564 8.2486 12.1818 9.06253 11.515 9.66264C10.8482 10.2628 9.94386 10.5999 9.00087 10.5999C8.05788 10.5999 7.15351 10.2628 6.48671 9.66264C5.81991 9.06253 5.44531 8.2486 5.44531 7.3999"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Link>
               </button>
-              <button className="text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-xl">
+              <button  className="text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-xl">
                 <AiOutlineUser />
               </button>
             </div>
@@ -133,15 +135,17 @@ const Header = () => {
                 {/* women */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1 hover:underline">Women</span>
+                    <Link to="/women">
+                      <span className="mr-1 hover:underline">Women</span>
+                    </Link>
                   </button>
                 </li>
 
                 {/* Kids */}
                 <li className="dropdown inline-block relative">
-                  <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                    <Link to="../kids/kids.tsx">
-                      <span className="mr-1">Kids</span>
+                  <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
+                    <Link to="/kids">
+                      <span className="mr-1 hover:underline">Kids</span>
                     </Link>
                   </button>
                 </li>
@@ -207,9 +211,7 @@ const Header = () => {
                     aria-label="go to cart"
                     className="text-gray-800 dark:hover:text-gray-300 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
-                    <Link
-                      to="/cart"
-                    >
+                    <Link to="/cart">
                       <svg
                         className="fill-stroke"
                         width={26}
@@ -450,8 +452,8 @@ const Header = () => {
                   </Link>
                 </li>
                 <li onClick={() => setShowMenu(false)} aria-label="close menu">
-                  <a
-                    href="javascript:void(0)"
+                  <Link
+                    to="/women"
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
                     Women
@@ -473,11 +475,11 @@ const Header = () => {
                         />
                       </svg>
                     </div>
-                  </a>
+                  </Link>
                 </li>
                 <li onClick={() => setShowMenu(false)} aria-label="close menu">
-                  <a
-                    href="javascript:void(0)"
+                  <Link
+                    to="/kids"
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
                     Kisd
@@ -499,11 +501,11 @@ const Header = () => {
                         />
                       </svg>
                     </div>
-                  </a>
+                  </Link>
                 </li>
                 <li onClick={() => setShowMenu(false)} aria-label="close menu">
-                  <a
-                    href="javascript:void(0)"
+                  <Link
+                    to=""
                     className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
                     Support
@@ -525,15 +527,15 @@ const Header = () => {
                         />
                       </svg>
                     </div>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
             <div className=" flex items-end">
               <ul className="flex flex-col space-y-8 bg-gray-50 w-full py-10  p-4 dark:bg-gray-800">
-                <li>
-                  <a
-                    href="javascript:void(0)"
+                <li onClick={() => setShowMenu(false)} aria-label="close menu">
+                  <Link
+                    to="/cart"
                     className="dark:text-white text-gray-800 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline"
                   >
                     <div>
@@ -569,7 +571,7 @@ const Header = () => {
                       </svg>
                     </div>
                     <p className="text-base">Cart</p>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a
