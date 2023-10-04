@@ -1,12 +1,11 @@
-import { Button, Divider, Layout, Menu, theme } from "antd";
+import { MdFormatSize } from "react-icons/md";
+import { Button, Layout, Menu } from "antd";
 import { useState } from "react";
 import {
   AiOutlineMenuFold,
   AiOutlineMenuUnfold,
   AiOutlineUser,
-  AiOutlineVideoCamera,
   AiFillAccountBook,
-  AiFillCalendar,
   AiFillFund,
   AiFillEdit,
 } from "react-icons/ai";
@@ -16,16 +15,15 @@ const { Header, Sider, Content } = Layout;
 
 const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
 
   return (
-    <Layout className="h-screen">
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical" />
+    <Layout className="h-screen w-full max-w-[100vw]">
+      <Sider
+        className="max-w-[max-content] "
+        trigger={null}
+        collapsible
+        collapsed={collapsed}>
         <Menu
-          className="sticky top-0"
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
@@ -42,6 +40,11 @@ const LayoutAdmin = () => {
             },
             {
               key: "3",
+              icon: <MdFormatSize />,
+              label: <Link to="/admin/size">Size</Link>,
+            },
+            {
+              key: "4",
               icon: <AiOutlineUser />,
               label: <Link to="/admin/user">Quản lý khách hàng</Link>,
             },
@@ -59,26 +62,16 @@ const LayoutAdmin = () => {
           ]}
         />
       </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+      <Layout className="w-full">
+        <Header className="bg-white">
           <Button
             type="text"
             icon={collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
             onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
+            className="font-[16px] w-[64px] h-[64px] "
           />
         </Header>
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-          }}>
+        <Content className="w-full">
           <Outlet />
         </Content>
       </Layout>

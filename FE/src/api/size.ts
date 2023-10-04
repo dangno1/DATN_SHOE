@@ -16,7 +16,7 @@ const sizeApi = createApi({
       query: (id) => `/size/${id}`,
       providesTags: ["Size"],
     }),
-    removeSize: builder.mutation<void, number>({
+    removeSize: builder.mutation<void, number | string>({
       query: (id) => ({
         url: `/size/${id}`,
         method: "delete",
@@ -32,10 +32,10 @@ const sizeApi = createApi({
       invalidatesTags: ["Size"],
     }),
     updateSize: builder.mutation<ISize, ISize>({
-      query: (size) => ({
-        url: `/size/${size._id}`,
+      query: ({ _id, value }) => ({
+        url: `/size/update/${_id}`,
         method: "PATCH",
-        body: size,
+        body: value,
       }),
       invalidatesTags: ["Size"],
     }),

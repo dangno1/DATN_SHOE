@@ -11,10 +11,10 @@ import AddProduct from "./features/products/pages/add";
 import UpdateProduct from "./features/products/components/update";
 import AddSize from "./features/size/pages/addSize";
 import SizeList from "./features/size/components/list";
-import AllSize from "./features/size/components/allsize";
 import DetailSize from "./features/size/components/detailSize";
-import UpdateSize from "./features/size/pages/update";
-// import AdminProduct from "./components/pages/admin/product";
+import UpdateSize from "./features/size/pages/updateSize";
+import AllSize from "./features/size/components/allSize";
+import AllSizeCoppy from "./features/size/components/allSize copy";
 
 export const router = createBrowserRouter([
   {
