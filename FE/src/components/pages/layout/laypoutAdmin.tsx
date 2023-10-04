@@ -1,14 +1,16 @@
-import { MdFormatSize } from "react-icons/md";
 import { Button, Layout, Menu } from "antd";
 import { useState } from "react";
 import {
   AiOutlineMenuFold,
   AiOutlineMenuUnfold,
   AiOutlineUser,
-  AiFillAccountBook,
-  AiFillFund,
-  AiFillEdit,
+  AiOutlineDashboard,
+  AiOutlineShopping,
+  AiOutlineBarChart,
+  AiOutlineSetting,
+  AiOutlineShoppingCart,
 } from "react-icons/ai";
+import { MdFormatSize } from "react-icons/md";
 import { Link, Outlet } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
@@ -23,44 +25,33 @@ const LayoutAdmin = () => {
         trigger={null}
         collapsible
         collapsed={collapsed}>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={[
-            {
-              key: "1",
-              icon: <AiOutlineUser />,
-              label: <Link to="/admin/dashboard">Admin</Link>,
-            },
-            {
-              key: "2",
-              icon: <AiFillAccountBook />,
-              label: <Link to="/admin/product">Sản phẩm</Link>,
-            },
-            {
-              key: "3",
-              icon: <MdFormatSize />,
-              label: <Link to="/admin/size">Size</Link>,
-            },
-            {
-              key: "4",
-              icon: <AiOutlineUser />,
-              label: <Link to="/admin/user">Quản lý khách hàng</Link>,
-            },
-
-            {
-              key: "5",
-              icon: <AiFillFund />,
-              label: <Link to="/admin/statistical">Thống Kê</Link>,
-            },
-            {
-              key: "6",
-              icon: <AiFillEdit />,
-              label: <Link to="/admin/oder">Quản lý đơn hàng</Link>,
-            },
-          ]}
-        />
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
+          <Menu.Item key="1" icon={<AiOutlineDashboard />}></Menu.Item>
+          <Menu.Item key="2" icon={<AiOutlineUser />}>
+            <Link to="/admin/users">Users</Link>
+          </Menu.Item>
+          <Menu.Item key="3" icon={<AiOutlineShopping />}>
+            <Link to="/admin/product">Products</Link>
+          </Menu.Item>
+          <Menu.Item key="4" icon={<MdFormatSize />}>
+            <Link to="/admin/size">Size</Link>
+          </Menu.Item>
+          <Menu.Item key="5" icon={<AiOutlineBarChart />}>
+            <Link to="/admin/analytics">Analytics</Link>
+          </Menu.Item>
+          <Menu.Item key="6" icon={<AiOutlineSetting />}>
+            <Link to="/admin/settings">Settings</Link>
+          </Menu.Item>
+          <Menu.Item key="7" icon={<AiOutlineShopping />}>
+            <Link to="/admin/orders">Orders</Link>
+          </Menu.Item>
+          <Menu.Item key="8" icon={<AiOutlineUser />}>
+            <Link to="/admin/teams">Teams</Link>
+          </Menu.Item>
+          <Menu.Item key="9" icon={<AiOutlineShoppingCart />}>
+            <Link to="/admin/carts">Cart</Link>
+          </Menu.Item>
+        </Menu>
       </Sider>
       <Layout className="w-full">
         <Header className="bg-white">

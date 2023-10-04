@@ -32,13 +32,11 @@ const AllSizeCoppy = () => {
         className="my-[10px] float-right capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max font-medium text-white p-2 rounded-lg">
         Thêm mới size
       </Button>
-      <table className="w-full min-w-max border rounded-[20px] ">
+      <table className="w-full min-w-max border-b border-gray-200 rounded-[20px]">
         <thead>
           <tr>
             {TABLE_HEAD.map((head) => (
-              <th
-                key={head}
-                className="border-b border-blue-gray-100 bg-blue-red-500 p-4 ">
+              <th key={head} className="before: bg-blue-red-500 p-4 ">
                 <Typography
                   variant="small"
                   color="blue-gray"

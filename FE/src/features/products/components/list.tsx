@@ -8,12 +8,14 @@ import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
 import { MdDeleteSweep } from "react-icons/md";
 import { BiEditAlt } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@material-tailwind/react";
 
 const List = () => {
   const { data: dataProduct } = useGetProductsQuery();
   const { data: dataCategory } = useGetCategoryesQuery();
   const [deteteProduct] = useRemoveProductMutation();
+  const naviagate = useNavigate();
 
   const handleDelete = (id: string) => {
     deteteProduct(id)
@@ -67,17 +69,15 @@ const List = () => {
             dotPosition="bottom"
             effect="fade"
             className="w-[65px]">
-            {thumbnail.map(
-              (thmbn: string): JSX.Element => (
-                <Image
-                  className="rounded-[10px] bg-slate-300"
-                  key={thmbn}
-                  src={thmbn}
-                  alt={name}
-                  width={65}
-                />
-              )
-            )}
+            {thumbnail.map((thmbn: string) => (
+              <Image
+                className="rounded-[10px] bg-slate-300"
+                key={thmbn}
+                src={thmbn}
+                alt={name}
+                width={65}
+              />
+            ))}
           </Carousel>
         );
       },
@@ -186,7 +186,16 @@ const List = () => {
     })),
   };
 
-  return <Table className="w-full max-w-[100vw] relative" {...tableProps} />;
+  return (
+    <div className="px-[50px]">
+      <Button
+        onClick={() => naviagate("add")}
+        className="my-[10px] float-right capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max font-medium text-white p-2 rounded-lg">
+        Thêm mới sản phẩm
+      </Button>
+      <Table className="w-full max-w-[100vw] relative" {...tableProps} />
+    </div>
+  );
 };
 
 export default List;

@@ -14,7 +14,19 @@ import SizeList from "./features/size/components/list";
 import DetailSize from "./features/size/components/detailSize";
 import UpdateSize from "./features/size/pages/updateSize";
 import AllSize from "./features/size/components/allSize";
-import AllSizeCoppy from "./features/size/components/allSize copy";
+import Detail from "./components/pages/detail/Detail";
+import Kids from "./components/pages/kids/kids";
+import Women from "./components/pages/women/home";
+import Cart from "./features/cart/cart";
+import CartDetail from "./features/cart/cartDetail";
+import Carts from "./components/pages/admin/cart";
+import CartAdminDetail from "./components/pages/admin/cart/cartDetail";
+import AdminOrder from "./components/pages/admin/order/index";
+import Men from "./components/pages/men/menPage";
+import AddAdmin from "./components/pages/admin/user/addUser";
+import AdminUser from "./components/pages/admin/user";
+import OderHistory from "./components/pages/oderHistory/oderHistory";
+import UserPage from "./components/pages/userinformation/userPage";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +34,10 @@ export const router = createBrowserRouter([
     element: <LayoutWebsite />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "menPage", element: <Men /> },
+      { path: "detail", element: <Detail /> },
+      { path: "kids", element: <Kids /> },
+      { path: "women", element: <Women /> },
       {
         path: "signin",
         element: <Signin />,
@@ -30,6 +46,19 @@ export const router = createBrowserRouter([
         path: "signup",
         element: <Signup />,
       },
+      {
+        path: "cart",
+        element: <Cart />,
+      },
+      {
+        path: "cartDetail",
+        element: <CartDetail />,
+      },
+      {
+        path: "oder&history",
+        element: <OderHistory />,
+      },
+      { path: "user", element: <UserPage /> },
     ],
   },
   {
@@ -55,8 +84,34 @@ export const router = createBrowserRouter([
           { path: ":id", element: <DetailSize /> },
         ],
       },
-      { path: "size/add", element: <AddSize /> },
-      { path: "size/update/:id", element: <UpdateSize /> },
+      {
+        path: "size/add",
+        element: <AddSize />,
+      },
+      {
+        path: "size/update/:id",
+        element: <UpdateSize />,
+      },
+      {
+        path: "carts",
+        element: <Carts />,
+      },
+      {
+        path: "cart/user/:id",
+        element: <CartAdminDetail />,
+      },
+      {
+        path: "orders",
+        element: <AdminOrder />,
+      },
+      {
+        path: "users",
+        element: <AdminUser />,
+      },
+      {
+        path: "add",
+        element: <AddAdmin />,
+      },
     ],
   },
 ]);
