@@ -11,6 +11,7 @@ import {
     persistStore,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import cartApi, { cartReducer } from "../api/cart";
 
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
@@ -18,7 +19,9 @@ const persistConfig = {
     storage,
     whitelist: ['cart']
 }
-const rootReducer = combineReducers({})
+const rootReducer = combineReducers({
+    carts: cartReducer,
+})
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
@@ -28,7 +31,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(),
+        }).concat(cartApi.middleware),
 })
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>

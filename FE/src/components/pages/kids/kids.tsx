@@ -8,5 +8,5 @@ const Kids = () => {
     </div>
   );
 };
-
 export default Kids;
+

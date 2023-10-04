@@ -1,4 +1,3 @@
-import React from 'react'
 import { BsBagPlus } from 'react-icons/bs'
 
 const ProductList = () => {
