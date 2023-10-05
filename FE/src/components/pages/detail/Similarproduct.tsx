@@ -40,7 +40,6 @@ const Similarproduct = () => {
       imageAlt:
         "Hand holding black machined steel mechanical pencil with brass tip and top.",
     },
-    // More products...
   ];
   return (
     <div>

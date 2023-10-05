@@ -3,21 +3,20 @@ import { BsBagPlus } from "react-icons/bs";
 const WomenList = () => {
   return (
     <>
-      <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4">
-          Responsive Product card grid
-        </h1>
+       <div className="text-center p-10">
+        <h2 className="font-bold text-4xl mb-4 uppercase">
+           women's shoes
+        </h2>
+        <h1 className="text-3xl">ELEVATE YOUR STYLE</h1>
       </div>
-      {/* ✅ Grid Section - Starts Here 👇 */}
       <section
         id="Projects"
         className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
       >
-        {/*   ✅ Product card 1 - Starts Here 👇 */}
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
-              src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/d0fbf9b2772542f58acaaf1e00f46ba8_9366/Adistar_2.0_Shoes_Pink_GV9122_01_standard.jpg"
+              src="https://bizweb.dktcdn.net/100/413/756/files/giay-the-thao-nu-adidas-chinh-hang-b5fb13d6-e9d6-4a4f-8005-97f1bdb3e203.jpg?v=1614137919694"
               alt="Product"
               className="h-80 w-72 object-cover rounded-t-xl"
             />
@@ -42,12 +41,11 @@ const WomenList = () => {
             </div>
           </a>
         </div>
-        {/*   🛑 Product card 1 - Ends Here  */}
-        {/*   ✅ Product card 2 - Starts Here 👇 */}
+
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
-              src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/97f047abbbe143f99d97ae2e00b33338_9366/Grand_Court_Lifestyle_Court_Elastic_Lace_and_Top_Strap_Shoes_White_GY2327_01_standard.jpg"
+              src="https://a.allegroimg.com/original/113bb6/1070f20f47a7955b8aa983802ccb/ADIDAS-RUNFALCON-FZ1327-BUTY-DAMSKIE-DO-BIEGANIA-Kolor-rozowy"
               alt="Product"
               className="h-80 w-72 object-cover rounded-t-xl"
             />
@@ -72,102 +70,11 @@ const WomenList = () => {
             </div>
           </a>
         </div>
-        {/*   🛑 Product card 2- Ends Here  */}
-        {/*   ✅ Product card 3 - Starts Here 👇 */}
+
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
-              src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/c4429297761549cb8ebaaf3401496ba5_9366/Nizza_Platform_Shoes_White_HQ1902_01_standard.jpg"
-              alt="Product"
-              className="h-80 w-72 object-cover rounded-t-xl"
-            />
-            <div className="px-4 py-3 w-72">
-              <span className="text-gray-400 mr-3 uppercase text-xs">
-                Brand
-              </span>
-              <p className="text-lg font-bold text-black truncate block capitalize">
-                Product Name
-              </p>
-              <div className="flex items-center">
-                <p className="text-lg font-semibold text-black cursor-auto my-3">
-                  $149
-                </p>
-                <del>
-                  <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
-                </del>
-                <div className="ml-auto font-bold text-2xl">
-                  <BsBagPlus />
-                </div>
-              </div>
-            </div>
-          </a>
-        </div>
-        {/*   🛑 Product card 3 - Ends Here  */}
-        {/*   ✅ Product card 4 - Starts Here 👇 */}
-        <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
-            <img
-              src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/c8aba848adba4eeebf89ae2e00ba47dd_9366/Grand_Court_Court_Elastic_Lace_and_Top_Strap_Shoes_White_GW6521_01_standard.jpg"
-              alt="Product"
-              className="h-80 w-72 object-cover rounded-t-xl"
-            />
-            <div className="px-4 py-3 w-72">
-              <span className="text-gray-400 mr-3 uppercase text-xs">
-                Brand
-              </span>
-              <p className="text-lg font-bold text-black truncate block capitalize">
-                Product Name
-              </p>
-              <div className="flex items-center">
-                <p className="text-lg font-semibold text-black cursor-auto my-3">
-                  $149
-                </p>
-                <del>
-                  <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
-                </del>
-                <div className="ml-auto font-bold text-2xl">
-                  <BsBagPlus />
-                </div>
-              </div>
-            </div>
-          </a>
-        </div>
-        {/*   🛑 Product card 4 - Ends Here  */}
-        {/*   ✅ Product card 5 - Starts Here 👇 */}
-        <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
-            <img
-              src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/b9024954fc7c4b7492664e133a9284cb_9366/Cloudfoam_Pure_Shoes_White_IG7376_01_standard.jpg"
-              alt="Product"
-              className="h-80 w-72 object-cover rounded-t-xl"
-            />
-            <div className="px-4 py-3 w-72">
-              <span className="text-gray-400 mr-3 uppercase text-xs">
-                Brand
-              </span>
-              <p className="text-lg font-bold text-black truncate block capitalize">
-                Product Name
-              </p>
-              <div className="flex items-center">
-                <p className="text-lg font-semibold text-black cursor-auto my-3">
-                  $149
-                </p>
-                <del>
-                  <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
-                </del>
-                <div className="ml-auto font-bold text-2xl">
-                  <BsBagPlus />
-                </div>
-              </div>
-            </div>
-          </a>
-        </div>
-        {/*   🛑 Product card 5 - Ends Here  */}
-        {/*   ✅ Product card 6 - Starts Here 👇 */}
-        <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
-            <img
-              src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/38f51c82cca64840b90d6a074ed58d16_9366/Court_Platform_Shoes_White_IE9987_01_standard.jpg"
+              src="https://cdn.shopify.com/s/files/1/0456/5070/6581/products/GV9090-1_540x.jpg?v=1686668715"
               alt="Product"
               className="h-80 w-72 object-cover rounded-t-xl"
             />
@@ -195,7 +102,91 @@ const WomenList = () => {
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
-              src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/5bd92667564d40328e9e9511bac0bc48_9366/Campus_00s_Shoes_Purple_ID7038_01_standard.jpg"
+              src="https://vn-live-01.slatic.net/p/725504a253161981d49d1b05cbfdeb9a.jpg"
+              alt="Product"
+              className="h-80 w-72 object-cover rounded-t-xl"
+            />
+            <div className="px-4 py-3 w-72">
+              <span className="text-gray-400 mr-3 uppercase text-xs">
+                Brand
+              </span>
+              <p className="text-lg font-bold text-black truncate block capitalize">
+                Product Name
+              </p>
+              <div className="flex items-center">
+                <p className="text-lg font-semibold text-black cursor-auto my-3">
+                  $149
+                </p>
+                <del>
+                  <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
+                </del>
+                <div className="ml-auto font-bold text-2xl">
+                  <BsBagPlus />
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+          <a href="#">
+            <img
+              src="https://bloggiay.com/wp-content/uploads/2017/04/adidas-ultra-boost-mid-atr-red-release-date-s82035.jpg"
+              alt="Product"
+              className="h-80 w-72 object-cover rounded-t-xl"
+            />
+            <div className="px-4 py-3 w-72">
+              <span className="text-gray-400 mr-3 uppercase text-xs">
+                Brand
+              </span>
+              <p className="text-lg font-bold text-black truncate block capitalize">
+                Product Name
+              </p>
+              <div className="flex items-center">
+                <p className="text-lg font-semibold text-black cursor-auto my-3">
+                  $149
+                </p>
+                <del>
+                  <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
+                </del>
+                <div className="ml-auto font-bold text-2xl">
+                  <BsBagPlus />
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+          <a href="#">
+            <img
+              src="https://www.gusport.com.vn/image/catalog/san-pham/GIAY/GIAY%20ADIDAS/GIAY%20ADIDAS%20NU/Giay%20Tennis%20Nu%20Adidas%20Court%20Control%20FX3444/Giay-tennis-nu-adidas-Court-Control-FX3444_.jpg"
+              alt="Product"
+              className="h-80 w-72 object-cover rounded-t-xl"
+            />
+            <div className="px-4 py-3 w-72">
+              <span className="text-gray-400 mr-3 uppercase text-xs">
+                Brand
+              </span>
+              <p className="text-lg font-bold text-black truncate block capitalize">
+                Product Name
+              </p>
+              <div className="flex items-center">
+                <p className="text-lg font-semibold text-black cursor-auto my-3">
+                  $149
+                </p>
+                <del>
+                  <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
+                </del>
+                <div className="ml-auto font-bold text-2xl">
+                  <BsBagPlus />
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+          <a href="#">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/1024x1024/100/347/092/products/adidas-ultraboost-4-dna-gw8567-01.jpg?v=1670909383297 "
               alt="Product"
               className="h-80 w-72 object-cover rounded-t-xl"
             />

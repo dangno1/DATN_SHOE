@@ -52,18 +52,18 @@ const AdminLayout = () => {
           <Menu.Item key="3" icon={<AiOutlineShopping />}>
             <Link to="/admin/product">Products</Link>
           </Menu.Item>
-          <Menu.Item key="4" icon={<AiOutlineBarChart />}>
+          {/* <Menu.Item key="4" icon={<AiOutlineBarChart />}>
             <Link to="/admin/analytics">Analytics</Link>
-          </Menu.Item>
-          <Menu.Item key="5" icon={<AiOutlineSetting />}>
+          </Menu.Item> */}
+          {/* <Menu.Item key="5" icon={<AiOutlineSetting />}>
             <Link to="/admin/settings">Settings</Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="6" icon={<AiOutlineShopping />}>
             <Link to="/admin/orders">Orders</Link>
           </Menu.Item>
-          <Menu.Item key="7" icon={<AiOutlineUser />}>
+          {/* <Menu.Item key="7" icon={<AiOutlineUser />}>
             <Link to="/admin/teams">Teams</Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="8" icon={<AiOutlineShoppingCart />}>
             <Link to="/admin/carts">Cart</Link>
           </Menu.Item>

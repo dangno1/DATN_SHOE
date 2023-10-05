@@ -7,15 +7,10 @@ const Header = () => {
   const [mdOptionsToggle, setMdOptionsToggle] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
 
-  // const toggleDropdown = () => {
-  //   setMdOptionsToggle(!mdOptionsToggle);
-  // };
-
   return (
     <div className="dark:bg-gray-900">
       <div>
         <div className="relative">
-          {/* For ipad screen size */}
           <div
             id="md-searchbar"
             className={`${
@@ -92,13 +87,11 @@ const Header = () => {
                   </svg>
                 </Link>
               </button>
-              <button  className="text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-xl">
+              <button className="text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-xl">
                 <AiOutlineUser />
               </button>
             </div>
           </div>
-          {/* For ipad screen size */}
-          {/* For laptop screens */}
           <div className="dark:bg-gray-900 bg-gray-50 ">
             <div className="container mx-auto flex items-center justify-between">
               <h1
@@ -116,14 +109,11 @@ const Header = () => {
                 </Link>
               </h1>
               <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8">
-                {/* New */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
                     <span className="mr-1 hover:underline">New & Featured</span>
                   </button>
                 </li>
-                {/* Men */}
-
                 <li className="dropdown inline-block relative">
                   <Link
                     to="/menPage"
@@ -132,8 +122,6 @@ const Header = () => {
                     <span className="mr-1 hover:underline">Men</span>
                   </Link>
                 </li>
-
-                {/* women */}
                 <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
                     <Link to="/women">
@@ -141,8 +129,6 @@ const Header = () => {
                     </Link>
                   </button>
                 </li>
-
-                {/* Kids */}
                 <li className="dropdown inline-block relative">
                   <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
                     <Link to="/kids">
@@ -150,16 +136,11 @@ const Header = () => {
                     </Link>
                   </button>
                 </li>
-
-                {/* sale */}
-
                 <li className="dropdown inline-block relative">
                   <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
                     <span className="mr-1 hover:underline">Sale</span>
                   </button>
                 </li>
-
-                {/* support */}
                 <li className="dropdown inline-block relative ">
                   <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
                     <span className="mr-1 hover:underline">Support</span>
@@ -249,7 +230,9 @@ const Header = () => {
                     aria-label="go to cart"
                     className="text-gray-800 dark:hover:text-gray-300 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-2xl"
                   >
-                    <AiOutlineUser />
+                    <Link to="/user">
+                      <AiOutlineUser />
+                    </Link>
                   </button>
                 </div>
                 <div className="flex lg:hidden">
@@ -329,8 +312,6 @@ const Header = () => {
               </div>
             </div>
           </div>
-          {/* For laptop screens */}
-          {/* For small screen */}
           <div
             id="mobile-menu"
             className={`${
@@ -588,7 +569,6 @@ const Header = () => {
               </ul>
             </div>
           </div>
-          {/* For small screen */}
         </div>
       </div>
     </div>
