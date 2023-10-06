@@ -26,9 +26,9 @@ const List = () => {
   const columns: ColumnsType<IProduct> = [
     {
       title: "ID",
-      dataIndex: "_id",
-      key: "_id",
-      render: (_id: string) => <div>{_id}</div>,
+      dataIndex: "index",
+      key: "index",
+      render: (index: string) => <div>{index}</div>,
     },
     {
       title: "Name",
@@ -180,8 +180,9 @@ const List = () => {
   const tableProps = {
     rowSelection,
     columns,
-    dataSource: dataSource?.map((product: IProduct) => ({
+    dataSource: dataSource?.map((product: IProduct, index: number) => ({
       key: product._id,
+      index: index + 1,
       ...product,
     })),
   };

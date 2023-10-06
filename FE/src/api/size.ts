@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ISize } from "@/interface/size";
 
 const sizeApi = createApi({
-  reducerPath: "sizes",
+  reducerPath: "size",
   tagTypes: ["Size"],
   baseQuery: fetchBaseQuery({
     baseUrl: `http://localhost:8000/api`,
@@ -19,7 +19,7 @@ const sizeApi = createApi({
     removeSize: builder.mutation<void, number | string>({
       query: (id) => ({
         url: `/size/${id}`,
-        method: "delete",
+        method: "DELETE",
       }),
       invalidatesTags: ["Size"],
     }),
@@ -32,11 +32,16 @@ const sizeApi = createApi({
       invalidatesTags: ["Size"],
     }),
     updateSize: builder.mutation<ISize, ISize>({
-      query: ({ _id, value }) => ({
-        url: `/size/update/${_id}`,
-        method: "PATCH",
-        body: value,
-      }),
+      query: (data) => {
+        // const datasize = JSON.stringify(data);
+        // JSON.parse(datasize);
+
+        return {
+          url: `/size/update/${data._id}`,
+          method: "PATCH",
+          body: { ...data, _id: undefined },
+        };
+      },
       invalidatesTags: ["Size"],
     }),
   }),

@@ -19,14 +19,20 @@ const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Layout className="h-screen w-full max-w-[100vw]">
+    <Layout className="h-max min-h-[100vh] w-full max-w-[100vw]">
       <Sider
         className="max-w-[max-content] "
         trigger={null}
         collapsible
         collapsed={collapsed}>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
-          <Menu.Item key="1" icon={<AiOutlineDashboard />}></Menu.Item>
+        <Menu
+          theme="light"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          className="h-full">
+          <Menu.Item key="1" icon={<AiOutlineDashboard />}>
+            <Link to={"/admin"}>ADMIN</Link>
+          </Menu.Item>
           <Menu.Item key="2" icon={<AiOutlineUser />}>
             <Link to="/admin/users">Users</Link>
           </Menu.Item>

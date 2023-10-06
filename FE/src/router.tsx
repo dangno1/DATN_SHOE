@@ -10,10 +10,7 @@ import List from "./features/products/components/list";
 import AddProduct from "./features/products/pages/add";
 import UpdateProduct from "./features/products/components/update";
 import AddSize from "./features/size/pages/addSize";
-import SizeList from "./features/size/components/list";
-import DetailSize from "./features/size/components/detailSize";
 import UpdateSize from "./features/size/pages/updateSize";
-import AllSize from "./features/size/components/allSize";
 import Detail from "./components/pages/detail/Detail";
 import Kids from "./components/pages/kids/kids";
 import Women from "./components/pages/women/home";
@@ -27,6 +24,7 @@ import AddAdmin from "./components/pages/admin/user/addUser";
 import AdminUser from "./components/pages/admin/user";
 import OderHistory from "./components/pages/oderHistory/oderHistory";
 import UserPage from "./components/pages/userinformation/userPage";
+import ListSize from "./features/size/components/list";
 
 export const router = createBrowserRouter([
   {
@@ -78,20 +76,14 @@ export const router = createBrowserRouter([
       { path: "product/update/:id", element: <UpdateProduct /> },
       {
         path: "size",
-        element: <SizeList />,
-        children: [
-          { index: true, element: <AllSize /> },
-          { path: ":id", element: <DetailSize /> },
-        ],
+        element: <ListSize />,
       },
       {
         path: "size/add",
         element: <AddSize />,
       },
-      {
-        path: "size/update/:id",
-        element: <UpdateSize />,
-      },
+      { path: "size/update/:id", element: <UpdateSize /> },
+
       {
         path: "carts",
         element: <Carts />,
