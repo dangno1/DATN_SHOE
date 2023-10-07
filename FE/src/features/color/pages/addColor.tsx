@@ -1,10 +1,8 @@
 /* eslint-disable prefer-const */
-import { useNavigate, useParams } from "react-router-dom";
-import { useUpdateSizeMutation, useGetSizeQuery } from "@/api/size";
-import { ISize } from "@/interface/size";
+import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
-import sizeSchema from "@/schemas/size";
+import * as muiComponent from "../components/mui.component";
 import {
   Button,
   Card,
@@ -14,12 +12,12 @@ import {
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import { Alert, Stack } from "@mui/material";
+import { useAddColorMutation } from "@/api/color";
+import { IColor } from "@/interface/color";
+import colorSchema from "@/schemas/color";
 
-const UpdateSize = () => {
-  const { id } = useParams();
-  const { data } = useGetSizeQuery<{ data: ISize }>(String(id));
-
-  const [update, { isLoading, isSuccess }] = useUpdateSizeMutation();
+const AddColor = () => {
+  const [addColor, { isLoading, isSuccess }] = useAddColorMutation();
   useEffect(() => {
     isSuccess && setOpenAlert(isSuccess);
     let closeAlertTimeout: number;
@@ -35,12 +33,12 @@ const UpdateSize = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ISize>({
-    resolver: joiResolver(sizeSchema),
+  } = useForm<IColor>({
+    resolver: joiResolver(colorSchema),
   });
 
-  const onSubmit = (data: ISize) => {
-    update({ ...data, _id: id });
+  const onSubmit = (data: IColor) => {
+    addColor(data);
     reset();
   };
 
@@ -55,29 +53,24 @@ const UpdateSize = () => {
             variant="h5"
             color="blue-gray"
             className="text-[30px] font-[600]">
-            Cập nhật Size
+            Thêm mới Color
           </Typography>
         </div>
         {openAlert && (
           <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">Cập nhật Size thành công</Alert>
+            <Alert severity="success">Thêm mới Color thành công</Alert>
           </Stack>
         )}
       </CardHeader>
       <CardBody className="w-[400px] px-0">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2 capitalize"
-            htmlFor="value">
-            Product size
-          </label>
-          <input
-            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:outline-blue-400 focus:border-transparent "
-            type="number"
+          <muiComponent.TextField
             {...register("value")}
-            placeholder="40..."
-            defaultValue={data?.value}
-            autoFocus
+            type="text"
+            label="Color"
+            size="small"
+            className="w-full"
+            placeholder="Trắng..."
           />
           {errors.value && (
             <p className="text-pink-600 text-[13px] font-[600]">
@@ -89,10 +82,10 @@ const UpdateSize = () => {
               type="submit"
               disabled={isLoading}
               className="capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">
-              Cập nhật
+              Thêm mới
             </Button>
             <Button
-              onClick={() => navigate("/admin/size")}
+              onClick={() => navigate("/admin/color")}
               className="capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">
               Quay lại
             </Button>
@@ -102,4 +95,4 @@ const UpdateSize = () => {
     </Card>
   );
 };
-export default UpdateSize;
+export default AddColor;

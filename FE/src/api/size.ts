@@ -33,9 +33,6 @@ const sizeApi = createApi({
     }),
     updateSize: builder.mutation<ISize, ISize>({
       query: (data) => {
-        // const datasize = JSON.stringify(data);
-        // JSON.parse(datasize);
-
         return {
           url: `/size/update/${data._id}`,
           method: "PATCH",

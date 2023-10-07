@@ -11,6 +11,8 @@ import AddProduct from "./features/products/pages/add";
 import UpdateProduct from "./features/products/components/update";
 import AddSize from "./features/size/pages/addSize";
 import UpdateSize from "./features/size/pages/updateSize";
+import UpdateColor from "./features/color/pages/updateColor";
+import AddColor from "./features/color/pages/addColor";
 import Detail from "./components/pages/detail/Detail";
 import Kids from "./components/pages/kids/kids";
 import Women from "./components/pages/women/home";
@@ -25,6 +27,7 @@ import AdminUser from "./components/pages/admin/user";
 import OderHistory from "./components/pages/oderHistory/oderHistory";
 import UserPage from "./components/pages/userinformation/userPage";
 import ListSize from "./features/size/components/list";
+import ListColor from "./features/color/components/list";
 
 export const router = createBrowserRouter([
   {
@@ -83,6 +86,12 @@ export const router = createBrowserRouter([
         element: <AddSize />,
       },
       { path: "size/update/:id", element: <UpdateSize /> },
+      {
+        path: "color",
+        element: <ListColor />,
+      },
+      { path: "color/add", element: <AddColor /> },
+      { path: "color/update/:id", element: <UpdateColor /> },
 
       {
         path: "carts",

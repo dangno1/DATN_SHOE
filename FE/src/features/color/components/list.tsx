@@ -1,6 +1,4 @@
 /* eslint-disable prefer-const */
-import { useGetSizesQuery, useRemoveSizeMutation } from "@/api/size";
-import { ISize } from "@/interface/size";
 import { useNavigate } from "react-router-dom";
 import * as muiIcons from "./mui.icon";
 import * as muiComponent from "./mui.component";
@@ -17,10 +15,11 @@ import {
 import { Alert, Stack } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import * as aiIcon from "react-icons/ai";
+import { useGetColorsQuery, useRemoveColorMutation } from "@/api/color";
+import { IColor } from "@/interface/color";
 
-const ListSize = () => {
-  const [deleteSize, { isSuccess }] = useRemoveSizeMutation();
+const ListColor = () => {
+  const [deleteColor, { isSuccess }] = useRemoveColorMutation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,11 +33,11 @@ const ListSize = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
 
-  const { data: sizeDatas } = useGetSizesQuery();
+  const { data: colorDatas } = useGetColorsQuery();
   const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
-  const TABLE_ROWS = sizeDatas?.map(
-    ({ _id, value, createdAt, updatedAt }: ISize) =>
-      sizeDatas && {
+  const TABLE_ROWS = colorDatas?.map(
+    ({ _id, value, createdAt, updatedAt }: IColor) =>
+      colorDatas && {
         _id,
         value,
         createdAt,
@@ -56,7 +55,7 @@ const ListSize = () => {
   };
 
   const handleDeleteSize = (id: string) => {
-    deleteSize(id);
+    deleteColor(id);
   };
 
   return (
@@ -72,7 +71,7 @@ const ListSize = () => {
                 variant="h5"
                 color="blue-gray"
                 className="text-[30px] font-[600]">
-                Danh sách size
+                Danh sách color
               </Typography>
             </div>
             <div className="flex w-full shrink-0 gap-2 md:w-max ">
@@ -84,20 +83,20 @@ const ListSize = () => {
                 <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-65%] " />
               </div>
               <Button className="flex items-center gap-3 bg-black relative pl-[40px]">
-                <aiIcon.AiOutlineDownload className="absolute w-5 h-5 top-[50%] left-[10px] translate-y-[-50%] " />
+                <muiIcons.DownloadIcon className="absolute top-[50%] left-[10px] translate-y-[-50%] " />
                 Download
               </Button>
               <Button
                 onClick={() => navigate("add")}
                 className="flex items-center gap-3 bg-black relative pl-[40px]">
-                <aiIcon.AiOutlinePlus className="absolute w-5 h-5 top-[50%] left-[10px] translate-y-[-50%] " />
+                <muiIcons.AddIcon className="absolute top-[50%] left-[10px] translate-y-[-50%] " />
                 Thêm mới
               </Button>
             </div>
           </div>
           {openAlert && (
             <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">Xóa Size thành công</Alert>
+              <Alert severity="success">Xóa Color thành công</Alert>
             </Stack>
           )}
         </CardHeader>
@@ -120,7 +119,7 @@ const ListSize = () => {
               </tr>
             </thead>
             <tbody>
-              {TABLE_ROWS?.map((row: ISize, index: number) => {
+              {TABLE_ROWS?.map((row: IColor, index: number) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast
                   ? "p-4"
@@ -176,7 +175,7 @@ const ListSize = () => {
                           </muiComponent.DialogTitle>
                           <muiComponent.DialogContent>
                             <muiComponent.DialogContentText id="alert-dialog-description">
-                              Xác nhận xóa size.
+                              Xác nhận xóa color.
                             </muiComponent.DialogContentText>
                           </muiComponent.DialogContent>
                           <muiComponent.DialogActions>
@@ -245,4 +244,4 @@ const ListSize = () => {
   );
 };
 
-export default ListSize;
+export default ListColor;

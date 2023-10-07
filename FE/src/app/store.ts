@@ -18,6 +18,7 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 import productApi, { productReducer } from "../api/product";
 import categoryApi, { categoryReducer } from "../api/category";
 import sizeApi, { sizeReducer } from "../api/size";
+import colorApi, { colorReducer } from "@/api/color";
 
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   [productApi.reducerPath]: productReducer,
   [categoryApi.reducerPath]: categoryReducer,
   [sizeApi.reducerPath]: sizeReducer,
+  [colorApi.reducerPath]: colorReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -42,7 +44,8 @@ export const store = configureStore({
     }).concat(
       productApi.middleware,
       categoryApi.middleware,
-      sizeApi.middleware
+      sizeApi.middleware,
+      colorApi.middleware
     ),
 });
 export type AppDispatch = typeof store.dispatch;

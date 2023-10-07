@@ -9,8 +9,10 @@ import {
   AiOutlineBarChart,
   AiOutlineSetting,
   AiOutlineShoppingCart,
+  AiOutlineFontSize,
+  AiOutlineBgColors,
+
 } from "react-icons/ai";
-import { MdFormatSize } from "react-icons/md";
 import { Link, Outlet } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
@@ -39,23 +41,25 @@ const LayoutAdmin = () => {
           <Menu.Item key="3" icon={<AiOutlineShopping />}>
             <Link to="/admin/product">Products</Link>
           </Menu.Item>
-          <Menu.Item key="4" icon={<MdFormatSize />}>
+          <Menu.Item key="4" icon={<AiOutlineFontSize />}>
             <Link to="/admin/size">Size</Link>
           </Menu.Item>
-          <Menu.Item key="5" icon={<AiOutlineBarChart />}>
+          <Menu.Item key="5" icon={<AiOutlineBgColors />}>
+            <Link to="/admin/color">Color</Link>
+          </Menu.Item>
+          <Menu.Item key="6" icon={<AiOutlineBarChart />}>
             <Link to="/admin/analytics">Analytics</Link>
           </Menu.Item>
-          <Menu.Item key="6" icon={<AiOutlineSetting />}>
+          <Menu.Item key="7" icon={<AiOutlineSetting />}>
             <Link to="/admin/settings">Settings</Link>
           </Menu.Item>
-          <Menu.Item key="7" icon={<AiOutlineShopping />}>
+          <Menu.Item key="8" icon={<AiOutlineShopping />}>
             <Link to="/admin/orders">Orders</Link>
           </Menu.Item>
-          <Menu.Item key="8" icon={<AiOutlineUser />}>
+          <Menu.Item key="9" icon={<AiOutlineUser />}>
             <Link to="/admin/teams">Teams</Link>
           </Menu.Item>
-          <Menu.Item key="9" icon={<AiOutlineShoppingCart />}>
-
+          <Menu.Item key="10" icon={<AiOutlineShoppingCart />}>
             <Link to="/admin/carts">Cart</Link>
           </Menu.Item>
         </Menu>

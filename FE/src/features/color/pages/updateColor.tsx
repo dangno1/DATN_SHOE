@@ -1,10 +1,7 @@
 /* eslint-disable prefer-const */
 import { useNavigate, useParams } from "react-router-dom";
-import { useUpdateSizeMutation, useGetSizeQuery } from "@/api/size";
-import { ISize } from "@/interface/size";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
-import sizeSchema from "@/schemas/size";
 import {
   Button,
   Card,
@@ -14,12 +11,14 @@ import {
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import { Alert, Stack } from "@mui/material";
+import { useGetColorQuery, useUpdateColorMutation } from "@/api/color";
+import { IColor } from "@/interface/color";
+import colorSchema from "@/schemas/color";
 
-const UpdateSize = () => {
+const AddSize = () => {
   const { id } = useParams();
-  const { data } = useGetSizeQuery<{ data: ISize }>(String(id));
-
-  const [update, { isLoading, isSuccess }] = useUpdateSizeMutation();
+  const { data } = useGetColorQuery<{ data: IColor }>(String(id));
+  const [update, { isLoading, isSuccess }] = useUpdateColorMutation();
   useEffect(() => {
     isSuccess && setOpenAlert(isSuccess);
     let closeAlertTimeout: number;
@@ -35,12 +34,13 @@ const UpdateSize = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ISize>({
-    resolver: joiResolver(sizeSchema),
+  } = useForm<IColor>({
+    resolver: joiResolver(colorSchema),
   });
 
-  const onSubmit = (data: ISize) => {
-    update({ ...data, _id: id });
+  const onSubmit = (data: IColor) => {
+    const trimValue = data.value.trim()
+    update({ ...data, value: trimValue, _id: id })
     reset();
   };
 
@@ -55,30 +55,32 @@ const UpdateSize = () => {
             variant="h5"
             color="blue-gray"
             className="text-[30px] font-[600]">
-            Cập nhật Size
+            Cập nhật Color
           </Typography>
         </div>
         {openAlert && (
           <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="success">Cập nhật Size thành công</Alert>
+            <Alert severity="success">Cập nhật Color thành công</Alert>
           </Stack>
         )}
       </CardHeader>
       <CardBody className="w-[400px] px-0">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2 capitalize"
-            htmlFor="value">
-            Product size
-          </label>
-          <input
-            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:outline-blue-400 focus:border-transparent "
-            type="number"
-            {...register("value")}
-            placeholder="40..."
-            defaultValue={data?.value}
-            autoFocus
-          />
+          <div className="w-full h-full relative">
+            <label
+              className=" text-gray-500 text-sm px-2 bg-white absolute top-[0] left-[10px] translate-y-[-70%] "
+              htmlFor="value">
+              color
+            </label>
+            <input
+              type="text"
+              {...register("value")}
+              placeholder="Trắng..."
+              defaultValue={data?.value}
+              autoFocus
+              className="focus:lable-[none] appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:outline-blue-400 focus:border-transparent "
+            />
+          </div>
           {errors.value && (
             <p className="text-pink-600 text-[13px] font-[600]">
               {errors.value.message}
@@ -92,7 +94,7 @@ const UpdateSize = () => {
               Cập nhật
             </Button>
             <Button
-              onClick={() => navigate("/admin/size")}
+              onClick={() => navigate("/admin/color")}
               className="capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">
               Quay lại
             </Button>
@@ -102,4 +104,4 @@ const UpdateSize = () => {
     </Card>
   );
 };
-export default UpdateSize;
+export default AddSize;
