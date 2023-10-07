@@ -16,7 +16,7 @@ const categoryApi = createApi({
       query: (id) => `/categoryes/${id}`,
       providesTags: ["Category"],
     }),
-    removeCategory: builder.mutation<void, number>({
+    removeCategory: builder.mutation<void, number | string>({
       query: (id) => ({
         url: `/categoryes/${id}`,
         method: "delete",
@@ -33,9 +33,9 @@ const categoryApi = createApi({
     }),
     updateCategory: builder.mutation<ICategory, ICategory>({
       query: (category) => ({
-        url: `/categoryes/${category._id}`,
+        url: `/categoryes/update/${category._id}`,
         method: "PATCH",
-        body: category,
+        body: { ...category, _id: undefined },
       }),
       invalidatesTags: ["Category"],
     }),

@@ -15,11 +15,11 @@ import {
 import { Alert, Stack } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import { useGetColorsQuery, useRemoveColorMutation } from "@/api/color";
-import { IColor } from "@/interface/color";
+import { useGetCategoryesQuery, useRemoveCategoryMutation } from "@/api/category";
+import { ICategory } from "@/interface/category";
 
-const ListColor = () => {
-  const [deleteColor, { isSuccess }] = useRemoveColorMutation();
+const ListCategory = () => {
+  const [deleteCategory, { isSuccess }] = useRemoveCategoryMutation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,13 +33,13 @@ const ListColor = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
 
-  const { data: colorDatas } = useGetColorsQuery();
+  const { data: categoryDatas } = useGetCategoryesQuery();
   const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
-  const TABLE_ROWS = colorDatas?.map(
-    ({ _id, value, createdAt, updatedAt }: IColor) =>
-      colorDatas && {
+  const TABLE_ROWS = categoryDatas?.map(
+    ({ _id, name, createdAt, updatedAt }: ICategory) =>
+      categoryDatas && {
         _id,
-        value,
+        name,
         createdAt,
         updatedAt,
       }
@@ -55,7 +55,7 @@ const ListColor = () => {
   };
 
   const handleDeleteSize = (id: string) => {
-    deleteColor(id);
+    deleteCategory(id);
   };
 
   return (
@@ -71,7 +71,7 @@ const ListColor = () => {
                 variant="h5"
                 color="blue-gray"
                 className="text-[30px] font-[600]">
-                Danh sách color
+                Danh sách Category
               </Typography>
             </div>
             <div className="flex w-full shrink-0 gap-2 md:w-max ">
@@ -96,7 +96,7 @@ const ListColor = () => {
           </div>
           {openAlert && (
             <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">Xóa Color thành công</Alert>
+              <Alert severity="success">Xóa Category thành công</Alert>
             </Stack>
           )}
         </CardHeader>
@@ -119,7 +119,7 @@ const ListColor = () => {
               </tr>
             </thead>
             <tbody>
-              {TABLE_ROWS?.map((row: IColor, index: number) => {
+              {TABLE_ROWS?.map((row: ICategory, index: number) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast
                   ? "p-4"
@@ -133,7 +133,7 @@ const ListColor = () => {
                     </td>
                     <td className={classes}>
                       <div className="flex items-center gap-3 min-w-[200px] ">
-                        <Typography>{row.value}</Typography>
+                        <Typography>{row.name}</Typography>
                       </div>
                     </td>
                     <td className={classes}>
@@ -150,7 +150,7 @@ const ListColor = () => {
                       <div className="grid grid-cols-2 justify-start">
                         <div className="grid grid-cols-2 gap-x-[20px] items-center cursor-pointer">
                           <muiComponent.Tooltip
-                            title="Delete color"
+                            title="Delete category"
                             placement="top">
                             <muiIcons.DeleteSweepOutlinedIcon
                               onClick={handleOpenDialog}
@@ -158,7 +158,7 @@ const ListColor = () => {
                             />
                           </muiComponent.Tooltip>
                           <muiComponent.Tooltip
-                            title="Edit color"
+                            title="Edit category"
                             placement="top">
                             <muiIcons.ModeEditIcon
                               onClick={() => navigate(`update/${row._id}`)}
@@ -175,7 +175,7 @@ const ListColor = () => {
                           </muiComponent.DialogTitle>
                           <muiComponent.DialogContent>
                             <muiComponent.DialogContentText id="alert-dialog-description">
-                              Xác nhận xóa color.
+                              Xác nhận xóa category.
                             </muiComponent.DialogContentText>
                           </muiComponent.DialogContent>
                           <muiComponent.DialogActions>
@@ -244,4 +244,4 @@ const ListColor = () => {
   );
 };
 
-export default ListColor;
+export default ListCategory;
