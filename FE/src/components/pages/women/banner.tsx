@@ -1,33 +1,27 @@
 function Slider() {
   return (
-    <div className="sliderAx h-auto ">
-      {/* Điều chỉnh tương ứng với code jQuery */}
-      <div
-        //  id="slider-1"
-        className={`container mx-auto transition duration-400`}
-      >
-        {/* Điều chỉnh tương ứng với code jQuery */}
-        <div
-          className="bg-cover bg-center w-full h-[400px] text-white py-24 px-10 object-fill"
-          style={{
-            backgroundImage:
-              "url(https://www.urbanathletics.com.ph/cdn/shop/collections/Banner-Women.jpg?v=1600747695)",
-          }}
+    <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden">
+      <div className="absolute inset-0">
+        <img
+          src="https://footwearnews.com/wp-content/uploads/2021/12/601071-e1638553712304.jpg"
+          alt="Background Image"
+          className="object-cover object-center w-full h-full"
+        />
+        <div className="absolute inset-0 bg-black opacity-50" />
+      </div>
+      <div className="relative z-10 flex flex-col justify-center items-center h-full text-center">
+        <h1 className="text-5xl font-bold leading-tight mb-4">
+          Welcome to Our Awesome Website
+        </h1>
+        <p className="text-lg text-gray-300 mb-8">
+          Discover amazing features and services that await you.
+        </p>
+        <a
+          href="#"
+          className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
         >
-          <div className="md:w-1/2 p-10">
-            <p className="text-3xl font-bold">Hello Adidas Women</p>
-            <p className="text-2xl mb-10 mt-4 leading-none">
-              New Styles on Sale: Up to 40% Off Shop All Our New Markdowns
-            </p>
-            <a
-              href="#"
-              className="bg-white py-4 px-8 text-black font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800"
-            >
-              Buy Now
-            </a>
-          </div>
-        </div>
-        <br />
+          Get Started
+        </a>
       </div>
     </div>
   );

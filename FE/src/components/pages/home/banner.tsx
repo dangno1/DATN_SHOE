@@ -1,13 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// import React, { useState, useEffect } from "react";
-// import { BsArrowRight } from "react-icons/bs";
-
 function Slider() {
- 
-
   return (
     <div>
-      {/* banner men */}
       <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden py-6">
         <div className="absolute inset-0">
           <img
@@ -22,7 +15,7 @@ function Slider() {
             Welcome to Our Awesome Website
           </h1>
           <p className="text-lg text-gray-300 mb-8">
-          Here we have great products.
+            Here we have great products.
           </p>
           <a
             href="#"
@@ -32,7 +25,6 @@ function Slider() {
           </a>
         </div>
       </div>
-      {/* banner men */}
     </div>
   );
 }
