@@ -28,6 +28,9 @@ import OderHistory from "./components/pages/oderHistory/oderHistory";
 import UserPage from "./components/pages/userinformation/userPage";
 import ListSize from "./features/size/components/list";
 import ListColor from "./features/color/components/list";
+import ListCategory from "./features/category/components/list";
+import AddCategory from "./features/category/pages/addCategory";
+import UpdateCategory from "./features/category/pages/updateCategory";
 
 export const router = createBrowserRouter([
   {
@@ -77,6 +80,16 @@ export const router = createBrowserRouter([
       },
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
+      {
+        path: "size",
+        element: <ListSize />,
+      },
+      {
+        path: "categoryes",
+        element: <ListCategory />,
+      },
+      { path: "categoryes/add", element: <AddCategory /> },
+      { path: "categoryes/update/:id", element: <UpdateCategory /> },
       {
         path: "size",
         element: <ListSize />,
