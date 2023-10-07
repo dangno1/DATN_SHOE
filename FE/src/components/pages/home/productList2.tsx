@@ -1,19 +1,15 @@
-import { BsBagPlus } from 'react-icons/bs'
+import { BsBagPlus } from "react-icons/bs";
 
 const ProductList2 = () => {
   return (
     <>
- 
-    <div className="text-center p-10">
-      <h1 className="font-bold text-4xl mb-4"> Other products of the shop</h1>
-      {/* <h1 className="text-3xl">Tailwind CSS</h1> */}
-    </div>
-    {/* ✅ Grid Section - Starts Here 👇 */}
-    <section
+      <div className="text-center p-10">
+        <h1 className="font-bold text-4xl mb-4"> Other products of the shop</h1>
+      </div>
+      <section
         id="Projects"
         className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
       >
-        {/*   ✅ Product card 1 - Starts Here 👇 */}
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
@@ -42,8 +38,6 @@ const ProductList2 = () => {
             </div>
           </a>
         </div>
-        {/*   🛑 Product card 1 - Ends Here  */}
-        {/*   ✅ Product card 2 - Starts Here 👇 */}
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
@@ -72,8 +66,6 @@ const ProductList2 = () => {
             </div>
           </a>
         </div>
-        {/*   🛑 Product card 2- Ends Here  */}
-        {/*   ✅ Product card 3 - Starts Here 👇 */}
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
@@ -102,8 +94,6 @@ const ProductList2 = () => {
             </div>
           </a>
         </div>
-        {/*   🛑 Product card 3 - Ends Here  */}
-        {/*   ✅ Product card 4 - Starts Here 👇 */}
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
           <a href="#">
             <img
@@ -132,14 +122,9 @@ const ProductList2 = () => {
             </div>
           </a>
         </div>
-        {/*   🛑 Product card 4 - Ends Here  */}
-       
       </section>
-    {/* 🛑 Grid Section - Ends Here */}
-  
-  
-  </>
-  )
-}
+    </>
+  );
+};
 
-export default ProductList2
+export default ProductList2;

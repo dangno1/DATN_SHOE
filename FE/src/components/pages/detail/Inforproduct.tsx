@@ -10,7 +10,7 @@ const Inforproduct = () => {
   });
   const [activeImg, setActiveImage] = useState(images.img1);
   const [amount, setAmount] = useState(1);
-  const [selectedSize, setSelectedSize] = useState(""); // Bước 1: Trạng thái kích cỡ giày
+  const [selectedSize, setSelectedSize] = useState("");
   const availableSizes = [
     "VN 40",
     "VN 41",
@@ -56,7 +56,6 @@ const Inforproduct = () => {
             />
           </div>
         </div>
-        {/* THÔNG TIN */}
         <div className="flex flex-col gap-4 lg:w-2/4">
           <div>
             <span className=" text-violet-600 font-semibold">
