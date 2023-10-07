@@ -16,7 +16,7 @@ const colorApi = createApi({
       query: (id) => `/color/${id}`,
       providesTags: ["Color"],
     }),
-    removeColor: builder.mutation<void, number>({
+    removeColor: builder.mutation<void, number | string>({
       query: (id) => ({
         url: `/color/${id}`,
         method: "delete",
@@ -33,9 +33,9 @@ const colorApi = createApi({
     }),
     updateColor: builder.mutation<IColor, IColor>({
       query: (color) => ({
-        url: `/color/${color._id}`,
+        url: `/color/update/${color._id}`,
         method: "PATCH",
-        body: color,
+        body: { ...color, _id: undefined },
       }),
       invalidatesTags: ["Color"],
     }),

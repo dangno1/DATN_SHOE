@@ -1,14 +1,17 @@
-import { Button, Divider, Layout, Menu, theme } from "antd";
+import { Button, Layout, Menu } from "antd";
 import { useState } from "react";
 import {
   AiOutlineMenuFold,
   AiOutlineMenuUnfold,
   AiOutlineUser,
-  AiOutlineVideoCamera,
-  AiFillAccountBook,
-  AiFillCalendar,
-  AiFillFund,
-  AiFillEdit,
+  AiOutlineDashboard,
+  AiOutlineShopping,
+  AiOutlineBarChart,
+  AiOutlineSetting,
+  AiOutlineShoppingCart,
+  AiOutlineFontSize,
+  AiOutlineBgColors,
+
 } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 
@@ -16,69 +19,61 @@ const { Header, Sider, Content } = Layout;
 
 const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
 
   return (
-    <Layout className="h-screen">
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical" />
+    <Layout className="h-max min-h-[100vh] w-full max-w-[100vw]">
+      <Sider
+        className="max-w-[max-content] "
+        trigger={null}
+        collapsible
+        collapsed={collapsed}>
         <Menu
-          className="sticky top-0"
-          theme="dark"
+          theme="light"
           mode="inline"
           defaultSelectedKeys={["1"]}
-          items={[
-            {
-              key: "1",
-              icon: <AiOutlineUser />,
-              label: <Link to="/admin/dashboard">Admin</Link>,
-            },
-            {
-              key: "2",
-              icon: <AiFillAccountBook />,
-              label: <Link to="/admin/product">Sản phẩm</Link>,
-            },
-            {
-              key: "3",
-              icon: <AiOutlineUser />,
-              label: <Link to="/admin/user">Quản lý khách hàng</Link>,
-            },
-
-            {
-              key: "5",
-              icon: <AiFillFund />,
-              label: <Link to="/admin/statistical">Thống Kê</Link>,
-            },
-            {
-              key: "6",
-              icon: <AiFillEdit />,
-              label: <Link to="/admin/oder">Quản lý đơn hàng</Link>,
-            },
-          ]}
-        />
+          className="h-full">
+          <Menu.Item key="1" icon={<AiOutlineDashboard />}>
+            <Link to={"/admin"}>ADMIN</Link>
+          </Menu.Item>
+          <Menu.Item key="2" icon={<AiOutlineUser />}>
+            <Link to="/admin/users">Users</Link>
+          </Menu.Item>
+          <Menu.Item key="3" icon={<AiOutlineShopping />}>
+            <Link to="/admin/product">Products</Link>
+          </Menu.Item>
+          <Menu.Item key="4" icon={<AiOutlineFontSize />}>
+            <Link to="/admin/size">Size</Link>
+          </Menu.Item>
+          <Menu.Item key="5" icon={<AiOutlineBgColors />}>
+            <Link to="/admin/color">Color</Link>
+          </Menu.Item>
+          <Menu.Item key="6" icon={<AiOutlineBarChart />}>
+            <Link to="/admin/analytics">Analytics</Link>
+          </Menu.Item>
+          <Menu.Item key="7" icon={<AiOutlineSetting />}>
+            <Link to="/admin/settings">Settings</Link>
+          </Menu.Item>
+          <Menu.Item key="8" icon={<AiOutlineShopping />}>
+            <Link to="/admin/orders">Orders</Link>
+          </Menu.Item>
+          <Menu.Item key="9" icon={<AiOutlineUser />}>
+            <Link to="/admin/teams">Teams</Link>
+          </Menu.Item>
+          <Menu.Item key="10" icon={<AiOutlineShoppingCart />}>
+            <Link to="/admin/carts">Cart</Link>
+          </Menu.Item>
+        </Menu>
       </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+      <Layout className="w-full">
+        <Header className="bg-white">
           <Button
             type="text"
             icon={collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
             onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
+            className="font-[16px] w-[64px] h-[64px] "
           />
         </Header>
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-          }}>
+        <Content className="w-full">
           <Outlet />
         </Content>
       </Layout>

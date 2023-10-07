@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useForm, useFieldArray } from "react-hook-form";
 import { IProduct } from "@/interface/product";
@@ -23,7 +24,6 @@ const AddProduct = () => {
           price: null,
           quantity: null,
           status: 1,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       ],
     },
@@ -108,11 +108,13 @@ const AddProduct = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="file"
             multiple
-            {...register("images")}
+            {...register("thumbnail")}
             placeholder="Hình ảnh phụ"
           />
-          {errors.images && (
-            <p className="text-red-500 text-[13px]">{errors.images.message}</p>
+          {errors.thumbnail && (
+            <p className="text-red-500 text-[13px]">
+              {errors.thumbnail.message}
+            </p>
           )}
         </div>
         <div className="mb-4">

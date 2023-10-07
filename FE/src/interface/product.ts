@@ -1,8 +1,8 @@
 export interface IProduct {
   _id?: string | number;
   name: string;
-  image: FileList;
-  images: FileList[];
+  image: string;
+  thumbnail: string;
   desc: string;
   brand: string;
   categoryId: string;

@@ -1,39 +1,38 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { BsArrowRight } from "react-icons/bs";
+// import React, { useState, useEffect } from "react";
+// import { BsArrowRight } from "react-icons/bs";
 
 function Slider() {
  
 
   return (
-    <div className="sliderAx h-auto ">
-      {/* Điều chỉnh tương ứng với code jQuery */}
-      <div 
-      //  id="slider-1" 
-      className={`container mx-auto transition duration-400`} >
-        {/* Điều chỉnh tương ứng với code jQuery */}
-        <div  className="bg-cover bg-center w-full h-[400px] text-white py-24 px-10 object-fill" style={{ backgroundImage:
-              "url(https://brand.assets.adidas.com/image/upload/f_auto,q_auto,fl_lossy/if_w_gt_1920,w_1920/viVN/Images/tennis-SS23-cybersonic-launch-PLP-masthead-small-dual-d_tcm337-974155.jpg)",
-              
-          }}>
-          <div className="md:w-1/2 p-10">
-            <p className="text-3xl font-bold">Hello Nike App</p>
-            <p className="text-2xl mb-10 mt-4 leading-none">
-              New Styles on Sale: Up to 40% Off Shop All Our New
-              Markdowns
-            </p>
-            <a
-              href="#"
-              className="bg-white py-4 px-8 text-black font-bold uppercase text-xs rounded hover:bg-gray-200 hover:text-gray-800"
-            >
-              Mua ngay
-            </a>
-          </div>
+    <div>
+      {/* banner men */}
+      <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden py-6">
+        <div className="absolute inset-0">
+          <img
+            src="https://the-post-assets.sgp1.digitaloceanspaces.com/2021/01/Ultraboost-1896x800.jpg"
+            alt="Background Image"
+            className="object-cover object-center w-full h-full"
+          />
+          <div className="absolute inset-0 bg-black opacity-50" />
         </div>
-        <br />
+        <div className="relative z-10 flex flex-col justify-center items-center h-full text-center">
+          <h1 className="text-5xl font-bold leading-tight mb-4">
+            Welcome to Our Awesome Website
+          </h1>
+          <p className="text-lg text-gray-300 mb-8">
+          Here we have great products.
+          </p>
+          <a
+            href="#"
+            className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+          >
+            Get Started
+          </a>
+        </div>
       </div>
-
-     
+      {/* banner men */}
     </div>
   );
 }
