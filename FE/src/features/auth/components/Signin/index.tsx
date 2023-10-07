@@ -65,15 +65,13 @@ const Signin = () => {
                     I agree to abide by Cartesian Kinetics
                     <a
                       href="#"
-                      className="border-b border-gray-500 border-dotted"
-                    >
+                      className="border-b border-gray-500 border-dotted">
                       Terms of Service
                     </a>
                     and its
                     <a
                       href="#"
-                      className="border-b border-gray-500 border-dotted"
-                    >
+                      className="border-b border-gray-500 border-dotted">
                       Privacy Policy
                     </a>
                   </p>
@@ -87,8 +85,7 @@ const Signin = () => {
               style={{
                 backgroundImage:
                   'url("https://cdn-icons-png.flaticon.com/256/731/731962.png")',
-              }}
-            ></div>
+              }}></div>
           </div>
         </div>
       </div>

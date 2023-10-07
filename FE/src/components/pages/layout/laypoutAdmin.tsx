@@ -1,50 +1,37 @@
+import { Button, Layout, Menu } from "antd";
 import { useState } from "react";
-import {Layout, Menu } from "antd";
 import {
-  AiOutlineDashboard,
+  AiOutlineMenuFold,
+  AiOutlineMenuUnfold,
   AiOutlineUser,
+  AiOutlineDashboard,
   AiOutlineShopping,
   AiOutlineBarChart,
   AiOutlineSetting,
-  AiOutlineShoppingCart
+  AiOutlineShoppingCart,
 } from "react-icons/ai";
+import { MdFormatSize } from "react-icons/md";
 import { Link, Outlet } from "react-router-dom";
 
-const { Sider } = Layout;
+const { Header, Sider, Content } = Layout;
 
-const AdminLayout = () => {
+const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-  };
-
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout className="h-max min-h-[100vh] w-full max-w-[100vw]">
       <Sider
+        className="max-w-[max-content] "
+        trigger={null}
         collapsible
-        collapsed={collapsed}
-        onCollapse={toggleSidebar}
-        width={250}
-        theme="dark"
-        className="new-sidebar"
-      >
-        <div className="logo">
-          {collapsed ? (
-            <span className="logo-text">L</span>
-          ) : (
-            <span className="logo-text">Admin</span>
-          )}
-        </div>
+        collapsed={collapsed}>
         <Menu
-          theme="dark"
+          theme="light"
+          mode="inline"
           defaultSelectedKeys={["1"]}
-          mode="vertical"
-          className="new-menu"
-          style={{ backgroundColor: "#2d4059" }}
-        >
+          className="h-full">
           <Menu.Item key="1" icon={<AiOutlineDashboard />}>
-            <Link to="/admin/dashboard">Dashboard</Link>
+            <Link to={"/admin"}>ADMIN</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<AiOutlineUser />}>
             <Link to="/admin/users">Users</Link>
@@ -52,28 +39,42 @@ const AdminLayout = () => {
           <Menu.Item key="3" icon={<AiOutlineShopping />}>
             <Link to="/admin/product">Products</Link>
           </Menu.Item>
-          {/* <Menu.Item key="4" icon={<AiOutlineBarChart />}>
+          <Menu.Item key="4" icon={<MdFormatSize />}>
+            <Link to="/admin/size">Size</Link>
+          </Menu.Item>
+          <Menu.Item key="5" icon={<AiOutlineBarChart />}>
             <Link to="/admin/analytics">Analytics</Link>
-          </Menu.Item> */}
-          {/* <Menu.Item key="5" icon={<AiOutlineSetting />}>
+          </Menu.Item>
+          <Menu.Item key="6" icon={<AiOutlineSetting />}>
             <Link to="/admin/settings">Settings</Link>
-          </Menu.Item> */}
-          <Menu.Item key="6" icon={<AiOutlineShopping />}>
+          </Menu.Item>
+          <Menu.Item key="7" icon={<AiOutlineShopping />}>
             <Link to="/admin/orders">Orders</Link>
           </Menu.Item>
-          {/* <Menu.Item key="7" icon={<AiOutlineUser />}>
+          <Menu.Item key="8" icon={<AiOutlineUser />}>
             <Link to="/admin/teams">Teams</Link>
-          </Menu.Item> */}
-          <Menu.Item key="8" icon={<AiOutlineShoppingCart />}>
+          </Menu.Item>
+          <Menu.Item key="9" icon={<AiOutlineShoppingCart />}>
+
             <Link to="/admin/carts">Cart</Link>
           </Menu.Item>
         </Menu>
       </Sider>
-      <Layout className="new-site-layout">
-        <Outlet />
+      <Layout className="w-full">
+        <Header className="bg-white">
+          <Button
+            type="text"
+            icon={collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
+            onClick={() => setCollapsed(!collapsed)}
+            className="font-[16px] w-[64px] h-[64px] "
+          />
+        </Header>
+        <Content className="w-full">
+          <Outlet />
+        </Content>
       </Layout>
     </Layout>
   );
 };
 
-export default AdminLayout;
+export default LayoutAdmin;
