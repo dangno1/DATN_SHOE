@@ -7,7 +7,7 @@ const productApi = createApi({
         baseUrl: `http://localhost:8000`
     }),
     endpoints: () => ({
-
+        
     })
 })
 
