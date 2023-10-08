@@ -31,6 +31,9 @@ import ListColor from "./features/color/components/list";
 import ListCategory from "./features/category/components/list";
 import AddCategory from "./features/category/pages/addCategory";
 import UpdateCategory from "./features/category/pages/updateCategory";
+import AddCoupons from "./features/coupons/pages/addCoupons";
+import UpdateCoupons from "./features/coupons/pages/updateCoupons";
+import ListCoupons from "./features/coupons/components/list";
 
 export const router = createBrowserRouter([
   {
@@ -81,10 +84,6 @@ export const router = createBrowserRouter([
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
       {
-        path: "size",
-        element: <ListSize />,
-      },
-      {
         path: "categoryes",
         element: <ListCategory />,
       },
@@ -105,6 +104,12 @@ export const router = createBrowserRouter([
       },
       { path: "color/add", element: <AddColor /> },
       { path: "color/update/:id", element: <UpdateColor /> },
+      {
+        path: "coupons",
+        element: <ListCoupons />,
+      },
+      { path: "coupons/add", element: <AddCoupons /> },
+      { path: "coupons/update/:id", element: <UpdateCoupons /> },
 
       {
         path: "carts",

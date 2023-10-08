@@ -15,7 +15,7 @@ import { useGetColorQuery, useUpdateColorMutation } from "@/api/color";
 import { IColor } from "@/interface/color";
 import colorSchema from "@/schemas/color";
 
-const AddSize = () => {
+const AddColor = () => {
   const { id } = useParams();
   const { data } = useGetColorQuery<{ data: IColor }>(String(id));
   const [update, { isLoading, isSuccess }] = useUpdateColorMutation();
@@ -64,7 +64,7 @@ const AddSize = () => {
           </Stack>
         )}
       </CardHeader>
-      <CardBody className="w-[400px] px-0">
+      {data && (<CardBody className="w-[400px] px-0">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="w-full h-full relative">
             <label
@@ -100,8 +100,8 @@ const AddSize = () => {
             </Button>
           </div>
         </form>
-      </CardBody>
+      </CardBody>)}
     </Card>
   );
 };
-export default AddSize;
+export default AddColor;

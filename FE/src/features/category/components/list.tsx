@@ -31,7 +31,8 @@ const ListCategory = () => {
     return () => clearTimeout(closeAlertTimeout);
   }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialog, setOpenDialog] = useState<string>("close");
+  const [idCategory, setIdCategory] = useState<string>("")
 
   const { data: categoryDatas } = useGetCategoryesQuery();
   const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
@@ -45,21 +46,42 @@ const ListCategory = () => {
       }
   );
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    return true;
-  };
-
-  const handleDeleteSize = (id: string) => {
-    deleteCategory(id);
-  };
+  useEffect(() => {
+    const handleDeleteColor = (id: string) => {
+      openDialog === "delete" && deleteCategory(id)
+    };
+    handleDeleteColor(idCategory)
+  }, [deleteCategory, idCategory, openDialog])
 
   return (
     <>
+      {openDialog === "open" && <muiComponent.Dialog
+        open={true}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description">
+        <muiComponent.DialogTitle id="alert-dialog-title">
+          {"Thông báo quan trọng."}
+        </muiComponent.DialogTitle>
+        <muiComponent.DialogContent>
+          <muiComponent.DialogContentText id="alert-dialog-description">
+            Xác nhận xóa color.
+          </muiComponent.DialogContentText>
+        </muiComponent.DialogContent>
+        <muiComponent.DialogActions>
+          <Button
+            justify-start="true"
+            onClick={() => setOpenDialog("close")}
+            className="bg-green-600">
+            Thoát
+          </Button>
+          <Button
+            justify-start="true"
+            onClick={() => setOpenDialog("delete")}
+            className="bg-pink-600">
+            Xoá!
+          </Button>
+        </muiComponent.DialogActions>
+      </muiComponent.Dialog>}
       <Card className="h-full w-full shadow-lg px-[20px] ">
         <CardHeader
           floated={false}
@@ -153,7 +175,10 @@ const ListCategory = () => {
                             title="Delete category"
                             placement="top">
                             <muiIcons.DeleteSweepOutlinedIcon
-                              onClick={handleOpenDialog}
+                              onClick={() => {
+                                setIdCategory(String(row._id))
+                                setOpenDialog("open")
+                              }}
                               className="h-5 w-5 text-pink-600 "
                             />
                           </muiComponent.Tooltip>
@@ -166,36 +191,6 @@ const ListCategory = () => {
                             />
                           </muiComponent.Tooltip>
                         </div>
-                        <muiComponent.Dialog
-                          open={openDialog}
-                          aria-labelledby="alert-dialog-title"
-                          aria-describedby="alert-dialog-description">
-                          <muiComponent.DialogTitle id="alert-dialog-title">
-                            {"Thông báo quan trọng."}
-                          </muiComponent.DialogTitle>
-                          <muiComponent.DialogContent>
-                            <muiComponent.DialogContentText id="alert-dialog-description">
-                              Xác nhận xóa category.
-                            </muiComponent.DialogContentText>
-                          </muiComponent.DialogContent>
-                          <muiComponent.DialogActions>
-                            <Button
-                              justify-start="true"
-                              onClick={() => handleCloseDialog()}
-                              className="bg-green-600">
-                              Thoát
-                            </Button>
-                            <Button
-                              justify-start="true"
-                              onClick={() =>
-                                handleCloseDialog() &&
-                                handleDeleteSize(String(row._id))
-                              }
-                              className="bg-pink-600">
-                              Xoá!
-                            </Button>
-                          </muiComponent.DialogActions>
-                        </muiComponent.Dialog>
                       </div>
                     </td>
                   </tr>

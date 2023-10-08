@@ -20,7 +20,11 @@ import { IColor } from "@/interface/color";
 
 const ListColor = () => {
   const [deleteColor, { isSuccess }] = useRemoveColorMutation();
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+
+  const [openAlert, setOpenAlert] = useState(false);
+  const [openDialog, setOpenDialog] = useState<string>("close");
+  const [idColor, setIdColor] = useState<string>("")
 
   useEffect(() => {
     isSuccess && setOpenAlert(isSuccess);
@@ -30,9 +34,6 @@ const ListColor = () => {
     }, 3000);
     return () => clearTimeout(closeAlertTimeout);
   }, [isSuccess]);
-  const [openAlert, setOpenAlert] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-
   const { data: colorDatas } = useGetColorsQuery();
   const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
   const TABLE_ROWS = colorDatas?.map(
@@ -45,21 +46,45 @@ const ListColor = () => {
       }
   );
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
+  useEffect(() => {
+    const handleDeleteColor = (id: string) => {
+      openDialog === "delete" && deleteColor(id)
+    };
+    handleDeleteColor(idColor)
+  }, [deleteColor, idColor, openDialog])
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    return true;
-  };
 
-  const handleDeleteSize = (id: string) => {
-    deleteColor(id);
-  };
+
 
   return (
     <>
+      {openDialog === "open" && <muiComponent.Dialog
+        open={true}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description">
+        <muiComponent.DialogTitle id="alert-dialog-title">
+          {"Thông báo quan trọng."}
+        </muiComponent.DialogTitle>
+        <muiComponent.DialogContent>
+          <muiComponent.DialogContentText id="alert-dialog-description">
+            Xác nhận xóa color.
+          </muiComponent.DialogContentText>
+        </muiComponent.DialogContent>
+        <muiComponent.DialogActions>
+          <Button
+            justify-start="true"
+            onClick={() => setOpenDialog("close")}
+            className="bg-green-600">
+            Thoát
+          </Button>
+          <Button
+            justify-start="true"
+            onClick={() => setOpenDialog("delete")}
+            className="bg-pink-600">
+            Xoá!
+          </Button>
+        </muiComponent.DialogActions>
+      </muiComponent.Dialog>}
       <Card className="h-full w-full shadow-lg px-[20px] ">
         <CardHeader
           floated={false}
@@ -153,7 +178,10 @@ const ListColor = () => {
                             title="Delete color"
                             placement="top">
                             <muiIcons.DeleteSweepOutlinedIcon
-                              onClick={handleOpenDialog}
+                              onClick={() => {
+                                setIdColor(String(row._id))
+                                setOpenDialog("open")
+                              }}
                               className="h-5 w-5 text-pink-600 "
                             />
                           </muiComponent.Tooltip>
@@ -166,36 +194,6 @@ const ListColor = () => {
                             />
                           </muiComponent.Tooltip>
                         </div>
-                        <muiComponent.Dialog
-                          open={openDialog}
-                          aria-labelledby="alert-dialog-title"
-                          aria-describedby="alert-dialog-description">
-                          <muiComponent.DialogTitle id="alert-dialog-title">
-                            {"Thông báo quan trọng."}
-                          </muiComponent.DialogTitle>
-                          <muiComponent.DialogContent>
-                            <muiComponent.DialogContentText id="alert-dialog-description">
-                              Xác nhận xóa color.
-                            </muiComponent.DialogContentText>
-                          </muiComponent.DialogContent>
-                          <muiComponent.DialogActions>
-                            <Button
-                              justify-start="true"
-                              onClick={() => handleCloseDialog()}
-                              className="bg-green-600">
-                              Thoát
-                            </Button>
-                            <Button
-                              justify-start="true"
-                              onClick={() =>
-                                handleCloseDialog() &&
-                                handleDeleteSize(String(row._id))
-                              }
-                              className="bg-pink-600">
-                              Xoá!
-                            </Button>
-                          </muiComponent.DialogActions>
-                        </muiComponent.Dialog>
                       </div>
                     </td>
                   </tr>

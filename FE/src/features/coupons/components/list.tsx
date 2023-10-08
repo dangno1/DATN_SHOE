@@ -1,6 +1,4 @@
 /* eslint-disable prefer-const */
-import { useGetSizesQuery, useRemoveSizeMutation } from "@/api/size";
-import { ISize } from "@/interface/size";
 import { useNavigate } from "react-router-dom";
 import * as muiIcons from "./mui.icon";
 import * as muiComponent from "./mui.component";
@@ -18,9 +16,11 @@ import { Alert, Stack } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import * as aiIcon from "react-icons/ai";
+import { useGetAllCouponsQuery, useRemoveCouponsMutation } from "@/api/coupons";
+import { ICoupons } from "@/interface/coupons";
 
-const ListSize = () => {
-  const [deleteSize, { isSuccess }] = useRemoveSizeMutation();
+const ListCoupons = () => {
+  const [deleteCoupons, { isSuccess }] = useRemoveCouponsMutation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,27 +33,28 @@ const ListSize = () => {
   }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const [openDialog, setOpenDialog] = useState<string>("close");
-  const [idSize, setIdSize] = useState<string>("")
+  const [idCoupons, setIdCoupons] = useState<string>("")
 
 
-  const { data: sizeDatas } = useGetSizesQuery();
-  const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
-  const TABLE_ROWS = sizeDatas?.map(
-    ({ _id, value, createdAt, updatedAt }: ISize) =>
-      sizeDatas && {
+  const { data: couponsDatas } = useGetAllCouponsQuery();
+  const TABLE_HEAD = ["Stt", "Value", "Quantity", "CreatedAt", "UpdatedAt", "Action"];
+  const TABLE_ROWS = couponsDatas?.map(
+    ({ _id, value, quantity, createdAt, updatedAt }: ICoupons) =>
+      couponsDatas && {
         _id,
         value,
+        quantity,
         createdAt,
         updatedAt,
       }
   );
 
   useEffect(() => {
-    const handleDeleteSize = (id: string) => {
-      openDialog === "delete" && deleteSize(id)
+    const handleDeleteCoupons = (id: string) => {
+      openDialog === "delete" && deleteCoupons(id)
     };
-    handleDeleteSize(idSize)
-  }, [deleteSize, idSize, openDialog])
+    handleDeleteCoupons(idCoupons)
+  }, [deleteCoupons, idCoupons, openDialog])
 
   return (
     <>
@@ -66,7 +67,7 @@ const ListSize = () => {
         </muiComponent.DialogTitle>
         <muiComponent.DialogContent>
           <muiComponent.DialogContentText id="alert-dialog-description">
-            Xác nhận xóa Size.
+            Xác nhận xóa Coupons.
           </muiComponent.DialogContentText>
         </muiComponent.DialogContent>
         <muiComponent.DialogActions>
@@ -95,7 +96,7 @@ const ListSize = () => {
                 variant="h5"
                 color="blue-gray"
                 className="text-[30px] font-[600]">
-                Danh sách size
+                Danh sách Coupons
               </Typography>
             </div>
             <div className="flex w-full shrink-0 gap-2 md:w-max ">
@@ -120,7 +121,7 @@ const ListSize = () => {
           </div>
           {openAlert && (
             <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">Xóa Size thành công</Alert>
+              <Alert severity="success">Xóa Coupons thành công</Alert>
             </Stack>
           )}
         </CardHeader>
@@ -143,7 +144,7 @@ const ListSize = () => {
               </tr>
             </thead>
             <tbody>
-              {TABLE_ROWS?.map((row: ISize, index: number) => {
+              {TABLE_ROWS?.map((row: ICoupons, index: number) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast
                   ? "p-4"
@@ -161,6 +162,11 @@ const ListSize = () => {
                       </div>
                     </td>
                     <td className={classes}>
+                      <div className="flex items-center gap-3 min-w-[200px] ">
+                        <Typography>{row.quantity}</Typography>
+                      </div>
+                    </td>
+                    <td className={classes}>
                       <div className="flex items-center gap-3">
                         <Typography>{row.createdAt}</Typography>
                       </div>
@@ -174,18 +180,18 @@ const ListSize = () => {
                       <div className="grid grid-cols-2 justify-start">
                         <div className="grid grid-cols-2 gap-x-[20px] items-center cursor-pointer">
                           <muiComponent.Tooltip
-                            title="Delete size"
+                            title="Delete Coupons"
                             placement="top">
                             <muiIcons.DeleteSweepOutlinedIcon
                               onClick={() => {
-                                setIdSize(String(row._id))
+                                setIdCoupons(String(row._id))
                                 setOpenDialog("open")
                               }}
                               className="h-5 w-5 text-pink-600 "
                             />
                           </muiComponent.Tooltip>
                           <muiComponent.Tooltip
-                            title="Edit size"
+                            title="Edit Coupons"
                             placement="top">
                             <muiIcons.ModeEditIcon
                               onClick={() => navigate(`update/${row._id}`)}
@@ -241,4 +247,4 @@ const ListSize = () => {
   );
 };
 
-export default ListSize;
+export default ListCoupons;

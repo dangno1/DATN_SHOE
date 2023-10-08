@@ -64,7 +64,7 @@ const UpdateSize = () => {
           </Stack>
         )}
       </CardHeader>
-      <CardBody className="w-[400px] px-0">
+      {data && (<CardBody className="w-[400px] px-0">
         <form onSubmit={handleSubmit(onSubmit)}>
           <label
             className="block text-gray-700 text-sm font-bold mb-2 capitalize"
@@ -98,7 +98,7 @@ const UpdateSize = () => {
             </Button>
           </div>
         </form>
-      </CardBody>
+      </CardBody>)}
     </Card>
   );
 };
