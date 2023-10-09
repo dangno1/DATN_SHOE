@@ -1,5 +1,5 @@
 import { BsBagPlus } from "react-icons/bs";
-
+import { Link } from "react-router-dom";
 const ProductList = () => {
   return (
     <>
@@ -11,7 +11,7 @@ const ProductList = () => {
         className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14"
       >
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+        <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/0f108327ea874f9b93fdaf20014a38e5_9366/gi%C3%A0y-rivalry-low.jpg"
               alt="Product"
@@ -36,10 +36,10 @@ const ProductList = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/e64de67204ad422f8c6daebe01304a92_9366/gi%C3%A0y-adventure-mocaturf.jpg"
               alt="Product"
@@ -64,10 +64,10 @@ const ProductList = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/9665de88e0c647758f16aeba00f81924_9366/gi%C3%A0y-adventure-rovermule.jpg"
               alt="Product"
@@ -93,10 +93,10 @@ const ProductList = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/d9ea0b3526d24fceb32faed701784a77_9366/gi%C3%A0y-pureboost-22.jpg"
               alt="Product"
@@ -121,7 +121,7 @@ const ProductList = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </section>
     </>

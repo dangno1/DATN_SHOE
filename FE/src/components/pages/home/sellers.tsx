@@ -1,4 +1,4 @@
-
+import { Link } from "react-router-dom";
 const Seller = () => {
   return (
     <div className=" 2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
@@ -17,6 +17,7 @@ const Seller = () => {
       </div>
       <div className=" grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 lg:grap-8 md:gap-6 gap-4 mt-10">
         <div className="relative group">
+        <Link to={`/detail/:id`}>
           <img
             src="https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/ef76174079d24f7dabb7b9e99b028da1_9366/adizero-sl.jpg"
             alt=""
@@ -37,8 +38,10 @@ const Seller = () => {
               </del>
             </div>
           </div>
+          </Link>
         </div>
         <div className="relative group">
+        <Link to={`/detail/:id`}>
           <img
             src="https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/0fcdf101f2984072a268a3d762eaba15_9366/gi%C3%A0y-ultraboost-light.jpg"
             alt=""
@@ -59,8 +62,10 @@ const Seller = () => {
               </del>
             </div>
           </div>
+          </Link>
         </div>
         <div className="relative group">
+        <Link to={`/detail/:id`}>
           <img
             src="https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/36fee312e3ab4b149cb22982d282b852_9366/gi%C3%A0y-ch%E1%BA%A1y-b%E1%BB%99-switch-fwd.jpg"
             alt=""
@@ -81,8 +86,10 @@ const Seller = () => {
               </del>
             </div>
           </div>
+          </Link>
         </div>
         <div className="relative group">
+        <Link to={`/detail/:id`}>
           <img
             src="https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/8bc17cbdc83646a6b093cb217a850fbd_9366/gi%C3%A0y-ch%E1%BA%A1y-b%E1%BB%99-ultra-4dfwd.jpg"
             alt=""
@@ -103,6 +110,7 @@ const Seller = () => {
               </del>
             </div>
           </div>
+          </Link>
         </div>
       </div>
     </div>

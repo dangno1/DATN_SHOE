@@ -1,5 +1,5 @@
 import { BsBagPlus } from "react-icons/bs";
-
+import { Link } from "react-router-dom";
 const ProductList2 = () => {
   return (
     <>
@@ -11,7 +11,7 @@ const ProductList2 = () => {
         className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
       >
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_600,f_auto,q_auto/5bd92667564d40328e9e9511bac0bc48_9366/Giay_Campus_00s_Mau_tim_ID7038_01_standard.jpg"
               alt="Product"
@@ -36,10 +36,10 @@ const ProductList2 = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_600,f_auto,q_auto/e8190bda50a44a9cbcbbe4937a1949ff_9366/Giay_Gazelle_trang_IE0546_01_standard.jpg"
               alt="Product"
@@ -64,10 +64,10 @@ const ProductList2 = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_600,f_auto,q_auto/2d85dc90ba68498f9be8efe7eceb9d6f_9366/Giay_LG2_SPZL_trang_IF8358_01_standard.jpg"
               alt="Product"
@@ -92,10 +92,10 @@ const ProductList2 = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/w_600,f_auto,q_auto/a02d4f03dc7945159ef2c04f49841aca_9366/Giay_Adizero_Prime_X_2.0_STRUNG_trang_HP9709_HM1.jpg"
               alt="Product"
@@ -120,7 +120,7 @@ const ProductList2 = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </section>
     </>

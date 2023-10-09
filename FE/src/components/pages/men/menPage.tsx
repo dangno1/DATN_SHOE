@@ -1,5 +1,5 @@
 import { BsBagPlus } from "react-icons/bs";
-
+import { Link } from "react-router-dom";
 const Men = () => {
   return (
     <>
@@ -66,7 +66,7 @@ const Men = () => {
         className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
       >
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/3fe9b4f565bf452eb44d65174e6f4e5f_9366/Giay_Adizero_Adios_Pro_3_W_Ngoc_lam_ID8473_HM3_hover.jpg"
               alt="Product"
@@ -91,10 +91,10 @@ const Men = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2b4b7817ee184c549384af8e0109eb70_9366/Giay_Supernova_2_x_Marimekko_nau_HQ8919_04_standard.jpg"
               alt="Product"
@@ -119,10 +119,10 @@ const Men = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/0347a9d2634a4eacaba8e5f32e9eb985_9366/Giay_Pureboost_23_trang_IF2392_04_standard.jpg"
               alt="Product"
@@ -147,10 +147,10 @@ const Men = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/bfb78374e2a94f758faba1d45c0d1740_9366/Giay_Pureboost_23_Xam_IF2390_04_standard.jpg"
               alt="Product"
@@ -175,10 +175,10 @@ const Men = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/912e92ce71c54aea9392c5675fc6cd33_9366/Giay_Ultraboost_Light_trang_IE1768_02_standard_hover.jpg"
               alt="Product"
@@ -203,10 +203,10 @@ const Men = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-          <a href="#">
+          <Link to={`/detail/:id`}>
             <img
               src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/5ea171781a7e42c1bd30af9c01085eaf_9366/Giay_Ultraboost_Light_DJen_HP9204_02_standard_hover.jpg"
               alt="Product"
@@ -231,7 +231,7 @@ const Men = () => {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </section>
     </>

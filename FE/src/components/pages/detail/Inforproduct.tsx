@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { Carousel } from 'antd';
 
 const Inforproduct = () => {
   const [images, setImages] = useState({
-    img1: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,b_rgb:f5f5f5/3396ee3c-08cc-4ada-baa9-655af12e3120/scarpa-da-running-su-strada-invincible-3-xk5gLh.png",
-    img2: "https://static.nike.com/a/images/f_auto,b_rgb:f5f5f5,w_440/e44d151a-e27a-4f7b-8650-68bc2e8cd37e/scarpa-da-running-su-strada-invincible-3-xk5gLh.png",
-    img3: "https://static.nike.com/a/images/f_auto,b_rgb:f5f5f5,w_440/44fc74b6-0553-4eef-a0cc-db4f815c9450/scarpa-da-running-su-strada-invincible-3-xk5gLh.png",
-    img4: "https://static.nike.com/a/images/f_auto,b_rgb:f5f5f5,w_440/d3eb254d-0901-4158-956a-4610180545e5/scarpa-da-running-su-strada-invincible-3-xk5gLh.png",
+    img1: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/ca49d2fd-e179-43ac-b948-0d3ed61cc9a5/air-jordan-1-low-older-shoes-xLzJc6.png",
+    img2: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/f8f6477c-9cf6-4406-a841-afdf4bc572d4/air-jordan-1-low-older-shoes-xLzJc6.png",
+    img3: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/0d08b0fc-9a72-47f1-992e-c273720daba9/air-jordan-1-low-older-shoes-xLzJc6.png",
+    img4: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/eb24f5da-179f-40f2-9e9d-901ed72e5412/air-jordan-1-low-older-shoes-xLzJc6.png",
   });
   const [activeImg, setActiveImage] = useState(images.img1);
   const [amount, setAmount] = useState(1);
@@ -20,15 +21,29 @@ const Inforproduct = () => {
     "VN 45",
     "VN 46",
   ];
+
+  const onChange = (currentSlide: number) => {
+    console.log(currentSlide);
+  };
+
   return (
     <div>
       <div className="max-w-screen-xl mx-auto flex flex-col justify-between lg:flex-row gap-16 lg:items-center">
-        <div className="flex flex-col gap-6 lg:w-2/4">
-          <img
-            src={activeImg}
-            alt=""
-            className="w-full h-full aspect-square object-cover rounded-xl"
-          />
+        <div className="flex flex-col gap-6 lg:w-2/4 ">
+          <Carousel afterChange={onChange} >
+
+            {[1, 2, 3, 4, 5]?.map((_) => (
+              <div>
+                <img
+                  src={activeImg}
+                  alt=""
+                  className="w-full h-full aspect-square object-cover rounded-xl "
+
+                />
+              </div>
+            ))}
+
+          </Carousel>
           <div className="flex flex-row p-3 justify-between h-24">
             <img
               src={images.img1}
@@ -59,28 +74,27 @@ const Inforproduct = () => {
         <div className="flex flex-col gap-4 lg:w-2/4">
           <div>
             <span className=" text-violet-600 font-semibold">
-              Giày Sneaker Đặc Biệt
+              Sneaker Shoe
             </span>
             <h1 className="text-3xl font-bold">Nike Invincible 3</h1>
           </div>
           <p className="text-gray-700">
-            Với khả năng giảm chấn đáng kinh ngạc để hỗ trợ bạn trong mọi
-            kilomet của bạn, Invincible 3 mang đến sự thoải mái tối đa dưới bàn
-            chân để giúp bạn đạt hiệu suất tốt nhất hôm nay, ngày mai và xa hơn.
-            Mẫu giày này với độ đàn hồi và hỗ trợ tuyệt vời, được thiết kế để
-            mang lại hiệu suất tốt nhất trên các tuyến đường yêu thích của bạn
-            và mang đầy năng lượng sau mỗi chuyến chạy, chờ đợi chạy tiếp theo.
+            With incredible cushioning to support you in every
+            your kilometers, the Invincible 3 offers maximum comfort under the table
+            legs to help you perform your best today, tomorrow and beyond.
+            This shoe model, with its excellent elasticity and support, is designed to
+            delivers the best performance on your favorite routes
+            and full of energy after each run, waiting for the next run.
           </p>
           <h6 className="text-2xl font-semibold">$ 199.00</h6>
           <div className="flex flex-col gap-2">
-            <span className="text-gray-600 font-semibold">Chọn Kích Cỡ:</span>
+            <span className="text-gray-600 font-semibold">Size:</span>
             <div className="flex flex-row ">
               {availableSizes.map((size) => (
                 <button
                   key={size}
-                  className={`w-16 h-10 text-sm mr-3 rounded-md border ${
-                    selectedSize === size ? "bg-gray-200" : "bg-white"
-                  }`}
+                  className={`w-16 h-10 text-sm mr-3 rounded-md border ${selectedSize === size ? "bg-gray-200" : "bg-white"
+                    }`}
                   onClick={() => setSelectedSize(size)}
                 >
                   {size}
@@ -89,7 +103,7 @@ const Inforproduct = () => {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-gray-600 font-semibold">Chọn Màu:</span>
+            <span className="text-gray-600 font-semibold">Color:</span>
             <div className="flex flex-row space-x-3">
               <button className="w-8 h-8 bg-red-500 rounded-full shadow-xl color-button"></button>
               <button className="w-8 h-8 bg-white border rounded-full shadow-xl color-button"></button>
@@ -117,11 +131,11 @@ const Inforproduct = () => {
           </div>
 
           <div>
-            <button className="bg-violet-800 hover:bg-blue-700 text-white font-semibold py-3 px-12 rounded-full h-full flex items-center space-x-2">
+            <button className="bg-black hover:bg-white hover:text-gray-950 text-white font-semibold py-3 px-12 rounded-full h-full flex items-center space-x-2">
               <span>
                 <AiOutlineShoppingCart />{" "}
               </span>
-              <span>Thêm vào Giỏ Hàng</span>{" "}
+              <span>add to cart</span>{" "}
             </button>
           </div>
         </div>

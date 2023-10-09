@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "menPage", element: <Men /> },
-      { path: "detail", element: <Detail /> },
+      { path: "detail/:id", element: <Detail /> },
       { path: "kids", element: <Kids /> },
       { path: "women", element: <Women /> },
       {
