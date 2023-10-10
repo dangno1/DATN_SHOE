@@ -35,6 +35,7 @@ const userApi = createApi({
 
     signup: builder.mutation<
       {
+        data: any;
         success: boolean;
         messages: [];
         user: { role: string };

@@ -1,6 +1,29 @@
 import { Link } from "react-router-dom";
-
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useSigninMutation } from "../../../../api/auth";
+import { ISignin } from "../../../../interface/signin";
 const Signin = () => {
+  const { handleSubmit, register } = useForm<ISignin>();
+  const [signin] = useSigninMutation();
+  const navigate = useNavigate();
+  const onSubmit = (data: ISignin) => {
+    signin(data)
+      .unwrap()
+      .then((res) => {
+        // if (res && res.success) {
+          if (res.user && res.user.role && res.user.role == "member") {
+            alert("Đăng nhập thành công");
+            navigate("/");
+          } else if (res.user && res.user.role && res.user.role == "admin") {
+            alert("Đăng nhập thành công");
+            navigate("/admin");
+          } else {
+            alert("Bạn không có quyền truy cập trang này");
+          }
+        // }  
+      });
+  };
   return (
     <>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js" defer></script>
@@ -45,7 +68,7 @@ const Signin = () => {
                 </div>
                 <div>
                 <div className="mx-auto max-w-xs">
-                  {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+                  <form onSubmit={handleSubmit(onSubmit)}>
                   <label htmlFor="" className="text-xs font-semibold px-1">First name</label>
                   <div className="flex mt-3 mb-3">
                   <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
@@ -53,7 +76,7 @@ const Signin = () => {
                      className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                       type="email"
                       placeholder="Email"
-                      // {...register("email")}
+                      {...register("email")}
                     />
                     </div>
                      <label htmlFor="" className="text-xs font-semibold px-1">Password</label>
@@ -63,16 +86,15 @@ const Signin = () => {
                       className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                       type="password"
                       placeholder="Passworld"
-                      // {...register("password")}
+                      {...register("password")}
                     />
                     </div>
                     <button
                       type="submit"
-                      className="mt-5 tracking-wide font-semibold bg-slate-900 text-white w-full py-4 rounded-lg hover:bg-white hover:text-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                    >
+                      className="mt-5 tracking-wide font-semibold bg-slate-900 text-white w-full py-4 rounded-lg hover:bg-white hover:text-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                      Sign in
                     </button>
-                  {/* </form> */}
+                  </form>
                   </div>
                     <div className="flex -mx-3 mt-5">
                         <div className="w-full px-3 mb-5 text-center text-black hover:text-blue-400">
