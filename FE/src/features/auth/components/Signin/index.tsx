@@ -1,19 +1,24 @@
+import { Link } from "react-router-dom";
+
 const Signin = () => {
   return (
     <>
-      {/* source:https://codepen.io/owaiswiz/pen/jOPvEPB */}
-      <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
-        <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
-          <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
-            <div>
-              <img
-                src="https://inkythuatso.com/uploads/thumbnails/800/2021/09/logo-adidas-vector-inkythuatso-01-29-09-08-58.jpg"
-                className="w-mx-auto"
-              />
-            </div>
-            <div className="mt-12 flex flex-col items-center">
-              <div className="w-full flex-1 mt-8">
-                <div className="flex flex-col items-center">
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+<style>@import url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css')</style>
+
+<div className="min-w-screen min-h-screen bg-white flex items-center justify-center px-5 py-5">
+    <div className="bg-gray-100 text-black rounded-3xl shadow-xl w-full overflow-hidden" >
+        <div className="md:flex w-full">
+        <div className="hidden md:block w-1/2 bg-black py-10 px-10 d-flex justify-content-center">
+                <img src="https://bouncin.net/storage/posts/1345/YFyAqfIwqKJ1SVW9M11UqRRZjpnIdYLJQgYTzDpf.jpeg" className="" alt="" />
+           </div>
+            <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
+                <div className="text-center mb-10">
+                    <h1 className="font-bold text-3xl text-gray-900 mb-5">LOGIN</h1>
+                    <p>Enter your information to login</p>
+                </div>
+                <div className="flex flex-col items-center mb-7">
                   <button className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-green-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
                     <div className="bg-white p-2 rounded-full">
                       <svg className="w-4" viewBox="0 0 533.5 544.3">
@@ -38,57 +43,49 @@ const Signin = () => {
                     <span className="ml-4">Sign In with Google</span>
                   </button>
                 </div>
-                <div className="my-12 border-b text-center">
-                  <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"></div>
-                </div>
+                <div>
                 <div className="mx-auto max-w-xs">
-                  <input
-                    className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                    type="email"
-                    placeholder="Email"
-                  />
-                  <input
-                    className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                    type="pas"
-                    placeholder="Passworld"
-                  />
-
-                  <button className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                    <span className="ml- text-white	">Sign Ip</span>
-                  </button>
-                  <button className="mt-5 tracking-wide font-semibold bg-slate-900 text-white-500 w-full py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                    <a href="/Signup" className="text-white">
-                      Sign Up
-                    </a>
-                  </button>
-                  <p className="mt-6 text-xs text-gray-600 text-center">
-                    I agree to abide by Cartesian Kinetics
-                    <a
-                      href="#"
-                      className="border-b border-gray-500 border-dotted">
-                      Terms of Service
-                    </a>
-                    and its
-                    <a
-                      href="#"
-                      className="border-b border-gray-500 border-dotted">
-                      Privacy Policy
-                    </a>
-                  </p>
+                  {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+                  <label htmlFor="" className="text-xs font-semibold px-1">First name</label>
+                  <div className="flex mt-3 mb-3">
+                  <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
+                    <input
+                     className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                      type="email"
+                      placeholder="Email"
+                      // {...register("email")}
+                    />
+                    </div>
+                     <label htmlFor="" className="text-xs font-semibold px-1">Password</label>
+                     <div className="flex mt-3">
+                     <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi  mdi-lock-outline text-gray-400 text-lg"></i></div>
+                    <input
+                      className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                      type="password"
+                      placeholder="Passworld"
+                      // {...register("password")}
+                    />
+                    </div>
+                    <button
+                      type="submit"
+                      className="mt-5 tracking-wide font-semibold bg-slate-900 text-white w-full py-4 rounded-lg hover:bg-white hover:text-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                    >
+                     Sign in
+                    </button>
+                  {/* </form> */}
+                  </div>
+                    <div className="flex -mx-3 mt-5">
+                        <div className="w-full px-3 mb-5 text-center text-black hover:text-blue-400">
+                        <Link to="/signup">
+                        Do you want to switch to the registration page?
+                        </Link>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-          <div className="flex-1 bg-white text-center hidden lg:flex">
-            <div
-              className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
-              style={{
-                backgroundImage:
-                  'url("https://cdn-icons-png.flaticon.com/256/731/731962.png")',
-              }}></div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
     </>
   );
 };
