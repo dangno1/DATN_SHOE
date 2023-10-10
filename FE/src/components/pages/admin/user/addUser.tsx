@@ -146,7 +146,7 @@ const AddAdmin: React.FC = () => {
       </div>
       <div className="buttons flex mt-6">
       <div className="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto rounded-2xl"><Link to="/admin/users">Quay Lại</Link></div>
-      <div className="btn border border-indigo-500  p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-blue-500 rounded-2xl">Đăng ký</div>
+      <div className="btn border border-black  p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-black rounded-2xl">Đăng ký</div>
     </div>
 		</form>
 	</div>
