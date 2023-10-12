@@ -9,20 +9,26 @@ const Signin = () => {
   const navigate = useNavigate();
   const onSubmit = (data: ISignin) => {
     signin(data)
-      .unwrap()
-      .then((res) => {
-        // if (res && res.success) {
-          if (res.user && res.user.role && res.user.role == "member") {
-            alert("Đăng nhập thành công");
-            navigate("/");
-          } else if (res.user && res.user.role && res.user.role == "admin") {
-            alert("Đăng nhập thành công");
-            navigate("/admin");
-          } else {
-            alert("Bạn không có quyền truy cập trang này");
-          }
-        // }  
-      });
+    .unwrap()
+    .then((res) => {
+      if (res && res.user && res.user.role) {
+        // Lưu thông tin đăng nhập vào localStorage sau khi đăng nhập thành công
+        localStorage.setItem('user', JSON.stringify(res.user));
+        if (res.user.role === "member") {
+          alert("Đăng nhập thành công");
+          navigate("/");
+          console.log(res.user);
+          
+        } else if (res.user.role === "admin") {
+          alert("Đăng nhập thành công");
+          navigate("/admin");
+        } else {
+          alert("Bạn không có quyền truy cập trang này");
+        }
+      } else {
+        alert("Đăng nhập không thành công");
+      }
+    });
   };
   return (
     <>

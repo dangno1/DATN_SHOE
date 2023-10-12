@@ -14,7 +14,7 @@ const userApi = createApi({
       providesTags: ["User"],
     }),
     getUserById: builder.query<IUser, number | string>({
-      query: (id) => `/user/${id}`,
+      query: (id) => `/api/user/${id}`,
       providesTags: ["User"],
     }),
 
@@ -22,7 +22,9 @@ const userApi = createApi({
       {
         success: boolean;
         accessToken: string;
-        user: { role: string };
+        user: {
+          id: any; role: string 
+};
       },
       ISignin
     >({
@@ -35,7 +37,7 @@ const userApi = createApi({
 
     signup: builder.mutation<
       {
-        data: any;
+        data: unknown;
         success: boolean;
         messages: [];
         user: { role: string };
