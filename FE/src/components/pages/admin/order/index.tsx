@@ -1,16 +1,93 @@
-
+import { useState } from 'react';
 
 const index = () => {
+    // db
+    const dataOrder = [
+        {
+            "code": "5FHLA$UL",
+            "time": "Ngày 6 tháng 1 năm 2022",
+            "total": 200,
+            "user": [
+                {
+                    "email": "quangnv@gmail.com",
+                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                }
+            ],
+            "node": "che tên đơn hàng",
+            "status": true,
+            "id": 1
+        },
+        {
+            "code": "5FHLASGS",
+            "time": "Ngày 6 tháng 1 năm 2022",
+            "total": 200,
+            "user": [
+                {
+                    "email": "quangnv@gmail.com",
+                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                }
+            ],
+            "node": "giao nhanh giup toi",
+            "status": true,
+            "id": 1
+        },
+        {
+            "code": "5FHLAHA",
+            "time": "Ngày 6 tháng 1 năm 2022",
+            "total": 200,
+            "user": [
+                {
+                    "email": "quangnv@gmail.com",
+                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                }
+            ],
+            "node": "che tên đơn hàng",
+            "status": true,
+            "id": 1
+        },
+    ]
+    const [searchCode, setSearchCode] = useState('');
+    const filteredOrders = dataOrder.filter((order) =>
+        order.code.toLowerCase().includes(searchCode.toLowerCase())
+    );
+
+
     return (
         <div>
             <div className="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded" >
-                <p>Trạng Thái</p>
-                <select aria-label="select" className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1">
-                    <option className="text-sm text-indigo-800">Delivering</option>
-                    <option className="text-sm text-indigo-800">Returns</option>
-                    <option className="text-sm text-indigo-800">Delivered successfully</option>
-                </select>
+                {/* navbar Lọc */}
+                <div className="flex items-center px-8 ">
+                    {/* lọc theo trạng thái */}
+                    <p className="text-green-500">Category Status</p>
+                    <select aria-label="select" className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1">
+                        <option className="text-sm text-indigo-800">Delivering</option>
+                        <option className="text-sm text-indigo-800">Returns</option>
+                        <option className="text-sm text-indigo-800">Delivered successfully</option>
+                    </select>
+                </div>
+                {/* lọc theo người dùng */}
+                <div>
+                    <p className="text-green-500">Category receiving party</p>
+                    <select aria-label="select" className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1">
+                        <option className="text-sm text-indigo-800">NO Account</option>
+                        <option className="text-sm text-indigo-800">Account</option>
+                    </select>
+                </div>
+                {/* tìm kiếm mã đơn hàng */}
+                <div className="flex py-3 px-40">
+                    <div className="flex w-10 items-center justify-center rounded-tl-lg rounded-bl-lg border-r border-gray-200 bg-white p-5">
+                        <svg viewBox="0 0 20 20" aria-hidden="true" className="pointer-events-none absolute w-5 fill-gray-500 transition">
+                            <path d="M16.72 17.78a.75.75 0 1 0 1.06-1.06l-1.06 1.06ZM9 14.5A5.5 5.5 0 0 1 3.5 9H2a7 7 0 0 0 7 7v-1.5ZM3.5 9A5.5 5.5 0 0 1 9 3.5V2a7 7 0 0 0-7 7h1.5ZM9 3.5A5.5 5.5 0 0 1 14.5 9H16a7 7 0 0 0-7-7v1.5Zm3.89 10.45 3.83 3.83 1.06-1.06-3.83-3.83-1.06 1.06ZM14.5 9a5.48 5.48 0 0 1-1.61 3.89l1.06 1.06A6.98 6.98 0 0 0 16 9h-1.5Zm-1.61 3.89A5.48 5.48 0 0 1 9 14.5V16a6.98 6.98 0 0 0 4.95-2.05l-1.06-1.06Z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" className="w-full bg-white pl-2 text-base font-semibold outline-0" placeholder="order code to find"  id="searchInput"
+                        value={searchCode}
+                        onChange={(e) => setSearchCode(e.target.value)} />
+                    <input type="button" value="Search" className="bg-blue-500 p-4 rounded-tr-lg rounded-br-lg text-white font-semibold hover:bg-blue-800 transition-colors" />
+                </div>
             </div>
+
+            {/* hiển thị order */}
             <section className="container px-4 mx-auto">
                 <div className="flex flex-col">
                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -24,7 +101,6 @@ const index = () => {
                                                     <input type="checkbox" className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700" />
                                                     <button className="flex items-center gap-x-2">
                                                         <span>STT</span>
-
                                                         <svg className="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <path d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z" fill="currentColor" stroke="currentColor" stroke-width="0.1" />
                                                             <path d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z" fill="currentColor" stroke="currentColor" stroke-width="0.1" />
@@ -36,26 +112,26 @@ const index = () => {
 
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                MÃ ĐƠN
+                                                APPLICATION CODE
                                             </th>
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                THỜI GIAN
-                                            </th>
-
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                TỔNG PHÍ DỊCH VỤ
+                                                TIME
                                             </th>
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                BÊN NHẬN
+                                                TOTAL SERVICE FEES
                                             </th>
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                GHI CHÚ ĐƠN HÀNG
+                                                RECEIVING PARTY
                                             </th>
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                TRẠNG THÁI
+                                                ORDER NOTES
+                                            </th>
+
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                                STATUS
                                             </th>
 
                                             <th scope="col" className="relative py-3.5 px-4">
@@ -64,51 +140,49 @@ const index = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                                        <tr>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap" >
-                                                <div className="inline-flex items-center gap-x-3">
-                                                    <input type="checkbox" className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700" />
-                                                    <p className="leading-relaxed text-red-500"> 1</p>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                                            <p className="leading-relaxed text-red-500">5FHLA$UL</p>
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">Jan 6, 2022</td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                                                <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
-                                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                                    </svg>
-
-                                                    <h2 className="text-sm font-normal">200.000 đ</h2>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                                                <div className="flex items-center gap-x-2">
-                                                    <img className="object-cover w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" />
-
-                                                    <div>
-                                                        <h2 className="text-sm font-medium text-gray-800 dark:text-white ">Quang</h2>
-                                                        <p className="text-xs font-normal text-gray-600 dark:text-gray-400">quang@.com</p>
+                                        {filteredOrders.map((order, index) => (
+                                            <tr key={order.id}>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap" >
+                                                    <div className="inline-flex items-center gap-x-3">
+                                                        <input type="checkbox" className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700" />
+                                                        <p className="leading-relaxed "> {index + 1}</p>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">che tên đơn hàng giúp</td>
-                                            <td className='px-4 py-4 text-sm whitespace-nowrap'>
-                                                < select id="cars" className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-300">
-                                                    <option value="" className="py-2">waiting for delivery</option>
-                                                    <option value="" className="py-2">are delivering</option>
-                                                    <option value="" className="py-2">Successful delivery</option>
-                                                    <option value="" className="py-2">Returns</option>
-                                                </select>
-                                            </td>
+                                                </td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                                                    <p className="leading-relaxed text-red-500">{order.code}</p>
+                                                </td>
+                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.time}</td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                                    <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+                                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                        </svg>
 
-                                        </tr>
+                                                        <h2 className="text-sm font-normal">{order.total}đ</h2>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                                                    <div className="flex items-center gap-x-2">
+                                                        <img className="object-cover w-8 h-8 rounded-full" src={order.user[0].image} alt={order.user[0].email} />
 
+                                                        <div>
+                                                            {/* <h2 className="text-sm font-medium text-gray-800 dark:text-white ">Quang</h2> */}
+                                                            <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{order.user[0].email}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.node}</td>
+                                                <td className='px-4 py-4 text-sm whitespace-nowrap'>
+                                                    < select id="cars" className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-300">
+                                                        <option value="" className="py-2">waiting for delivery</option>
+                                                        <option value="" className="py-2">are delivering</option>
+                                                        <option value="" className="py-2">Successful delivery</option>
+                                                        <option value="" className="py-2">Returns</option>
+                                                    </select>
+                                                </td>
 
-
-
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>

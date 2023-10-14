@@ -13,18 +13,22 @@ import {
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import cartApi, { cartReducer } from "../api/cart";
 
+
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
     key: 'root',
     storage,
     whitelist: ['cart']
 }
+
 const rootReducer = combineReducers({
     carts: cartReducer,
+   
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
+    
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
