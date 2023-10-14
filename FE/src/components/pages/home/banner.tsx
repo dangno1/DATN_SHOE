@@ -1,17 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { BsArrowRight } from "react-icons/bs";
+import { useEffect, useState } from "react";
 
 function Slider() {
- 
+  const images = [
+    "https://file.hstatic.net/1000008082/file/adidas_da_banh_4_c2fd2f6075824ba7bf36e660a915e9d8.jpg",
+    "https://the-post-assets.sgp1.digitaloceanspaces.com/2021/01/Ultraboost-1896x800.jpg",
+  ];
+  const [currenSlide, setCurrenSlide] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrenSlide((currenSlide + 1) % images.length);
+    }, 2000); 
 
+    return () => {
+      clearInterval(interval);
+    };
+  }, [currenSlide]);
   return (
     <div>
-      {/* banner men */}
       <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden py-6">
         <div className="absolute inset-0">
           <img
-            src="https://the-post-assets.sgp1.digitaloceanspaces.com/2021/01/Ultraboost-1896x800.jpg"
+            src={images[currenSlide]}
             alt="Background Image"
             className="object-cover object-center w-full h-full"
           />
@@ -22,7 +31,7 @@ function Slider() {
             Welcome to Our Awesome Website
           </h1>
           <p className="text-lg text-gray-300 mb-8">
-          Here we have great products.
+            Here we have great products.
           </p>
           <a
             href="#"
@@ -32,7 +41,6 @@ function Slider() {
           </a>
         </div>
       </div>
-      {/* banner men */}
     </div>
   );
 }
