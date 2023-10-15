@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -18,14 +19,6 @@ import colorSchema from "@/schemas/color";
 
 const AddColor = () => {
   const [addColor, { isLoading, isSuccess }] = useAddColorMutation();
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const navigate = useNavigate();
   const {
@@ -36,6 +29,15 @@ const AddColor = () => {
   } = useForm<IColor>({
     resolver: joiResolver(colorSchema),
   });
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
+  useEffect(() => {
+    isSuccess && setOpenAlert(isSuccess);
+    closeAlertTimeout = setTimeout(() => {
+      setOpenAlert(false);
+    }, 3000);
+    return () => clearTimeout(closeAlertTimeout);
+  }, [isSuccess]);
 
   const onSubmit = (data: IColor) => {
     addColor(data);
@@ -63,7 +65,7 @@ const AddColor = () => {
         )}
       </CardHeader>
       <CardBody className="w-[400px] px-0">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <muiComponent.TextField
             {...register("value")}
             type="text"
@@ -71,6 +73,9 @@ const AddColor = () => {
             size="small"
             className="w-full"
             placeholder="Trắng..."
+            inputProps={{
+              pattern: "^[a-zA-Z]+$"
+            }}
           />
           {errors.value && (
             <p className="text-pink-600 text-[13px] font-[600]">

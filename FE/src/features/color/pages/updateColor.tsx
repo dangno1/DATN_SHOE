@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -19,14 +20,6 @@ const AddColor = () => {
   const { id } = useParams();
   const { data } = useGetColorQuery<{ data: IColor }>(String(id));
   const [update, { isLoading, isSuccess }] = useUpdateColorMutation();
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const navigate = useNavigate();
   const {
@@ -37,6 +30,15 @@ const AddColor = () => {
   } = useForm<IColor>({
     resolver: joiResolver(colorSchema),
   });
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
+  useEffect(() => {
+    isSuccess && setOpenAlert(isSuccess);
+    closeAlertTimeout = setTimeout(() => {
+      setOpenAlert(false);
+    }, 3000);
+    return () => clearTimeout(closeAlertTimeout);
+  }, [isSuccess]);
 
   const onSubmit = (data: IColor) => {
     const trimValue = data.value.trim()

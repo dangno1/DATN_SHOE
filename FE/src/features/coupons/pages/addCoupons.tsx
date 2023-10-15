@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -18,16 +19,18 @@ import couponsSchema from "@/schemas/coupons";
 
 const AddCoupons = () => {
   const [addCoupons, { isLoading, isSuccess }] = useAddCouponsMutation();
+  const [openAlert, setOpenAlert] = useState(false);
+  const navigate = useNavigate();
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
   useEffect(() => {
     isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
     closeAlertTimeout = setTimeout(() => {
       setOpenAlert(false);
     }, 3000);
     return () => clearTimeout(closeAlertTimeout);
   }, [isSuccess]);
-  const [openAlert, setOpenAlert] = useState(false);
-  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,

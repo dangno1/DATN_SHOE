@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useGetSizesQuery, useRemoveSizeMutation } from "@/api/size";
 import { ISize } from "@/interface/size";
@@ -22,15 +23,6 @@ import * as aiIcon from "react-icons/ai";
 const ListSize = () => {
   const [deleteSize, { isSuccess }] = useRemoveSizeMutation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const [openDialog, setOpenDialog] = useState<string>("close");
   const [idSize, setIdSize] = useState<string>("")
@@ -47,6 +39,15 @@ const ListSize = () => {
         updatedAt,
       }
   );
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
+  useEffect(() => {
+    isSuccess && setOpenAlert(isSuccess);
+    closeAlertTimeout = setTimeout(() => {
+      setOpenAlert(false);
+    }, 3000);
+    return () => clearTimeout(closeAlertTimeout);
+  }, [isSuccess]);
 
   useEffect(() => {
     const handleDeleteSize = (id: string) => {
@@ -102,14 +103,10 @@ const ListSize = () => {
               <div className="w-full md:w-72 relative h-full">
                 <Input
                   placeholder="Search..."
-                  className="border border-gray-400 rounded-lg"
+                  className="border outline-transparent focus:border-gray-500 border-gray-400 rounded-lg"
                 />
-                <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-65%] " />
+                <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-50%] " />
               </div>
-              <Button className="flex items-center gap-3 bg-black relative pl-[40px]">
-                <aiIcon.AiOutlineDownload className="absolute w-5 h-5 top-[50%] left-[10px] translate-y-[-50%] " />
-                Download
-              </Button>
               <Button
                 onClick={() => navigate("add")}
                 className="flex items-center gap-3 bg-black relative pl-[40px]">

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate, useParams } from "react-router-dom";
 import { useUpdateSizeMutation, useGetSizeQuery } from "@/api/size";
@@ -20,14 +21,6 @@ const UpdateSize = () => {
   const { data } = useGetSizeQuery<{ data: ISize }>(String(id));
 
   const [update, { isLoading, isSuccess }] = useUpdateSizeMutation();
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const navigate = useNavigate();
   const {
@@ -38,6 +31,15 @@ const UpdateSize = () => {
   } = useForm<ISize>({
     resolver: joiResolver(sizeSchema),
   });
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
+  useEffect(() => {
+    isSuccess && setOpenAlert(isSuccess);
+    closeAlertTimeout = setTimeout(() => {
+      setOpenAlert(false);
+    }, 3000);
+    return () => clearTimeout(closeAlertTimeout);
+  }, [isSuccess]);
 
   const onSubmit = (data: ISize) => {
     update({ ...data, _id: id });

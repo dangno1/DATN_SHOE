@@ -11,7 +11,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@material-tailwind/react";
 
-const List = () => {
+const ListProduct = () => {
   const { data: dataProduct } = useGetProductsQuery();
   const { data: dataCategory } = useGetCategoryesQuery();
   const [deteteProduct] = useRemoveProductMutation();
@@ -199,4 +199,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default ListProduct;
