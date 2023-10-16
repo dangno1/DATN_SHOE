@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -18,14 +19,6 @@ import categorySchema from "@/schemas/category";
 
 const AddCategory = () => {
   const [addCategory, { isLoading, isSuccess }] = useAddCategoryMutation();
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const navigate = useNavigate();
   const {
@@ -36,6 +29,15 @@ const AddCategory = () => {
   } = useForm<ICategory>({
     resolver: joiResolver(categorySchema),
   });
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
+  useEffect(() => {
+    isSuccess && setOpenAlert(isSuccess);
+    closeAlertTimeout = setTimeout(() => {
+      setOpenAlert(false);
+    }, 3000);
+    return () => clearTimeout(closeAlertTimeout);
+  }, [isSuccess]);
 
   const onSubmit = (data: ICategory) => {
     const trimName = data.name.trim()

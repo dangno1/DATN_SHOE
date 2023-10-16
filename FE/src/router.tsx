@@ -6,9 +6,8 @@ import HomePage from "./components/pages/home/homePage";
 import Dashboard from "./components/pages/admin/dashboard";
 import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
-import List from "./features/products/components/list";
-import AddProduct from "./features/products/pages/add";
-import UpdateProduct from "./features/products/components/update";
+import AddProduct from "./features/products/pages/addProduct";
+import UpdateProduct from "./features/products/pages/updateProduct";
 import AddSize from "./features/size/pages/addSize";
 import UpdateSize from "./features/size/pages/updateSize";
 import UpdateColor from "./features/color/pages/updateColor";
@@ -31,6 +30,10 @@ import ListColor from "./features/color/components/list";
 import ListCategory from "./features/category/components/list";
 import AddCategory from "./features/category/pages/addCategory";
 import UpdateCategory from "./features/category/pages/updateCategory";
+import AddCoupons from "./features/coupons/pages/addCoupons";
+import UpdateCoupons from "./features/coupons/pages/updateCoupons";
+import ListCoupons from "./features/coupons/components/list";
+import ListProduct from "./features/products/components/list";
 
 export const router = createBrowserRouter([
   {
@@ -76,14 +79,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "product",
-        element: <List />,
+        element: <ListProduct />,
       },
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
-      {
-        path: "size",
-        element: <ListSize />,
-      },
       {
         path: "categoryes",
         element: <ListCategory />,
@@ -105,6 +104,12 @@ export const router = createBrowserRouter([
       },
       { path: "color/add", element: <AddColor /> },
       { path: "color/update/:id", element: <UpdateColor /> },
+      {
+        path: "coupons",
+        element: <ListCoupons />,
+      },
+      { path: "coupons/add", element: <AddCoupons /> },
+      { path: "coupons/update/:id", element: <UpdateCoupons /> },
 
       {
         path: "carts",

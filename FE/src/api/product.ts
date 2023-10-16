@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IProduct } from "@/interface/product";
-// import axios from "axios";
 
 const productApi = createApi({
   reducerPath: "products",
@@ -38,8 +38,8 @@ const productApi = createApi({
           data.append("image", file);
         });
 
-        Array.from(product.images).forEach((file: any) => {
-          data.append("images", file);
+        Array.from(product.thumbnail).forEach((file: any) => {
+          data.append("thumbnail", file);
         });
 
         return {
@@ -52,11 +52,31 @@ const productApi = createApi({
     }),
 
     updateProduct: builder.mutation<IProduct, IProduct>({
-      query: (product) => ({
-        url: `/products/${product._id}`,
-        method: "PATCH",
-        body: product,
-      }),
+      query: (product) => {
+        console.log(product);
+
+        const data = new FormData();
+        data.append("name", product.name);
+        data.append("desc", product.desc);
+        data.append("brand", product.brand);
+        data.append("categoryId", product.categoryId);
+
+        data.append("variants", JSON.stringify(product.variants));
+
+        Array.from(product.image).forEach((file) => {
+          data.append("image", file);
+        });
+
+        Array.from(product.thumbnail).forEach((file: any) => {
+          data.append("thumbnail", file);
+        });
+
+        return {
+          url: `/products/update/${product._id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
       invalidatesTags: ["Product"],
     }),
   }),
