@@ -19,6 +19,7 @@ import productApi, { productReducer } from "../api/product";
 import categoryApi, { categoryReducer } from "../api/category";
 import sizeApi, { sizeReducer } from "../api/size";
 import colorApi, { colorReducer } from "@/api/color";
+import cartApi, { cartReducer } from "@/api/cart";
 
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
@@ -27,6 +28,7 @@ const persistConfig = {
   whitelist: ["cart"],
 };
 const rootReducer = combineReducers({
+  [cartApi.reducerPath]: cartReducer,
   [productApi.reducerPath]: productReducer,
   [categoryApi.reducerPath]: categoryReducer,
   [sizeApi.reducerPath]: sizeReducer,
@@ -42,6 +44,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat(
+      cartApi.middleware,
       productApi.middleware,
       categoryApi.middleware,
       sizeApi.middleware,
