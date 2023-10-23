@@ -26,7 +26,7 @@ const ProductList = () => {
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4"> Members' Exclusive</h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase"> dành riêng cho thành viên</h1>
       </div>
       <section
         id="Projects"

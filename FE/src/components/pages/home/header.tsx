@@ -53,6 +53,7 @@ const Header = () => {
                 className="text-sm leading-none dark:text-gray-300 dark:bg-gray-900 text-gray-600 focus:outline-none"
               />
             </div>
+            
             <div className="space-x-6">
               <button
                 aria-label="go to cart"
@@ -96,6 +97,7 @@ const Header = () => {
               </button>
             </div>
           </div>
+
           <div className="dark:bg-gray-900 bg-gray-50">
             <div className="container mx-auto flex items-center justify-between ">
               <h1
@@ -113,33 +115,30 @@ const Header = () => {
                 </Link>
               </h1>
               <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8 ">
-                <li className="dropdown inline-block relative">
-                  <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
-                    <span className="mr-1 hover:underline">New & Featured</span>
-                  </button>
-                </li>
+              
                 {data?.map((category: ICategory) => (
                   <li className="dropdown inline-block relative">
                     <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
-                      <Link to={`${category.name}/${category._id}`}>
-                        <span className="mr-1 hover:underline">
+                      <Link to={`${category.slug}/${category._id}`}>
+                        <span className="mr-1 hover:underline uppercase font-bold">
                           {category.name}
                         </span>
                       </Link>
                     </button>
                   </li>
                 ))}
+                  <li className="dropdown inline-block relative">
+                  <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
+                    <span className="mr-1 hover:underline font-bold uppercase">Sắp & Mới ra mắt</span>
+                  </button>
+                </li>
 
                 <li className="dropdown inline-block relative">
                   <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1 hover:underline">Sale</span>
+                    <span className="mr-1 hover:underline uppercase font-bold">Giảm giá</span>
                   </button>
                 </li>
-                <li className="dropdown inline-block relative ">
-                  <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1 hover:underline">Support</span>
-                  </button>
-                </li>
+                
               </ul>
 
               <div className="md:w-2/12 justify-end flex items-center space-x-4 xl:space-x-8 pr-8">
@@ -378,9 +377,9 @@ const Header = () => {
                 <li onClick={() => setShowMenu(false)} aria-label="close menu">
                   <Link
                     to="/"
-                    className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
+                    className="dark:text-white uppercase flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
-                    Home
+                    Trang Chủ
                     <div>
                       <svg
                         className="fill-stroke text-black dark:text-white"
@@ -401,64 +400,24 @@ const Header = () => {
                     </div>
                   </Link>
                 </li>
-                <li onClick={() => setShowMenu(false)} aria-label="close menu">
-                  <Link
-                    to="/menPage"
-                    className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
-                  >
-                    Men
-                    <div>
-                      <svg
-                        className="fill-stroke text-black dark:text-white"
-                        width={12}
-                        height={12}
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M4.5 3L7.5 6L4.5 9"
-                          stroke="currentColor"
-                          strokeWidth="0.75"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  </Link>
-                </li>
-                <li onClick={() => setShowMenu(false)} aria-label="close menu">
-                  <Link
-                    to="/women"
-                    className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
-                  >
-                    Women
-                    <div>
-                      <svg
-                        className="fill-stroke text-black dark:text-white"
-                        width={12}
-                        height={12}
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M4.5 3L7.5 6L4.5 9"
-                          stroke="currentColor"
-                          strokeWidth="0.75"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  </Link>
-                </li>
+                {data?.map((category: ICategory) => (
+                  <li onClick={() => setShowMenu(false)} aria-label="close menu">
+                    <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
+                      <Link to={`${category.slug}/${category._id}`}>
+                        <span className="mr-1 hover:underline uppercase ">
+                          {category.name}
+                        </span>
+                      </Link>
+                    </button>
+                  </li>
+                ))}
+                
                 <li onClick={() => setShowMenu(false)} aria-label="close menu">
                   <Link
                     to="/kids"
-                    className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
+                    className="dark:text-white uppercase flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
-                    Kisd
+                    Giảm giá
                     <div>
                       <svg
                         className="fill-stroke text-black dark:text-white"
@@ -482,9 +441,9 @@ const Header = () => {
                 <li onClick={() => setShowMenu(false)} aria-label="close menu">
                   <Link
                     to=""
-                    className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
+                    className="dark:text-white uppercase flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                   >
-                    Support
+                    Hộ trợ
                     <div>
                       <svg
                         className="fill-stroke text-black dark:text-white"
@@ -546,7 +505,7 @@ const Header = () => {
                         />
                       </svg>
                     </div>
-                    <p className="text-base">Cart</p>
+                    <p className="text-base uppercase">Giỏ hàng</p>
                   </Link>
                 </li>
                 <li>
@@ -557,7 +516,7 @@ const Header = () => {
                     <div className="fill-stroke text-2xl">
                       <AiOutlineUser />
                     </div>
-                    <p className="text-base">SignIn</p>
+                    <p className="text-base uppercase">Đăng nhập</p>
                   </a>
                 </li>
               </ul>

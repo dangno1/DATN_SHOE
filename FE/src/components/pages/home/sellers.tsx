@@ -1,6 +1,7 @@
 import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Seller = () => {
   const { data } = useGetProductsQuery();
@@ -25,16 +26,15 @@ const Seller = () => {
     <div className=" 2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
       <div className="flex items-center justify-between r">
         <div className="items-center text-cente gap-12">
-          <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl ">
-            Outstanding Products
+          <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl uppercase ">
+            Sản phẩm nổi bật
           </h2>
         </div>
-        <a
-          href="#"
-          className="inline-block rounded-lg border bg-white px-4 py-2 text-center text-sm font-semibold  outline-none ring-indigo-300 transition duration-100 hover:text-white hover:bg-black focus-visible:ring active:bg-gray-200 md:px-8 md:py-3 md:text-base"
+        <Link to="/products"
+          className="inline-block rounded-lg border bg-white px-4 py-2 uppercase text-center text-sm font-semibold  outline-none ring-indigo-300 transition duration-100 hover:text-white hover:bg-black focus-visible:ring active:bg-gray-200 md:px-8 md:py-3 md:text-base"
         >
-          See More
-        </a>
+          xem thêm
+        </Link>
       </div>
       <div className=" grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 lg:grap-8 md:gap-6 gap-4 mt-10">
         {alex?.map((product:IProduct)=>(

@@ -24,7 +24,7 @@ const ProductList2 = () => {
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4"> Other Products Of The Shop</h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase"> các sản phẩm khác của Website</h1>
       </div>
       <section
         id="Projects"

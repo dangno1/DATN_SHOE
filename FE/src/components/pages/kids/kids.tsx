@@ -1,10 +1,10 @@
 import Kidcontent from "./kidcontent";
-import Kiditem from "./kiditem";
+// import Kiditem from "./kiditem";
 const Kids = () => {
   return (
     <div>
       <Kidcontent />
-      <Kiditem />
+      {/* <Kiditem /> */}
     </div>
   );
 };

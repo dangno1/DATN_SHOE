@@ -11,7 +11,7 @@ const Footer = () => {
             Copyright © 2021 Sneaker
           </p>
           <p className="text-sm leading-none text-gray-800 mt-4">
-            All rights reserved
+          Đã đăng ký Bản quyền
           </p>
           <div className="flex items-center gap-x-4 mt-12">
             <div className="opacity-50 w-8 h-8 flex-shrink-0 bg-gray-800 cursor-pointer hover:bg-gray-700 rounded-full flex items-center justify-center">
@@ -82,39 +82,43 @@ const Footer = () => {
         </div>
         <div className="sm:ml-0 ml-8">
           <h2 className="text-base font-semibold leading-4 text-gray-800">
-            Company
+            Công Ty
           </h2>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
             Blog
           </p>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            Pricing
+            Định Giá
           </p>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            About Us
+            Về Chúng Tôi
           </p>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            Contact us
+            Liên Hệ Chúng Tôi
           </p>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            Testimonials
+            Lời Chứng Thực
           </p>
         </div>
         <div>
           <h2 className="text-base font-semibold leading-4 text-gray-800">
-            Support
+            Hỗ trợ
           </h2>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            Legal policy
+            Chính Sách Pháp Luật
           </p>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            Status policy
+          Chính Sách Trạng Thái
+
+
           </p>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            Privacy policy
+          Chính Sách Bảo Mật
+
+
           </p>
           <p className="hover:text-gray-500 text-base leading-4 mt-6 text-gray-800 cursor-pointer">
-            Terms of service
+          Điều Khoản Dịch Vụ
           </p>
         </div>
 

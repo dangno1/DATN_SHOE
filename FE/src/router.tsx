@@ -34,37 +34,10 @@ import UpdateCategory from "./features/category/pages/updateCategory";
 import AddCoupons from "./features/coupons/pages/addCoupons";
 import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
-// import ProductList from "./components/pages/home/productList";
+import Products from "./components/pages/home/prouducts";
+
 
 export const router = createBrowserRouter([
-  // {
-  //   path: "/",
-  //   element: <LayoutWebsite />,
-  //   children: [
-  //     { index: true, element: <HomePage /> },
-  //     { path: "menPage", element: <Men /> },
-  //     { path: "detail", element: <Detail /> },
-  //     {
-  //       path: "signin",
-  //       element: <Signin />,
-  //     },
-  //     {
-  //       path: "signup",
-  //       element: <Signup />,
-  //     },
-  //   ],
-  // },
-  // {
-  //   path: "/admin",
-  //   element: <LayoutAdmin />,
-  //   children: [
-  //     { index: true, element: <Navigate to="dashboard" /> },
-  //     {
-  //       path: "dashboard",
-  //       element: <Dashboard />,
-  //     },
-  //   ],
-  // },
 
   {
     path: "/",
@@ -76,6 +49,7 @@ export const router = createBrowserRouter([
       { path: "detail", element: <Detail /> },
       { path: "Kids/:id", element: <Kids /> },
       { path: "Women/:id", element: <Women /> },
+      {path: "products", element:<Products/>},
       {
         path: "signin",
         element: <Signin />,
