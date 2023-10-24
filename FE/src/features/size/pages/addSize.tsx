@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate } from "react-router-dom";
 import { useAddSizeMutation } from "@/api/size";
@@ -18,14 +19,6 @@ import { Alert, Stack } from "@mui/material";
 
 const AddSize = () => {
   const [addSize, { isLoading, isSuccess }] = useAddSizeMutation();
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const navigate = useNavigate();
   const {
@@ -36,6 +29,15 @@ const AddSize = () => {
   } = useForm<ISize>({
     resolver: joiResolver(sizeSchema),
   });
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
+  useEffect(() => {
+    isSuccess && setOpenAlert(isSuccess);
+    closeAlertTimeout = setTimeout(() => {
+      setOpenAlert(false);
+    }, 3000);
+    return () => clearTimeout(closeAlertTimeout);
+  }, [isSuccess]);
 
   const onSubmit = (data: ISize) => {
     addSize(data);

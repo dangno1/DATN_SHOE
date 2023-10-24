@@ -6,9 +6,8 @@ import HomePage from "./components/pages/home/homePage";
 import Dashboard from "./components/pages/admin/dashboard";
 import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
-import List from "./features/products/components/list";
-import AddProduct from "./features/products/pages/add";
-import UpdateProduct from "./features/products/components/update";
+import AddProduct from "./features/products/pages/addProduct";
+import UpdateProduct from "./features/products/pages/updateProduct";
 import AddSize from "./features/size/pages/addSize";
 import UpdateSize from "./features/size/pages/updateSize";
 import UpdateColor from "./features/color/pages/updateColor";
@@ -35,6 +34,7 @@ import AddCoupons from "./features/coupons/pages/addCoupons";
 import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
 import Products from "./components/pages/home/prouducts";
+import ListProduct from "./features/products/components/list";
 
 
 export const router = createBrowserRouter([
@@ -84,7 +84,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "product",
-        element: <List />,
+        element: <ListProduct />,
       },
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },

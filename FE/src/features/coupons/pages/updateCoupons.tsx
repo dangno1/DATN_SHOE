@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -20,15 +21,17 @@ const UpdateCoupons = () => {
   const { data } = useGetCouponsQuery<{ data: ICoupons }>(String(id));
 
   const [update, { isLoading, isSuccess }] = useUpdateCouponsMutation();
+  const [openAlert, setOpenAlert] = useState(false);
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
   useEffect(() => {
     isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
     closeAlertTimeout = setTimeout(() => {
       setOpenAlert(false);
     }, 3000);
     return () => clearTimeout(closeAlertTimeout);
   }, [isSuccess]);
-  const [openAlert, setOpenAlert] = useState(false);
+
   const navigate = useNavigate();
   const {
     register,
