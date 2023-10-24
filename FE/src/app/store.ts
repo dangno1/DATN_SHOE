@@ -19,6 +19,7 @@ import productApi, { productReducer } from "../api/product";
 import categoryApi, { categoryReducer } from "../api/category";
 import sizeApi, { sizeReducer } from "../api/size";
 import colorApi, { colorReducer } from "@/api/color";
+import userApi, { authReducer } from "@/api/auth";
 import cartApi, { cartReducer } from "@/api/cart";
 import couponsApi, { couponsReducer } from "@/api/coupons";
 import orderedProductApi, { orderedProductReducer } from "@/api/orderedProduct";
@@ -31,6 +32,7 @@ const persistConfig = {
   whitelist: ["cart"],
 };
 const rootReducer = combineReducers({
+  [userApi.reducerPath]:authReducer,
   [cartApi.reducerPath]: cartReducer,
   [productApi.reducerPath]: productReducer,
   [categoryApi.reducerPath]: categoryReducer,
@@ -56,6 +58,8 @@ export const store = configureStore({
       colorApi.middleware,
       couponsApi.middleware,
       orderedProductApi.middleware,
+      userApi.middleware,
+      couponsApi.middleware
     ),
 });
 export type AppDispatch = typeof store.dispatch;

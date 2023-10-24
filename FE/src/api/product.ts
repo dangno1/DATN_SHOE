@@ -37,7 +37,7 @@ const productApi = createApi({
         Array.from(product.image).forEach((file) => {
           data.append("image", file);
         });
-
+        
         Array.from(product.thumbnail).forEach((file: any) => {
           data.append("thumbnail", file);
         });
