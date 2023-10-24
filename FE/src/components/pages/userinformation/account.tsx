@@ -1,4 +1,21 @@
+import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 const Account = () => {
+  const [userData, setUserData] = useState(localStorage);
+  useEffect(() => {
+    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
+    const user = localStorage.getItem('user');
+    if (user) {
+      // Dữ liệu đã được lưu trong localStorage
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+  const handleLogout = () => {
+    // Xóa thông tin người dùng khỏi localStorage
+    localStorage.removeItem('user');
+    window.location.href = '/';
+  }
   return (
     <div>
       <div className="max-w-screen-2xl mx-auto p-14 ">
@@ -15,26 +32,35 @@ const Account = () => {
           <h4 className="customSpacing___7RI69 gl-heading-font-set-standard-14___1p8HS font-bold text-xl pb-5 pt-3">
             THÔNG TIN CHI TIẾT
           </h4>
+          {userData ? (
           <div className="info-item align-items-center">
-            <div>Nguyễn Qúy Minh PH 2 4 6 2 6</div>
-            <div>01-01-2003</div>
-            <div>Giới Tính: Nam</div>
-            <div className="text-blue-500 cursor-pointer">Chỉnh sửa</div>
+            {/* <label>Fullname</label> */}
+            <div>{userData.fullname}</div>
+            {/* <label>Username</label> */}
+            <div>{userData.username}</div>
+            {/* <label>Phone</label> */}
+            <div>{userData.phone}</div>
+            {/* <label>Address</label> */}
+            <div>{userData.address}</div>
+            <div className="text-blue-500 cursor-pointer"><Link to={`/update/${userData._id}`}>Chỉnh sửa</Link> </div>
           </div>
+          ):(
+            <p>Không có thông tin người dùng để hiển thị.</p>
+          )}
           <br />
           <hr />
           <div>
             <h4 className="font-bold text-xl pt-5 pb-3">CHI TIẾT ĐĂNG NHẬP</h4>
             <h5>Email</h5>
-            <div>minhnqph2345@gmail.com</div>
-            <div className="text-blue-500 cursor-pointer">Chỉnh sửa</div>
+            <div>{userData.email}</div>
+            <div className="text-blue-500 cursor-pointer"><Link to={`/update/email/${userData._id}`}>Chỉnh sửa</Link></div>
           </div>
           <br />
           <hr />
           <div>
             <h5 className="font-bold text-xl pt-5 pb-3">Mật khẩu</h5>
-            <div>************</div>
-            <div className="text-blue-500 cursor-pointer">Chỉnh sửa</div>
+            <div>{userData.password}*****************</div>
+            <div className="text-blue-500 cursor-pointer"><Link to={`/changePassword/${userData._id}`}>Chỉnh sửa</Link></div>
           </div>
           <br /> <br />
           <hr />
@@ -52,7 +78,7 @@ const Account = () => {
             </span>
           </div>
           <button className="col-s-12 col-m-6">
-            <span className="gl-icon__wrapper text-red-500 cursor-pointer">Đăng xuất</span>
+            <span onClick={handleLogout} className="gl-icon__wrapper text-red-500 cursor-pointer">Đăng xuất</span>
           </button>
         </div>
       </div>

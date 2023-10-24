@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
-
+import { useEffect, useState } from 'react';
 const Banner = () => {
-  return (
+  const [userData, setUserData] = useState(localStorage);
+
+  useEffect(() => {
+    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
+    const user = localStorage.getItem('user');
+    if (user) {
+      // Dữ liệu đã được lưu trong localStorage, bạn có thể sử dụng nó
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+return (
     <>
       <div className="dark:bg-gray-900 bg-gray-50 ">
         <div className="container mx-auto flex items-center justify-between">
@@ -9,8 +20,8 @@ const Banner = () => {
             className="md:w-2/12 cursor-pointer text-gray-800 dark:text-white"
             aria-label="the Crib."
           >
-            <h1 className="font-bold text-xl">Chào Nguyễn Qúy Minh</h1>
-            <p>50 điểm</p>
+            <h1 className="font-bold text-xl ml-3">Chào {userData.fullname}</h1>
+            <p className="ml-3">50 điểm</p>
           </h1>
           <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8">
             <li className="dropdown inline-block relative">
