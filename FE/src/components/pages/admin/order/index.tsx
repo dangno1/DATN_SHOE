@@ -1,69 +1,232 @@
 import { useState } from 'react';
 
 const index = () => {
+
+
+    interface User {
+        userName: string;
+        email: string;
+        phone: string;
+        image: string;
+    }
+
+    interface OrderItem {
+        ProductName: string;
+        ProductQuantity: number;
+        ProductImage: string;
+        ProductPrice: number;
+        product: string;
+    }
+
+    interface dataOrder {
+        code: string;
+        time: string;
+        total: number;
+        OrderItems: OrderItem[];
+        user: User[];
+        node: string;
+        status: string;
+        id: number;
+    }
     // db
     const dataOrder = [
         {
             "code": "5FHLA$UL",
             "time": "Ngày 6 tháng 1 năm 2022",
             "total": 200,
+            "OrderItems": [
+                {
+                    "ProductName": "Product 1",
+                    "ProductQuantity": 3,
+                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+                    "ProductPrice": 10.99,
+                    "product": "product_id_1"
+                },
+            ],
             "user": [
                 {
+                    "userName": "Quang",
                     "email": "quangnv@gmail.com",
+                    "phone": "0347917363",
                     "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
                 }
             ],
             "node": "che tên đơn hàng",
-            "status": true,
+            "status": "Delivering",
             "id": 1
         },
+
         {
             "code": "5FHLASGS",
             "time": "Ngày 6 tháng 1 năm 2022",
             "total": 200,
+            "OrderItems": [
+                {
+                    "ProductName": "Product 1",
+                    "ProductQuantity": 3,
+                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+                    "ProductPrice": 10.99,
+                    "product": "product_id_1"
+                },
+            ],
             "user": [
                 {
+                    "userName": "Quang",
                     "email": "quangnv@gmail.com",
+                    "phone": "0347917362",
                     "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
                 }
             ],
             "node": "giao nhanh giup toi",
-            "status": true,
-            "id": 1
+            "status": "Returns",
+            "id": 2
         },
         {
             "code": "5FHLAHA",
             "time": "Ngày 6 tháng 1 năm 2022",
             "total": 200,
+            "OrderItems": [
+                {
+                    "ProductName": "Product 1",
+                    "ProductQuantity": 3,
+                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+                    "ProductPrice": 10.99,
+                    "product": "product_id_1"
+                },
+            ],
             "user": [
                 {
+                    "userName": "Quang",
                     "email": "quangnv@gmail.com",
+                    "phone": "0347917361",
                     "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
                 }
             ],
             "node": "che tên đơn hàng",
-            "status": true,
-            "id": 1
+            "status": "Returns",
+            "id": 3
         },
-    ]
-    const [searchCode, setSearchCode] = useState('');
-    const filteredOrders = dataOrder.filter((order) =>
-        order.code.toLowerCase().includes(searchCode.toLowerCase())
-    );
+        {
+            "code": "5FHL@@",
+            "time": "Ngày 6 tháng 1 năm 2022",
+            "total": 200,
+            "OrderItems": [
+                {
+                    "ProductName": "Product 1",
+                    "ProductQuantity": 3,
+                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+                    "ProductPrice": 10.99,
+                    "product": "product_id_1"
+                },
+            ],
+            "user": [
+                {
+                    "userName": "Quang",
+                    "email": "quangnv@gmail.com",
+                    "phone": "0347917360",
+                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+                }
+            ],
+            "node": "che tên đơn hàng",
+            "status": "Delivered",
+            "id": 4
+        },
+    ];
 
+    const [searchCode, setSearchCode] = useState('');
+    const [selectedStatus, setSelectedStatus] = useState('');
+
+    const filteredOrders = dataOrder.filter((order) => {
+        const searchTerm = searchCode.toLowerCase();
+        const codeMatch = order.code.toLowerCase().includes(searchTerm);
+        const phoneMatch = order.user[0].phone.toLowerCase().includes(searchTerm);
+        const emailMatch = order.user[0].email.toLowerCase().includes(searchTerm);
+        const statusMatch = selectedStatus === '' || order.status.toLowerCase() === selectedStatus.toLowerCase();
+        return (codeMatch || phoneMatch || emailMatch) && statusMatch;
+    });
+
+
+    const [isPopupVisible, setPopupVisible] = useState(false);
+
+    const [selectedProduct, setSelectedProduct] = useState<OrderItem | null>(null);
+
+    const openPopup = (product: OrderItem) => {
+        setSelectedProduct(product);
+        setPopupVisible(true);
+    };
+
+
+
+    const closePopup = () => {
+        setPopupVisible(false);
+    };
 
     return (
         <div>
+            {isPopupVisible && (
+                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-2 rounded-md popup">
+                        <button
+                            className="absolute top-1 right-1 p-1 text-gray-500 hover:text-gray-700 rounded-md bg-white"
+                            onClick={closePopup}
+                        >
+                            Đóng
+                        </button>
+                        <div className="text-center">
+                            <div className="text-center">
+                                {selectedProduct && (
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-full h-96 relative">
+                                            <img
+                                                src={selectedProduct.ProductImage}
+                                                alt={selectedProduct.ProductName}
+                                                className="w-full h-full object-contain rounded-md"
+                                            />
+                                        </div>
+                                        <h2 className="text-3xl font-bold text-gray-900 mt-6">
+                                            {selectedProduct.ProductName}
+                                        </h2>
+                                        <p className="text-xl text-gray-600 mt-2">
+                                            Quantity: {selectedProduct.ProductQuantity}
+                                        </p>
+                                        <p className="text-xl text-gray-600">
+                                            Price: {selectedProduct.ProductPrice}đ
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+            }
+
             <div className="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded" >
                 {/* navbar Lọc */}
-                <div className="flex items-center px-8 ">
-                    {/* lọc theo trạng thái */}
-                    <p className="text-green-500">Category Status</p>
-                    <select aria-label="select" className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1">
-                        <option className="text-sm text-indigo-800">Delivering</option>
-                        <option className="text-sm text-indigo-800">Returns</option>
-                        <option className="text-sm text-indigo-800">Delivered successfully</option>
+                <div className="flex items-center px-8">
+                    <p className="text-green-500">Order Status</p>
+                    <select
+                        aria-label="select"
+                        className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
+                        onChange={e => setSelectedStatus(e.target.value)}
+                    >
+                        <option className="text-sm text-indigo-800" value="">
+                            All
+                        </option>
+                        <option className="text-sm text-indigo-800" value="Delivering">
+                            Delivering
+                        </option>
+                        <option className="text-sm text-indigo-800" value="Returns">
+                            Returns
+                        </option>
+                        <option className="text-sm text-indigo-800" value="Delivered">
+                            Delivered successfully
+                        </option>
                     </select>
+                </div>
+
+                <div>
+
                 </div>
                 {/* lọc theo người dùng */}
                 <div>
@@ -80,7 +243,7 @@ const index = () => {
                             <path d="M16.72 17.78a.75.75 0 1 0 1.06-1.06l-1.06 1.06ZM9 14.5A5.5 5.5 0 0 1 3.5 9H2a7 7 0 0 0 7 7v-1.5ZM3.5 9A5.5 5.5 0 0 1 9 3.5V2a7 7 0 0 0-7 7h1.5ZM9 3.5A5.5 5.5 0 0 1 14.5 9H16a7 7 0 0 0-7-7v1.5Zm3.89 10.45 3.83 3.83 1.06-1.06-3.83-3.83-1.06 1.06ZM14.5 9a5.48 5.48 0 0 1-1.61 3.89l1.06 1.06A6.98 6.98 0 0 0 16 9h-1.5Zm-1.61 3.89A5.48 5.48 0 0 1 9 14.5V16a6.98 6.98 0 0 0 4.95-2.05l-1.06-1.06Z"></path>
                         </svg>
                     </div>
-                    <input type="text" className="w-full bg-white pl-2 text-base font-semibold outline-0" placeholder="order code to find"  id="searchInput"
+                    <input type="text" className="w-full bg-white pl-2 text-base font-semibold outline-0" placeholder="order code to find" id="searchInput"
                         value={searchCode}
                         onChange={(e) => setSearchCode(e.target.value)} />
                     <input type="button" value="Search" className="bg-blue-500 p-4 rounded-tr-lg rounded-br-lg text-white font-semibold hover:bg-blue-800 transition-colors" />
@@ -149,7 +312,8 @@ const index = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                                                    <p className="leading-relaxed text-red-500">{order.code}</p>
+                                                    <p onClick={() => openPopup(order.OrderItems[0])} className="leading-relaxed text-red-500">{order.code}
+                                                    </p>
                                                 </td>
                                                 <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.time}</td>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
@@ -166,18 +330,17 @@ const index = () => {
                                                         <img className="object-cover w-8 h-8 rounded-full" src={order.user[0].image} alt={order.user[0].email} />
 
                                                         <div>
-                                                            {/* <h2 className="text-sm font-medium text-gray-800 dark:text-white ">Quang</h2> */}
+                                                            <h2 className="text-sm font-medium text-gray-800 dark:text-white "> {order.user[0].userName} </h2>
+                                                            <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{order.user[0].phone}</p>
                                                             <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{order.user[0].email}</p>
                                                         </div>
                                                     </div>
                                                 </td>
+
                                                 <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.node}</td>
                                                 <td className='px-4 py-4 text-sm whitespace-nowrap'>
                                                     < select id="cars" className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-300">
-                                                        <option value="" className="py-2">waiting for delivery</option>
-                                                        <option value="" className="py-2">are delivering</option>
-                                                        <option value="" className="py-2">Successful delivery</option>
-                                                        <option value="" className="py-2">Returns</option>
+                                                        <option value="" className="py-2">{order.status}</option>
                                                     </select>
                                                 </td>
 
@@ -222,8 +385,11 @@ const index = () => {
                     </a>
                 </div>
             </section>
-        </div>
+        </div >
     )
 }
 
 export default index
+
+
+
