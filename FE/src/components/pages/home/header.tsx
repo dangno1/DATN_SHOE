@@ -2,7 +2,6 @@
 import { useState,useEffect } from "react";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
-import { useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { Link } from "react-router-dom";
 

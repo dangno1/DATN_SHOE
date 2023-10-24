@@ -54,7 +54,7 @@ export const store = configureStore({
       categoryApi.middleware,
       sizeApi.middleware,
       colorApi.middleware,
-      userApi.middleware
+      userApi.middleware,
       couponsApi.middleware
     ),
 });
