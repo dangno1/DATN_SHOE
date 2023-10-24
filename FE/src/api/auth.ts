@@ -23,8 +23,9 @@ const userApi = createApi({
         success: boolean;
         accessToken: string;
         user: {
-          id: any; role: string 
-};
+          id: unknown;
+          role: string;
+        };
       },
       ISignin
     >({
@@ -51,14 +52,43 @@ const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    addUser: builder.mutation<
+      {
+        data: unknown;
+        success: boolean;
+        messages: [];
+        user: { role: string };
+      },
+      IUser
+    >({
+      query: (user) => ({
+        url: `/api/user/addUser`,
+        method: "POST",
+        body: user,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    updateUser: builder.mutation<
+     IUser,
+    IUser
+    >({
+      query: (user) => ({
+        url: `/api/user/updateUser/${user._id}`,
+        method: "PATCH",
+        body: {...user,_id:undefined},
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
-
 export const {
   useGetUserQuery,
   useGetUserByIdQuery,
+  useAddUserMutation,
   useSigninMutation,
   useSignupMutation,
+  useUpdateUserMutation,
 } = userApi;
 export const authReducer = userApi.reducer;
 export default userApi;

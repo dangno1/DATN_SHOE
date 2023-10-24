@@ -19,7 +19,9 @@
     "@mui/material": "^5.14.12",
     "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.8.4",
+    "cookies": "^0.8.0",
     "heroicons": "^2.0.18",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.4",
@@ -32,6 +34,7 @@
   },
   "devDependencies": {
     "@types/hapi__joi": "^17.1.10",
+    "@types/js-cookie": "^3.0.5",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",

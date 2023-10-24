@@ -1,5 +1,8 @@
 export interface IUser{
-    _id:string | number;
+    value: unknown;
+	messages(arg0: string, messages: unknown): unknown;
+	data: IUser;
+    _id?:string | number;
     fullname:string,
     username:string,
     email:string,
@@ -9,4 +12,6 @@ export interface IUser{
     address:string,
     role:string,
     isBlocked:boolean,
+    newPassword:string,
+    oldPassword:string
 }

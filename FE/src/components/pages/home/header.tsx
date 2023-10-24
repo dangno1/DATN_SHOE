@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
@@ -6,6 +6,18 @@ const Header = () => {
   const [searchInput, setSearchInput] = useState(true);
   const [mdOptionsToggle, setMdOptionsToggle] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
+
+  const [userData, setUserData] = useState(localStorage);
+
+  useEffect(() => {
+    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
+    const user = localStorage.getItem('user');
+    if (user) {
+      // Dữ liệu đã được lưu trong localStorage
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
 
   return (
     <div className="dark:bg-gray-900">
@@ -228,10 +240,13 @@ const Header = () => {
                   </button>
                   <button
                     aria-label="go to cart"
-                    className="text-gray-800 dark:hover:text-gray-300 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-2xl"
+                    className="text-gray-800 dark:hover:text-gray-300 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-2xl flex items-center space-x-2"
                   >
                     <Link to="/user">
-                      <AiOutlineUser />
+                    <div className="flex items-center space-x-2">
+                   <AiOutlineUser className="text-4xl" />
+                    <div className="text-xs">{userData.fullname}</div>
+                   </div>
                     </Link>
                   </button>
                 </div>

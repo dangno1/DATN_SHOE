@@ -18,10 +18,11 @@ const Signin = () => {
           alert("Đăng nhập thành công");
           navigate("/");
           console.log(res.user);
-          
+          console.log(localStorage);
         } else if (res.user.role === "admin") {
           alert("Đăng nhập thành công");
           navigate("/admin");
+          console.log(res.user);
         } else {
           alert("Bạn không có quyền truy cập trang này");
         }

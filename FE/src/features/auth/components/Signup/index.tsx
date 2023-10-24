@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { IUser } from "../../../../interface/auth";
 import { useSignupMutation } from "../../../../api/auth";
 
 const Signup = () => {
   const { handleSubmit, register } = useForm<IUser>();
+  const navigate = useNavigate();
+
   const [signup] = useSignupMutation();
 
   const onSubmit = (data: IUser) => {
@@ -13,7 +15,8 @@ const Signup = () => {
       .then((res) => {
         if (res?.data) {
             alert("Đăng ký thành công");
-            console.log("ok");
+            console.log("Đăng ký thành công");
+            navigate("/signin");
           } else {
             console.log("Đăng ký không thành công. Messages:", res.messages);
           }
