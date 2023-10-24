@@ -1,5 +1,6 @@
 import { ICart } from "@/interface/cart";
 import {
+  useDeleteProductCartMutation,
   useGetAllProductCartsQuery,
   useQuantityMinusMutation,
   useQuantityPlusMutation,
@@ -7,9 +8,9 @@ import {
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-
 const BodyCart = () => {
   const { data: carts } = useGetAllProductCartsQuery();
+  const [deleteProductCart] = useDeleteProductCartMutation();
   const [updateQuantityPlus] = useQuantityPlusMutation();
   const [updateQuantityMutation] = useQuantityMinusMutation();
 
@@ -27,6 +28,11 @@ const BodyCart = () => {
     }
     setTotalPrice(totalPrice + itemPrice);
   };
+
+  const deleteCart = (id: ICart) => {
+    deleteProductCart(id);
+    console.log("Xoa Thanh Cong");
+  }
 
   // console.log(checkedItems);
 
@@ -69,7 +75,7 @@ const BodyCart = () => {
                   <div className="pt-2 uppercase">
                     SOLAR GOLD / CORE BLACK / {item?.color}
                   </div>
-                  <div className="pt-5">Product Size</div>
+                  <div className="pt-5">Product Size: {item?.size}</div>
                   <div className="pt-2">
                     Quantity still in stock:
                     <span className="font-medium text-lg">1000</span>
@@ -98,8 +104,8 @@ const BodyCart = () => {
                   </div>
                 </div>
                 <div className="pt-5">
-                  <a className="pl-2">X</a>
-                  <div className="pt-5">
+                  <a className="mr-4 p-1 cursor-pointer flex justify-center items-center bg-red-500 text-white rounded-full hover:bg-red-800" onClick={() => deleteCart(item?._id)}>X</a>
+                  <div className="pt-5 pl-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="27"
@@ -114,7 +120,7 @@ const BodyCart = () => {
                     </svg>
                   </div>
                   <input
-                    className="w-5 h-5 rounded-full mt-32 ml-2 accent-black"
+                    className="w-5 h-5 rounded-full mt-28 ml-2 accent-black"
                     type="checkbox"
                     onChange={(e) =>
                       handleCheckboxChange(e.target.checked, item)
