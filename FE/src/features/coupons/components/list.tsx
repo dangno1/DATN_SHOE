@@ -11,28 +11,33 @@ import {
   CardBody,
   CardFooter,
   IconButton,
-  Input,
 } from "@material-tailwind/react";
 import { Alert, Stack } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import { useGetColorsQuery, useRemoveColorMutation } from "@/api/color";
-import { IColor } from "@/interface/color";
+import * as aiIcon from "react-icons/ai";
+import { useGetAllCouponsQuery, useRemoveCouponsMutation } from "@/api/coupons";
+import { ICoupons } from "@/interface/coupons";
 
-const ListColor = () => {
-  const [deleteColor, { isSuccess }] = useRemoveColorMutation();
-  const navigate = useNavigate()
+// ----------------------------------------------------------------------
+
+const ListCoupons = () => {
+  const [deleteCoupons, { isSuccess }] = useRemoveCouponsMutation();
+  const navigate = useNavigate();
 
   const [openAlert, setOpenAlert] = useState(false);
   const [openDialog, setOpenDialog] = useState<string>("close");
-  const [idColor, setIdColor] = useState<string>("")
-  const { data: colorDatas } = useGetColorsQuery();
-  const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
-  const TABLE_ROWS = colorDatas?.map(
-    ({ _id, value, createdAt, updatedAt }: IColor) =>
-      colorDatas && {
+  const [idCoupons, setIdCoupons] = useState<string>("")
+
+
+  const { data: couponsDatas } = useGetAllCouponsQuery();
+  const TABLE_HEAD = ["Stt", "Value", "Quantity", "CreatedAt", "UpdatedAt", "Action"];
+  const TABLE_ROWS = couponsDatas?.map(
+    ({ _id, value, quantity, createdAt, updatedAt }: ICoupons) =>
+      couponsDatas && {
         _id,
         value,
+        quantity,
         createdAt,
         updatedAt,
       }
@@ -48,12 +53,11 @@ const ListColor = () => {
   }, [isSuccess]);
 
   useEffect(() => {
-    const handleDeleteColor = (id: string) => {
-      openDialog === "delete" && deleteColor(id)
+    const handleDeleteCoupons = (id: string) => {
+      openDialog === "delete" && deleteCoupons(id)
     };
-    handleDeleteColor(idColor)
-  }, [deleteColor, idColor, openDialog])
-
+    handleDeleteCoupons(idCoupons)
+  }, [deleteCoupons, idCoupons, openDialog])
 
 
 
@@ -63,12 +67,9 @@ const ListColor = () => {
         open={true}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description">
-        <muiComponent.DialogTitle id="alert-dialog-title">
-          {"Thông báo quan trọng."}
-        </muiComponent.DialogTitle>
         <muiComponent.DialogContent>
           <muiComponent.DialogContentText id="alert-dialog-description">
-            Xác nhận xóa color.
+            Xác nhận xóa Coupons.
           </muiComponent.DialogContentText>
         </muiComponent.DialogContent>
         <muiComponent.DialogActions>
@@ -91,39 +92,39 @@ const ListColor = () => {
           floated={false}
           shadow={false}
           className="rounded-none space-y-[20px] ">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
+          <div className="grid lg:grid-cols-2 lg:gap-x-[120px] sm:grid-cols-1 ">
             <div>
               <Typography
                 variant="h5"
                 color="blue-gray"
                 className="text-[30px] font-[600]">
-                Danh sách color
+                Danh sách Coupons
               </Typography>
             </div>
-            <div className="flex w-full shrink-0 gap-2 md:w-max ">
-              <div className="w-full md:w-72 relative h-full">
-                <Input
+            <div className="w-full h-full grid lg:grid-cols-4 place-items-center">
+              <div className="w-full relative h-full lg:col-span-3 sm:col-span-2">
+                <input
                   placeholder="Search..."
-                  className="border outline-transparent focus:border-gray-500 border-gray-400 rounded-lg"
+                  className="w-full h-full focus:outline-none border focus:border-gray-700 border-gray-400 rounded-lg px-[20px]"
                 />
                 <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-50%] " />
               </div>
               <Button
                 onClick={() => navigate("add")}
-                className="flex items-center gap-3 bg-black relative pl-[40px]">
-                <muiIcons.AddIcon className="absolute top-[50%] left-[10px] translate-y-[-50%] " />
-                Thêm mới
+                className="bg-black w-max h-full grid grid-cols-3 place-items-center p-0 pr-[10px] ">
+                <aiIcon.AiOutlinePlus className="w-5 h-5" />
+                <div className="col-span-2">Thêm mới</div>
               </Button>
             </div>
           </div>
           {openAlert && (
             <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">Xóa Color thành công</Alert>
+              <Alert severity="success">Xóa Coupons thành công</Alert>
             </Stack>
           )}
         </CardHeader>
         <CardBody className="px-0">
-          <table className="w-full min-w-max table-auto text-left">
+          <table className="w-full table-auto text-left ">
             <thead>
               <tr>
                 {TABLE_HEAD.map((head) => (
@@ -141,7 +142,7 @@ const ListColor = () => {
               </tr>
             </thead>
             <tbody>
-              {TABLE_ROWS?.map((row: IColor, index: number) => {
+              {TABLE_ROWS?.map((row: ICoupons, index: number) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast
                   ? "p-4"
@@ -159,6 +160,11 @@ const ListColor = () => {
                       </div>
                     </td>
                     <td className={classes}>
+                      <div className="flex items-center gap-3 min-w-[200px] ">
+                        <Typography>{row.quantity}</Typography>
+                      </div>
+                    </td>
+                    <td className={classes}>
                       <div className="flex items-center gap-3">
                         <Typography>{row.createdAt}</Typography>
                       </div>
@@ -172,18 +178,18 @@ const ListColor = () => {
                       <div className="grid grid-cols-2 justify-start">
                         <div className="grid grid-cols-2 gap-x-[20px] items-center cursor-pointer">
                           <muiComponent.Tooltip
-                            title="Delete color"
+                            title="Delete Coupons"
                             placement="top">
                             <muiIcons.DeleteSweepOutlinedIcon
                               onClick={() => {
-                                setIdColor(String(row._id))
+                                setIdCoupons(String(row._id))
                                 setOpenDialog("open")
                               }}
                               className="h-5 w-5 text-pink-600 "
                             />
                           </muiComponent.Tooltip>
                           <muiComponent.Tooltip
-                            title="Edit color"
+                            title="Edit Coupons"
                             placement="top">
                             <muiIcons.ModeEditIcon
                               onClick={() => navigate(`update/${row._id}`)}
@@ -235,8 +241,9 @@ const ListColor = () => {
           </Button>
         </CardFooter>
       </Card>
+
     </>
   );
 };
 
-export default ListColor;
+export default ListCoupons;

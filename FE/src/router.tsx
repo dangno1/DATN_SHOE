@@ -6,9 +6,8 @@ import HomePage from "./components/pages/home/homePage";
 import Dashboard from "./components/pages/admin/dashboard";
 import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
-import List from "./features/products/components/list";
-import AddProduct from "./features/products/pages/add";
-import UpdateProduct from "./features/products/components/update";
+import AddProduct from "./features/products/pages/addProduct";
+import UpdateProduct from "./features/products/pages/updateProduct";
 import AddSize from "./features/size/pages/addSize";
 import UpdateSize from "./features/size/pages/updateSize";
 import UpdateColor from "./features/color/pages/updateColor";
@@ -34,17 +33,27 @@ import UpdateCategory from "./features/category/pages/updateCategory";
 import UpdateUser from "./components/pages/admin/user/updateUser";
 import UpdateEmail from "./components/pages/admin/user/updateEmail";
 import ChangePassword from "./components/pages/admin/user/changePassword";
+import AddCoupons from "./features/coupons/pages/addCoupons";
+import UpdateCoupons from "./features/coupons/pages/updateCoupons";
+import ListCoupons from "./features/coupons/components/list";
+import Products from "./components/pages/home/prouducts";
+import ListProduct from "./features/products/components/list";
+
 
 export const router = createBrowserRouter([
+
   {
     path: "/", 
     element: <LayoutWebsite />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "menPage", element: <Men /> },
+      { path: "Men/:id", element: <Men /> },
       { path: "detail", element: <Detail /> },
       { path: "kids", element: <Kids /> },
       { path: "women", element: <Women /> },  
+      { path: "Kids/:id", element: <Kids /> },
+      { path: "Women/:id", element: <Women /> },
+      {path: "products", element:<Products/>},
       {
         path: "cart",
         element: <Cart />,
@@ -91,14 +100,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "product",
-        element: <List />,
+        element: <ListProduct />,
       },
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
-      {
-        path: "size",
-        element: <ListSize />,
-      },
       {
         path: "categoryes",
         element: <ListCategory />,
@@ -120,6 +125,12 @@ export const router = createBrowserRouter([
       },
       { path: "color/add", element: <AddColor /> },
       { path: "color/update/:id", element: <UpdateColor /> },
+      {
+        path: "coupons",
+        element: <ListCoupons />,
+      },
+      { path: "coupons/add", element: <AddCoupons /> },
+      { path: "coupons/update/:id", element: <UpdateCoupons /> },
 
       {
         path: "carts",

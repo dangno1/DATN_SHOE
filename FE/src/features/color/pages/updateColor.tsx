@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -15,18 +16,10 @@ import { useGetColorQuery, useUpdateColorMutation } from "@/api/color";
 import { IColor } from "@/interface/color";
 import colorSchema from "@/schemas/color";
 
-const AddSize = () => {
+const AddColor = () => {
   const { id } = useParams();
   const { data } = useGetColorQuery<{ data: IColor }>(String(id));
   const [update, { isLoading, isSuccess }] = useUpdateColorMutation();
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    let closeAlertTimeout: number;
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
   const [openAlert, setOpenAlert] = useState(false);
   const navigate = useNavigate();
   const {
@@ -37,6 +30,15 @@ const AddSize = () => {
   } = useForm<IColor>({
     resolver: joiResolver(colorSchema),
   });
+
+  let closeAlertTimeout: ReturnType<typeof setTimeout>;
+  useEffect(() => {
+    isSuccess && setOpenAlert(isSuccess);
+    closeAlertTimeout = setTimeout(() => {
+      setOpenAlert(false);
+    }, 3000);
+    return () => clearTimeout(closeAlertTimeout);
+  }, [isSuccess]);
 
   const onSubmit = (data: IColor) => {
     const trimValue = data.value.trim()
@@ -64,7 +66,7 @@ const AddSize = () => {
           </Stack>
         )}
       </CardHeader>
-      <CardBody className="w-[400px] px-0">
+      {data && (<CardBody className="w-[400px] px-0">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="w-full h-full relative">
             <label
@@ -100,8 +102,8 @@ const AddSize = () => {
             </Button>
           </div>
         </form>
-      </CardBody>
+      </CardBody>)}
     </Card>
   );
 };
-export default AddSize;
+export default AddColor;
