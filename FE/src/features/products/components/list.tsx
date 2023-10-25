@@ -1,200 +1,141 @@
-import React, { useState } from "react";
-import { Carousel, Divider, Image, Skeleton, Table } from "antd";
+// import React, { useState } from "react";
+import { Image, Popconfirm, Skeleton, Table, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import type { TableRowSelection } from "antd/es/table/interface";
-import { useGetProductsQuery, useRemoveProductMutation } from "@/api/product";
+import { useGetProductsQuery, useRemoveProductMutation, useUpdateProductMutation } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
-import { MdDeleteSweep } from "react-icons/md";
-import { BiEditAlt } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
+import { HiMiniPencilSquare, HiOutlineTrash, HiPlus } from "react-icons/hi2";
+import { AiOutlineUnorderedList } from "react-icons/ai";
+import { useState } from "react";
+import { BsFillImageFill } from "react-icons/bs";
+import '../index.css'
 
 const ListProduct = () => {
-  const { data: dataProduct } = useGetProductsQuery();
+  const [showTrashCan, setShowTrashCan] = useState(false)
+  const { data: dataProduct } = useGetProductsQuery(showTrashCan);
   const { data: dataCategory } = useGetCategoryesQuery();
-  const [deteteProduct] = useRemoveProductMutation();
-  const naviagate = useNavigate();
+  const [updateProduct, { isLoading }] = useUpdateProductMutation();
+  const [deleteProdcut, { isLoading: isLoadingDelete }] = useRemoveProductMutation();
 
-  const handleDelete = (id: string) => {
-    deteteProduct(id)
-      .unwrap()
-      .then(() => alert("Xóa Thành công"));
+  const navigate = useNavigate();
+
+  const handleTrushCan = async (id: string) => {
+    const product = dataProduct?.find((product: IProduct) => product._id === id)
+    if (product?.isDelete === true) {
+      await deleteProdcut(String(id))
+      notification.success({
+        message: "Xóa thành công",
+        placement: "topRight",
+      });
+      return
+    }
+    await updateProduct({ ...product, isDelete: true } as IProduct)
+    notification.success({
+      message: "Đã di chuyển sản phẩm đến thùng rác",
+      placement: "topRight",
+    });
   };
 
   const columns: ColumnsType<IProduct> = [
     {
-      title: "ID",
-      dataIndex: "index",
-      key: "index",
-      render: (index: string) => <div>{index}</div>,
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (name) => (name ? <Divider>{name}</Divider> : ""),
-    },
-    {
-      title: "Description",
-      dataIndex: "desc",
-      key: "desc",
-      render: (desc) => (desc ? <Divider>{desc}</Divider> : ""),
-    },
-    {
-      title: "Image",
+      title: "Thông tin",
       dataIndex: "image",
       key: "image",
-      render: (image, { name }: IProduct) =>
-        image ? (
-          <Image
-            className="rounded-[10px] bg-slate-300"
-            src={image}
-            alt={name}
-            width={65}
-          />
-        ) : (
-          <div>Không có ảnh</div>
-        ),
+      className: "w-[200px] max-w-max",
+      render: (_, product: IProduct) =>
+        <div className="w-max grid grid-cols-[max-content_max-content] gap-x-[10px] ">
+          {product ? (< Image
+            className="rounded-[10px] bg-slate-300 w-full h-full max-w-[68px]"
+            src={product.image}
+            alt="image"
+          />) : <Skeleton.Node active className="!w-full max-h-[68px] !rounded-[10px]">
+            <BsFillImageFill style={{ fontSize: 40, color: '#bfbfbf' }} />
+          </Skeleton.Node>}
+          <div className="w-max max-h-[68px] grid grid-cols-1 grid-rows-3 items-end mr-5 ">
+            <p title={product.name} className="w-[300px] text-[1rem] font-semibold truncate">{product.name}</p>
+            <p className="w-[300px] text-xs font-semibold truncate">{product.brand}</p>
+            <p className="text-gray-500 text-[10px]">{new Date(product.updatedAt).toLocaleString()}</p>
+          </div>
+        </div>
     },
     {
-      title: "Thumbnail",
-      dataIndex: "thumbnail",
-      key: "thumbnail",
-      render: (thumbnail: string[], { name }: IProduct) => {
-        return (
-          <Carousel
-            arrows={true}
-            dotPosition="bottom"
-            effect="fade"
-            className="w-[65px]">
-            {thumbnail.map((thmbn: string) => (
-              <Image
-                className="rounded-[10px] bg-slate-300"
-                key={thmbn}
-                src={thmbn}
-                alt={name}
-                width={65}
-              />
-            ))}
-          </Carousel>
-        );
-      },
+      title: "Mô tả",
+      dataIndex: "desc",
+      key: "desc",
+      className: "w-[400px] max-w-[400px]  ",
+      render: (desc) => <div dangerouslySetInnerHTML={{ __html: desc }} className="w-full max-h-[87px] overflow-y-auto scroll-hiden cursor-n-resize pr-5" />,
     },
     {
-      title: "Brand",
-      dataIndex: "brand",
-      key: "brand",
-      render: (brand) => (brand ? <Divider>{brand}</Divider> : ""),
-    },
-
-    {
-      title: "Category",
+      title: "Danh mục",
       dataIndex: "categoryId",
       key: "categoryId",
+      align: "center",
       render: (categoryId) => {
         const nameCate = dataCategory?.find(
           (category: ICategory) => category._id === categoryId
         );
-        return categoryId ? <Divider>{nameCate?.name}</Divider> : <Skeleton />;
+        return categoryId && <div>{nameCate?.name}</div>;
       },
     },
     {
-      title: "Action",
+      title: "Hành động",
       dataIndex: "_id",
       key: "_id",
+      align: "center",
+      className: "w-[150px] max-w-[150px]",
       render: (_id: string) =>
-        _id ? (
-          <div className="grid grid-cols-2 place-items-center space-x-2 w-max">
-            <button
-              onClick={() => confirm("Xóa ản phẩm!") && handleDelete(_id)}
-              className="p-2 bg-red-500 rounded-lg text-white grid grid-cols-2 place-items-center">
-              <MdDeleteSweep className="fill-white" />
-              <span>Xóa</span>
-            </button>
-            <button className="p-2 bg-red-500 rounded-lg text-white grid grid-cols-1 place-items-center w-max">
-              <Link
-                to={`update/${_id}`}
-                className="grid grid-cols-2 place-items-center hover:text-white">
-                <BiEditAlt className="fill-white" />
-                Edit
-              </Link>
-            </button>
-          </div>
-        ) : (
-          ""
+        _id && (
+          <div className="w-max m-auto grid grid-cols-3 place-items-center gap-3 cursor-pointer">
+            <Popconfirm
+              title
+              description="Xóa sản phẩm?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+              cancelButtonProps={{ className: "border-slate-400" }}
+              onConfirm={() => handleTrushCan(_id)}
+            >
+              <HiOutlineTrash className="stroke-red-600 w-4 h-4" />
+            </Popconfirm>
+            <HiMiniPencilSquare onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
+            <AiOutlineUnorderedList onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
+          </div >
         ),
     },
   ];
 
-  // Kiểm tra loại cho selectedRowKeys và dataSource
-  const selectedRowKeys: React.Key[] = [];
-  const dataSource: IProduct[] = dataProduct ?? [];
-
-  const [selectedRowKeysState, setSelectedRowKeysState] =
-    useState(selectedRowKeys);
-
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeysState(newSelectedRowKeys);
-  };
-
-  const rowSelection: TableRowSelection<IProduct> = {
-    selectedRowKeys: selectedRowKeysState,
-    onChange: onSelectChange,
-    selections: [
-      Table.SELECTION_ALL,
-      Table.SELECTION_INVERT,
-      Table.SELECTION_NONE,
-      {
-        key: "odd",
-        text: "Select Odd Row",
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return false;
-            }
-            return true;
-          });
-          setSelectedRowKeysState(newSelectedRowKeys);
-        },
-      },
-      {
-        key: "even",
-        text: "Select Even Row",
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return true;
-            }
-            return false;
-          });
-          setSelectedRowKeysState(newSelectedRowKeys);
-        },
-      },
-    ],
-  };
-
-  const tableProps = {
-    rowSelection,
-    columns,
-    dataSource: dataSource?.map((product: IProduct, index: number) => ({
-      key: product._id,
-      index: index + 1,
-      ...product,
-    })),
-  };
+  const dataSource = dataProduct?.map((product: IProduct, index: number) => ({
+    ...product,
+    key: product._id,
+    index,
+  }))
 
   return (
-    <div className="px-[50px]">
-      <Button
-        onClick={() => naviagate("add")}
-        className="my-[10px] float-right capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max font-medium text-white p-2 rounded-lg">
-        Thêm mới sản phẩm
-      </Button>
-      <Table className="w-full max-w-[100vw] relative" {...tableProps} />
+    <div className="mx-5">
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading || isLoadingDelete}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <div className="h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center">
+        <div className="h-full w-max grid items-center font-bold uppercase text-3xl ml-2 text-slate-700">Danh sách sản phẩm</div>
+        <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
+          <Button
+            onClick={() => navigate("add")}
+            variant="contained"
+            className="float-right !font-semibold"
+            startIcon={<HiPlus className="stroke-1" />}
+          >
+            Thêm sản phẩm
+          </Button>
+          <HiOutlineTrash onClick={() => setShowTrashCan(!showTrashCan)} className="stroke-red-500 w-8 h-8 cursor-pointer" />
+        </div>
+      </div>
+      <Table columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} className="w-full max-w-[100vw] relative" />
     </div>
   );
 };

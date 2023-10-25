@@ -10,6 +10,8 @@ export interface IProduct {
   desc: string;
   brand: string;
   categoryId: string;
+  isDelete: boolean;
+  updatedAt: string;
   variants: {
     sizeId: string;
     colorId: string;
