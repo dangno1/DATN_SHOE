@@ -13,18 +13,17 @@ import {
   IconButton,
   Input,
 } from "@material-tailwind/react";
-import { Alert, Stack } from "@mui/material";
 
-import { useEffect, useState } from "react";
 import { useGetCategoryesQuery, useRemoveCategoryMutation } from "@/api/category";
 import { ICategory } from "@/interface/category";
+import { Modal, Popconfirm, notification } from "antd";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { useState } from "react";
 
 const ListCategory = () => {
-  const [deleteCategory, { isSuccess }] = useRemoveCategoryMutation();
+  const [formAdd, setFormAdd] = useState<boolean>(false)
+  const [deleteCategory, { isLoading }] = useRemoveCategoryMutation();
   const navigate = useNavigate();
-  const [openAlert, setOpenAlert] = useState(false);
-  const [openDialog, setOpenDialog] = useState<string>("close");
-  const [idCategory, setIdCategory] = useState<string>("")
 
   const { data: categoryDatas } = useGetCategoryesQuery();
   const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
@@ -38,51 +37,48 @@ const ListCategory = () => {
       }
   );
 
-  let closeAlertTimeout: ReturnType<typeof setTimeout>;
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
 
-  useEffect(() => {
-    const handleDeleteCategory = (id: string) => {
-      openDialog === "delete" && deleteCategory(id)
-    };
-    handleDeleteCategory(idCategory)
-  }, [deleteCategory, idCategory, openDialog])
+  const handleDeleteCategory = async (id: string) => {
+    await deleteCategory(id)
+    notification.success({
+      message: "Xóa category thành công",
+      placement: "topRight",
+    });
+  };
 
   return (
     <>
-      {openDialog === "open" && <muiComponent.Dialog
-        open={true}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description">
-        <muiComponent.DialogTitle id="alert-dialog-title">
-          {"Thông báo quan trọng."}
-        </muiComponent.DialogTitle>
-        <muiComponent.DialogContent>
-          <muiComponent.DialogContentText id="alert-dialog-description">
-            Xác nhận xóa Category.
-          </muiComponent.DialogContentText>
-        </muiComponent.DialogContent>
-        <muiComponent.DialogActions>
-          <Button
-            justify-start="true"
-            onClick={() => setOpenDialog("close")}
-            className="bg-green-600">
-            Thoát
-          </Button>
-          <Button
-            justify-start="true"
-            onClick={() => setOpenDialog("delete")}
-            className="bg-pink-600">
-            Xoá!
-          </Button>
-        </muiComponent.DialogActions>
-      </muiComponent.Dialog>}
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Modal
+        title="Thêm mới category"
+        centered
+        open={formAdd}
+        okButtonProps={{ className: "bg-blue-500 hover:bg-blue-500 active:bg-blue-700" }}
+        onCancel={() => setFormAdd(false)}
+        footer
+      >
+        <form className="w-full px-[20px] grid grid-cols-1 gap-y-[10px] justify-items-end">
+          <Input required className="border border-slate-500 w-full rounded-lg " />
+          <div className="w-max grid grid-cols-2 gap-x-[10px] items-center justify-items-end ">
+            <Button
+              onClick={() => setFormAdd(false)}
+              className="cursor-pointer capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="cursor-pointer capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">
+              Thêm mới
+            </Button>
+          </div>
+        </form>
+      </Modal>
       <Card className="h-full w-full shadow-lg px-[20px] ">
         <CardHeader
           floated={false}
@@ -106,18 +102,13 @@ const ListCategory = () => {
                 <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-50%] " />
               </div>
               <Button
-                onClick={() => navigate("add")}
+                onClick={() => setFormAdd(true)}
                 className="flex items-center gap-3 bg-black relative pl-[40px]">
                 <muiIcons.AddIcon className="absolute top-[50%] left-[10px] translate-y-[-50%] " />
                 Thêm mới
               </Button>
             </div>
           </div>
-          {openAlert && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">Xóa Category thành công</Alert>
-            </Stack>
-          )}
         </CardHeader>
         <CardBody className="px-0">
           <table className="w-full min-w-max table-auto text-left">
@@ -168,17 +159,19 @@ const ListCategory = () => {
                     <td className={classes}>
                       <div className="grid grid-cols-2 justify-start">
                         <div className="grid grid-cols-2 gap-x-[20px] items-center cursor-pointer">
-                          <muiComponent.Tooltip
-                            title="Delete category"
-                            placement="top">
+                          <Popconfirm
+                            title="Delete the task"
+                            description="Are you sure to delete this task?"
+                            okText="Yes"
+                            cancelText="No"
+                            okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+                            cancelButtonProps={{ className: "border-slate-400" }}
+                            onConfirm={() => handleDeleteCategory(String(row._id))}
+                          >
                             <muiIcons.DeleteSweepOutlinedIcon
-                              onClick={() => {
-                                setIdCategory(String(row._id))
-                                setOpenDialog("open")
-                              }}
                               className="h-5 w-5 text-pink-600 "
                             />
-                          </muiComponent.Tooltip>
+                          </Popconfirm>
                           <muiComponent.Tooltip
                             title="Edit category"
                             placement="top">
@@ -231,7 +224,7 @@ const ListCategory = () => {
             Next
           </Button>
         </CardFooter>
-      </Card>
+      </Card >
     </>
   );
 };
