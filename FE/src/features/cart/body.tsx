@@ -1,43 +1,40 @@
+import { ICart } from "@/interface/cart";
+import {
+  useDeleteProductCartMutation,
+  useGetAllProductCartsQuery,
+  useQuantityMinusMutation,
+  useQuantityPlusMutation,
+} from "../../api/cart";
 import { useState } from "react";
-import { useGetAllProductCartsQuery } from "../../api/cart";
+import { Link } from "react-router-dom";
 
 const BodyCart = () => {
   const { data: carts } = useGetAllProductCartsQuery();
-  console.log(carts?.data);
+  const [deleteProductCart] = useDeleteProductCartMutation();
+  const [updateQuantityPlus] = useQuantityPlusMutation();
+  const [updateQuantityMutation] = useQuantityMinusMutation();
 
-  const [totalPrice, setTotalPrice] = useState(0); // State để theo dõi tổng giá trị
+  const [checkedItems, setCheckedItems] = useState<ICart[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  const handleCheckboxChange = (productId: any, price: number) => {
-    // Tạo một bản sao của danh sách sản phẩm
-    const updatedProducts = [...carts?.data];
-
-    // Tìm sản phẩm theo productId trong danh sách
-    const productIndex = updatedProducts.findIndex(
-      (product: any) => product._id === productId
-    );
-
-    if (productIndex !== -1) {
-      // Tìm thấy sản phẩm, thực hiện toggle checked
-      updatedProducts[productIndex] = {
-        ...updatedProducts[productIndex],
-        checked: !updatedProducts[productIndex].checked,
-      };
-
-      // Tính tổng giá trị mới
-      const newTotalPrice = updatedProducts.reduce(
-        (total: any, product: any) => {
-          if (product.checked) {
-            total += product.price * product.quantity;
-          }
-          return total;
-        },
-        0
-      );
-
-      // Cập nhật tổng giá trị
-      setTotalPrice(newTotalPrice);
+  const handleCheckboxChange = (checked: boolean, item: ICart) => {
+    let itemPrice;
+    if (checked) {
+      itemPrice = item.price;
+      setCheckedItems([...checkedItems, item]);
+    } else {
+      itemPrice = -item.price;
+      setCheckedItems(checkedItems.filter((checkedItem) => checkedItem !== item));
     }
+    setTotalPrice(totalPrice + itemPrice);
   };
+
+  const deleteCart = (id: ICart) => {
+    deleteProductCart(id);
+    console.log("Xoa Thanh Cong");
+  }
+
+  // console.log(checkedItems);
 
   return (
     <>
@@ -66,15 +63,10 @@ const BodyCart = () => {
             </div>
           </div>
 
-          {carts?.data.map((item: any) => (
+          {carts?.data.map((item: ICart) => (
             <div className="pt-7" key={item._id}>
               <div className="border border-black gap-3 grid grid-cols-1 lg:grid-cols-[5fr,10fr,1fr]">
-                <img
-                  src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/315c0690b9e24b4ba66bae60012b1921_9366/HA4314_220_HA4314_21_model.jpg.jpg?sh=364&strip=false&sw=364"
-                  alt=""
-                  width={"100%"}
-                  height={"240px"}
-                />
+                <img src={item?.image} alt="" width={"100%"} height={"240px"} />
                 <div className="p-5">
                   <div className="flex justify-between">
                     <p>{item?.productName}</p>
@@ -83,7 +75,7 @@ const BodyCart = () => {
                   <div className="pt-2 uppercase">
                     SOLAR GOLD / CORE BLACK / {item?.color}
                   </div>
-                  <div className="pt-5">Product Size</div>
+                  <div className="pt-5">Product Size: {item?.size}</div>
                   <div className="pt-2">
                     Quantity still in stock:
                     <span className="font-medium text-lg">1000</span>
@@ -92,6 +84,7 @@ const BodyCart = () => {
                     <button
                       className="border border-gray-400 text-black px-2"
                       id="decrement"
+                      onClick={() => updateQuantityMutation(item)}
                     >
                       -
                     </button>
@@ -104,14 +97,15 @@ const BodyCart = () => {
                     <button
                       className="border border-gray-400 text-black px-2"
                       id="increment"
+                      onClick={() => updateQuantityPlus(item)}
                     >
                       +
                     </button>
                   </div>
                 </div>
                 <div className="pt-5">
-                  <a className="pl-2">X</a>
-                  <div className="pt-5">
+                  <a className="mr-4 p-1 cursor-pointer flex justify-center items-center bg-red-500 text-white rounded-full hover:bg-red-800" onClick={() => deleteCart(item?._id)}>X</a>
+                  <div className="pt-5 pl-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="27"
@@ -126,10 +120,11 @@ const BodyCart = () => {
                     </svg>
                   </div>
                   <input
-                    className="w-4 h-4 mt-32 ml-2"
+                    className="w-5 h-5 rounded-full mt-28 ml-2 accent-black"
                     type="checkbox"
-                    checked={item.checked}
-                    onChange={() => handleCheckboxChange(item?._id, item.price)}
+                    onChange={(e) =>
+                      handleCheckboxChange(e.target.checked, item)
+                    }
                   />
                 </div>
               </div>
@@ -247,9 +242,9 @@ const BodyCart = () => {
           </div>
         </div>
         <div className="pt-20 lg:pr-24">
-          <div className="border border-black">
-            <a href="/cartDetail">
-              <div className="bg-black flex justify-between items-center p-1 pl-3 pr-3 mr-1 mb-1">
+          <div className="border border-black rounded-md">
+            <Link to="/cartDetail" state={{ checkedItems }}>
+              <div className="bg-black flex rounded-md justify-between items-center p-1 pl-3 pr-3 mr-1 mb-1">
                 <div className="text-white text-base font-semibold font-sans leading-10">
                   CHECKOUT
                 </div>
@@ -268,7 +263,7 @@ const BodyCart = () => {
                   </svg>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
           <div className="pt-10 text-xl font-semibold font-sans leading-10">
             ORDER SUMMARY
@@ -276,7 +271,7 @@ const BodyCart = () => {
           <div>
             <div className="flex justify-between items-center pt-5">
               <p className="text-gray-800">2 items</p>
-              <span className="text-gray-900">2,250,000₫</span>
+              <span className="text-gray-900">{totalPrice}₫</span>
             </div>
             <div className="flex justify-between items-center pt-5 border-b pb-2">
               <p className="text-gray-800">Delivery</p>
@@ -284,7 +279,7 @@ const BodyCart = () => {
             </div>
             <div className="flex justify-between items-center pt-5">
               <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
-                Total ({carts?.data.length} items){" "}
+                Total
               </p>
               <span className="text-gray-900">{totalPrice}₫</span>
             </div>

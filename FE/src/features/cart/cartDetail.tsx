@@ -1,4 +1,108 @@
+import { useOrderedProductMutation } from "@/api/orderedProduct";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 const CartDetail = () => {
+  const [orderedProduct] = useOrderedProductMutation();
+  const [errors, setErrors] = useState({});
+
+  const location = useLocation();
+  const checkedItems = location.state.checkedItems;
+
+  // user
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    if (checkedItems && checkedItems.length > 0) {
+      const firstItem = checkedItems[0];
+      setName(firstItem.userName);
+      setEmail(firstItem.userEmail);
+      setPhoneNumber(firstItem.phoneNumber);
+      setAddress(firstItem.userAddress);
+    }
+  }, [checkedItems]);
+  let totalPrice = 0;
+  checkedItems.forEach((element: { price: number }) => {
+    totalPrice += element.price;
+  });
+
+  const handleOrder = async () => {
+    setErrors({});
+
+   if (!name || !email || !phoneNumber || !address) {
+    const newErrors = {
+      name: !name ? "Name is required" : null,
+      email: !email ? "Email is required" : null,
+      phoneNumber: !phoneNumber ? "Phone Number is required" : null,
+      address: !address ? "Address is required" : null,
+    };
+
+    if (name) {
+      if (/\d/.test(name)) {
+        newErrors.name = "Name cannot contain numbers";
+      }
+      if (!name.replace(/\s/g, '').length) {
+        newErrors.name = "Name cannot be all whitespace";
+      }
+      if (name.length < 6) {
+        newErrors.name = "Name must be at least 6 characters long";
+      }
+    }
+
+    if (email) {
+      const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+      if (!emailPattern.test(email)) {
+        newErrors.email = "Email is not in a valid format";
+      }
+    }
+
+    if (phoneNumber) {
+      const phoneNumberPattern = /^\d{10}$/;
+      if (!phoneNumberPattern.test(phoneNumber) || phoneNumber.includes(' ')) {
+        newErrors.phoneNumber = "Phone Number is not in a valid format";
+      }
+    }
+
+    setErrors(newErrors);
+    
+    return;
+  }
+    const productsArray = checkedItems.map(
+      (item: {
+        productName: unknown;
+        initialPrice: unknown;
+        price: unknown;
+        image: unknown;
+        color: unknown;
+        size: unknown;
+        quantity: unknown;
+      }) => ({
+        productName: item?.productName,
+        productInitialPrice: item?.initialPrice,
+        productPrice: item?.price,
+        productImage: item?.image,
+        productColor: item?.color,
+        productSize: item?.size,
+        productQuantity: item?.quantity,
+      })
+    );
+
+    const orderData = {
+      userName: name,
+      userEmail: email,
+      userPhone: phoneNumber,
+      userAddress: address,
+      products: productsArray,
+      status: "Chờ Xác Nhận",
+    };
+
+    orderedProduct(orderData);
+    
+  };
+
   return (
     <>
       <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr]  lg:gap-20 pb-32">
@@ -6,32 +110,46 @@ const CartDetail = () => {
           <div className="text-2xl font-semibold font-sans leading-10">
             SHIPPING ADDRESS
           </div>
-          <div className="pt-5 flex gap-5">
+          <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
-              placeholder="First Name"
-            />
-            <input
-              className="border w-full p-4"
-              type="text"
-              placeholder="Last Name"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
+          <div className="text-red-500 pl-1">{errors?.name}</div>
+          <div  className="pt-5">
+            <input
+              className="border w-full p-4"
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="text-red-500 pl-1">{errors?.email}</div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
               placeholder="Phone Number"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </div>
+          <div className="text-red-500 pl-1">{errors?.phoneNumber}</div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
               placeholder="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
             />
           </div>
+          <div className="text-red-500 pl-1">{errors?.address}</div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
@@ -39,6 +157,7 @@ const CartDetail = () => {
               placeholder="Building name/ floor etc"
             />
           </div>
+
           <div className="pt-5 flex gap-5">
             <select className="border w-full p-4 bg-white">
               <option value="1">Province</option>
@@ -174,69 +293,77 @@ const CartDetail = () => {
           </div>
         </div>
         <div className="pt-20 lg:pr-24">
-          <div className="text-xl font-semibold font-sans leading-10">
+          <div className="text-2xl font-semibold font-sans leading-10 pb-5">
+            ORDER DETAILS
+          </div>
+          {checkedItems.map((item: any, index: number) => (
+            <div
+              key={index}
+              className="gap-5 grid grid-cols-[1.5fr,1.5fr] border-b border-gray-500 pb-5 mt-2"
+            >
+              <img src={item?.image} />
+              <div>
+                <div className="text-gray-800 pb-3">
+                  Product Name: {item?.productName}
+                </div>
+                <div className="text-gray-500 pb-3">
+                  Price: ${item.initialPrice}
+                </div>
+                <div className="text-gray-500 pb-3">
+                  Total Price: ${item?.price}
+                </div>
+                <div className="text-gray-500">
+                  Size: {item?.size} / Color: {item?.color}
+                </div>
+                <div className="text-gray-500">Quantity: {item?.quantity}</div>
+              </div>
+            </div>
+          ))}
+
+          <div className="text-2xl font-semibold font-sans leading-10 pt-10">
             ORDER SUMMARY
           </div>
-          <div>
-            <div className="flex justify-between items-center pt-5">
-              <p className="text-gray-800">2 items</p>
-              <span className="text-gray-900">2,250,000₫</span>
+          <div className="flex justify-between items-center pt-5">
+            <p className="text-gray-800">2 items</p>
+            <span className="text-gray-900">${totalPrice}</span>
+          </div>
+          <div className="flex justify-between items-center pt-5 border-b pb-2">
+            <p className="text-gray-800">Delivery</p>
+            <p className="text-gray-900">Free</p>
+          </div>
+
+          <div className="flex justify-between items-center pt-5">
+            <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
+              Total Price
+            </p>
+            <span className="text-gray-900">${totalPrice}</span>
+          </div>
+
+          <div className="mt-10">
+            <div className="font-semibold font-sans leading-10">
+              ACCEPTED PAYMENT METHODS
             </div>
-            <div className="flex justify-between items-center pt-5 border-b pb-2">
-              <p className="text-gray-800">Delivery</p>
-              <p className="text-gray-900">Free</p>
-            </div>
-            <div className="flex justify-between items-center pt-5">
-              <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
-                Total
-              </p>
-              <span className="text-gray-900">₫</span>
-            </div>
-            <div>
-              <div className="pt-10 text-xl font-semibold font-sans leading-10 pb-5">
-                ORDER DETAILS
-              </div>
-              <div className="gap-5 grid grid-cols-[1fr,2fr] border-b border-gray-500 pb-5">
-                <img
-                  src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/cc962094edf145aeb505afa900ef5390_9366/GZ5077_670_GZ5077_22_model.jpg.jpg?sh=364&strip=false&sw=364"
-                  alt=""
-                />
-                <div>
-                  <div className="text-gray-800 pb-3">
-                    Giày Đá Bóng Firm Ground X S
-                  </div>
-                  <div className="text-gray-500 pb-3">2,100,000₫</div>
-                  <div className="text-gray-500">
-                    Size: 10.5 UK / Color: Solar Gold
-                  </div>
-                  <div className="text-gray-500">Quantity: 1</div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-10">
-              <div className="font-semibold font-sans leading-10">
-                ACCEPTED PAYMENT METHODS
-              </div>
-              <div className="flex pt-2 gap-2">
-                <img
-                  src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-visa.svg"
-                  alt=""
-                />
-                <img
-                  src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-master-card.svg"
-                  alt=""
-                />
-                <img
-                  src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-cash-on-delivery.svg"
-                  alt=""
-                />
-              </div>
+            <div className="flex pt-2 gap-2">
+              <img
+                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-visa.svg"
+                alt=""
+              />
+              <img
+                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-master-card.svg"
+                alt=""
+              />
+              <img
+                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-cash-on-delivery.svg"
+                alt=""
+              />
             </div>
           </div>
-          <input
-            type="submit"
-            className="hover:bg-blue-900 mt-10 border w-full p-2 bg-blue-400 text-white"
-          />
+          <button
+            onClick={handleOrder}
+            className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black"
+          >
+            BUY
+          </button>
           <div className="text-2xl pt-10 font-semibold font-sans leading-10">
             Sign In
           </div>
@@ -261,7 +388,7 @@ const CartDetail = () => {
               placeholder="Comfirm password"
             />
           </div>
-          <button className="hover:bg-blue-900 mt-10 border w-full p-4 bg-blue-400 text-white">
+          <button className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black">
             Sign Up
           </button>
         </div>

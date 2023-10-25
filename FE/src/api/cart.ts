@@ -1,19 +1,47 @@
+import { ICart } from "@/interface/cart";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const cartApi = createApi({
   reducerPath: "carts",
-  tagTypes: ["Carts"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: "http://localhost:8000/api", 
   }),
+  tagTypes: ["Carts"],
   endpoints: (builder) => ({
-    getAllProductCarts: builder.query<any, void>({
+    getAllProductCarts: builder.query<ICart, void>({
       query: () => "/cart",
       providesTags: ["Carts"],
     }),
+
+    quantityPlus: builder.mutation<ICart, Partial<ICart>>({
+      query: (cart) => ({
+        url: `/cart/updatePlus/${cart._id}`,
+        method: "PATCH",
+        body: cart,
+      }),
+      invalidatesTags: ["Carts"],
+    }),
+
+    quantityMinus: builder.mutation<ICart, Partial<ICart>>({
+      query: (cart) => ({
+        url: `/cart/updateMinus/${cart._id}`,
+        method: "PATCH",
+        body: cart,
+      }),
+      invalidatesTags: ["Carts"],
+    }),
+
+    deleteProductCart: builder.mutation<ICart, Partial<ICart>>({
+      query: (_id) => ({
+        url: `/cart/delete/${_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Carts"],
+    })
+
   }),
 });
 
-export const { useGetAllProductCartsQuery } = cartApi;
+export const { useDeleteProductCartMutation ,useGetAllProductCartsQuery, useQuantityPlusMutation, useQuantityMinusMutation } = cartApi;
 export const cartReducer = cartApi.reducer;
 export default cartApi;

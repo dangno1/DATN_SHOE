@@ -1,5 +1,15 @@
+import { useGetCategoryQuery } from "@/api/category";
+import { IProduct } from "@/interface/product";
 import { BsBagPlus } from "react-icons/bs";
+import { useParams } from "react-router-dom";
+
 const Kidcontent = () => {
+ const {id} = useParams<{id: string}>()
+ console.log(id);
+ const {data} = useGetCategoryQuery(id || "")
+ console.log(data);
+ 
+ 
   return (
     <>
       <div className="container max-w-full mx-auto  py-12 px-4 sm:px-6 lg:px-8 ">
@@ -24,330 +34,51 @@ const Kidcontent = () => {
 
       <div className=" mx-auto max-w-full py-12 px-4 sm:px-6 lg:px-8">
         <div className="p-8">
-          <p className="text-center font-medium ">Nike Air Max 1 EasyOn</p>
-          <h1 className="font-bold text-6xl mb-4 text-center">
-            THE ICON MADE EASY
+          <h1 className="font-bold text-6xl mb-4 text-center uppercase">
+          Giày trẻ em
           </h1>
-          <p className="text-center font-normal ">
-            The kids-exclusive Air Max 1 EasyOn reimagines lacing for an easier
-            way to slip into a classic style.
+          <p className="text-center font-normal  text-2xl ">
+          Mickey and Friends từ Disney mang đến nét vui nhộn cho bộ sưu tập mới cho trẻ em
           </p>
         </div>
         <div className="pt-6">
-          {/* <h1 className="font-medium text-3xl mb-4 container">Trending Now</h1> */}
-          {/* <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-4">
-            <div className="">
-              <img
-                src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/opavkaqigvbakxn3e6c1/pico-5-shoes-QQ5g1N.png"
-                alt=""
-              />
-              <div className="grid grid-cols-2 gap-2 gap-y-0">
-                <p className="font-medium ">Nike Pico 5</p>
-                <p className="text-right">200$</p>
-                <p>Baby & Toddler Shoes</p>
-              </div>
-            </div>
-            <div className="">
-              <img
-                src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/1eb2983b-1f14-4e9e-a19d-e97b359add69/lebron-witness-7-se-younger-shoes-b3bwxf.png"
-                alt=""
-              />
-              <div className="grid grid-cols-2 gap-2 gap-y-0">
-                <p className="font-medium ">Nike Pico 5</p>
-                <p className="text-right">200$</p>
-                <p>Baby & Toddler Shoes</p>
-              </div>
-            </div>
-            <div className="">
-              <img
-                src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/b2b9d315-d9e2-4ada-b9b9-73875fc283ae/lebron-witness-7-younger-shoes-QDJM6D.png"
-                alt=""
-              />
-              <div className="grid grid-cols-2 gap-2 gap-y-0">
-                <p className="font-medium ">Nike Pico 5</p>
-                <p className="text-right">200$</p>
-                <p>Baby & Toddler Shoes</p>
-              </div>
-            </div>
-            <div className="">
-              <img
-                src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/b2b9d315-d9e2-4ada-b9b9-73875fc283ae/lebron-witness-7-younger-shoes-QDJM6D.png"
-                alt=""
-              />
-              <div className="grid grid-cols-2 gap-2 gap-y-0">
-                <p className="font-medium ">Nike Pico 5</p>
-                <p className="text-right">200$</p>
-                <p>Baby & Toddler Shoes</p>
-              </div>
-            </div>
-            <div className="">
-              <img
-                src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/b2b9d315-d9e2-4ada-b9b9-73875fc283ae/lebron-witness-7-younger-shoes-QDJM6D.png"
-                alt=""
-              />
-              <div className="grid grid-cols-2 gap-2 gap-y-0">
-                <p className="font-medium ">Nike Pico 5</p>
-                <p className="text-right">200$</p>
-                <p>Baby & Toddler Shoes</p>
-              </div>
-            </div>
-            <div className="">
-              <img
-                src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/b2b9d315-d9e2-4ada-b9b9-73875fc283ae/lebron-witness-7-younger-shoes-QDJM6D.png"
-                alt=""
-              />
-              <div className="grid grid-cols-2 gap-2 gap-y-0">
-                <p className="font-medium ">Nike Pico 5</p>
-                <p className="text-right">200$</p>
-                <p>Baby & Toddler Shoes</p>
-              </div>
-            </div>
-          </div> */}
           <section
             id="Projects"
             className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14"
           >
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/0f108327ea874f9b93fdaf20014a38e5_9366/gi%C3%A0y-rivalry-low.jpg"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    Nam Originals
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Rivalry Low
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/1eb2983b-1f14-4e9e-a19d-e97b359add69/lebron-witness-7-se-younger-shoes-b3bwxf.png"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    Nam Originals
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Adventure Mocaturf
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/9665de88e0c647758f16aeba00f81924_9366/gi%C3%A0y-adventure-rovermule.jpg"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    {" "}
-                    Nam Originals{" "}
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Adventure Rovermule
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/ba26a81a-9557-442e-927c-82675cc79f50/force-1-le-younger-shoe-rg3gD7.png"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    Nam Chạy
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Pureboost 22
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_579,c_limit/33599edd-49ac-4f2f-b82c-f3552aee843c/nike-kids.png"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    Nam Originals
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Rivalry Low
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_451,c_limit/dfe74f40-d240-4edc-9a1c-2ddcf4e7812a/nike-kids.png"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    Nam Originals
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Rivalry Low
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_451,c_limit/a5b65e64-3b64-4381-ae84-9037c5432bb5/nike-kids.png"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    Nam Originals
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Rivalry Low
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
-                <img
-                  src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/h_451,c_limit/1f070ea0-2a73-44dd-8a70-e43256e231ab/flex-runner-2-older-road-running-shoes-RJPdh4.png"
-                  alt="Product"
-                  className="h-80 w-72 object-cover rounded-t-xl"
-                />
-                <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    Nam Originals
-                  </span>
-                  <p className="text-lg font-bold text-black truncate block capitalize">
-                    Giày Rivalry Low
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                      $149
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        $199
-                      </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
+           {data?.products.map((product: IProduct)=>(
+             <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+             <a href="#">
+               <img
+                 src={product?.image}
+                 alt="Product"
+                 className="h-80 w-72 object-cover rounded-t-xl"
+               />
+               <div className="px-4 py-3 w-72">
+                 <span className="text-gray-400 mr-3 uppercase text-xs">
+                 {product?.brand}
+                 </span>
+                 <p className="text-lg font-bold text-black truncate block capitalize hover:underline">
+                 {product?.name}
+                 </p>
+                 <div className="flex items-center">
+                   <p className="text-lg font-semibold text-black cursor-auto my-3">
+                   {product?.variants[0].price}
+                   </p>
+                   <del>
+                     <p className="text-sm text-gray-600 cursor-auto ml-2">
+                       $199
+                     </p>
+                   </del>
+                   <div className="ml-auto font-bold text-2xl">
+                     <BsBagPlus />
+                   </div>
+                 </div>
+               </div>
+             </a>
+           </div>
+           ))}
+
           </section>
         </div>
       </div>
@@ -355,7 +86,7 @@ const Kidcontent = () => {
       <div className=" mx-auto max-w-full py-12 px-4 sm:px-6 lg:px-8">
         <div>
           <div className="pt-6">
-            <h1 className="font-medium text-3xl mb-4">Featured</h1>
+            <h1 className="font-medium text-3xl mb-4  hover:underline">Nổi Bật</h1>
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-4">
               <div className="">
                 <img
@@ -372,254 +103,6 @@ const Kidcontent = () => {
                     alt=""
                   />
                 </div>
-                {/* <div className="pt-6">
-                  <section
-                    id="Projects"
-                    className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14"
-                  >
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/0f108327ea874f9b93fdaf20014a38e5_9366/gi%C3%A0y-rivalry-low.jpg"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            Nam Originals
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Rivalry Low
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/1eb2983b-1f14-4e9e-a19d-e97b359add69/lebron-witness-7-se-younger-shoes-b3bwxf.png"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            Nam Originals
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Adventure Mocaturf
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://assets.adidas.com/images/w_280,h_280,f_auto,q_auto:sensitive/9665de88e0c647758f16aeba00f81924_9366/gi%C3%A0y-adventure-rovermule.jpg"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            {" "}
-                            Nam Originals{" "}
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Adventure Rovermule
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/w_579,c_limit/ba26a81a-9557-442e-927c-82675cc79f50/force-1-le-younger-shoe-rg3gD7.png"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            Nam Chạy
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Pureboost 22
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_579,c_limit/33599edd-49ac-4f2f-b82c-f3552aee843c/nike-kids.png"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            Nam Originals
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Rivalry Low
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_451,c_limit/dfe74f40-d240-4edc-9a1c-2ddcf4e7812a/nike-kids.png"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            Nam Originals
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Rivalry Low
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/w_451,c_limit/a5b65e64-3b64-4381-ae84-9037c5432bb5/nike-kids.png"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            Nam Originals
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Rivalry Low
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-                      <a href="#">
-                        <img
-                          src="https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/h_451,c_limit/1f070ea0-2a73-44dd-8a70-e43256e231ab/flex-runner-2-older-road-running-shoes-RJPdh4.png"
-                          alt="Product"
-                          className="h-80 w-72 object-cover rounded-t-xl"
-                        />
-                        <div className="px-4 py-3 w-72">
-                          <span className="text-gray-400 mr-3 uppercase text-xs">
-                            Nam Originals
-                          </span>
-                          <p className="text-lg font-bold text-black truncate block capitalize">
-                            Giày Rivalry Low
-                          </p>
-                          <div className="flex items-center">
-                            <p className="text-lg font-semibold text-black cursor-auto my-3">
-                              $149
-                            </p>
-                            <del>
-                              <p className="text-sm text-gray-600 cursor-auto ml-2">
-                                $199
-                              </p>
-                            </del>
-                            <div className="ml-auto font-bold text-2xl">
-                              <BsBagPlus />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  </section>
-                </div> */}
                 <div>
                   <img
                     className="w-full h-full"
