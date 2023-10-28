@@ -27,12 +27,12 @@ const AddAdmin = () => {
 		<form className="bg-white p-10 " onSubmit={handleSubmit(onSubmit)}>
 			<h1 className="text-center text-2xl mb-4 text-gray-600 font-bold font-sans">Thêm Admin</h1>
             <div>
-				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="username">Fullname</label>
+				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="username">Họ Và Tên</label>
 				<input {...register("fullname")} className="w-full bg-gray-100 px-4 py-2 rounded-lg focus:outline-none" type="text" name="fullname" id="fullname" placeholder="fullname" 
 				/>
       </div>
 			<div>
-				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="username">Username</label>
+				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="username">Tên tài khoản</label>
 				<input {...register("username")} className="w-full bg-gray-100 px-4 py-2 rounded-lg focus:outline-none" type="text" name="username" id="username" placeholder="username" 
 				/>
       </div>
@@ -42,22 +42,22 @@ const AddAdmin = () => {
 					/>
       </div>
       <div>
-				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="phone">Phone</label>
+				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="phone">Số điện thoại</label>
 				<input {...register("phone")} className="w-full bg-gray-100 px-4 py-2 rounded-lg focus:outline-none" type="text" name="phone" id="phone" placeholder="phone" 
 				/>
       </div>
       <div>
-				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="address">Address</label>
+				<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="address">Địa chỉ</label>
 				<input {...register("address")} className="w-full bg-gray-100 px-4 py-2 rounded-lg focus:outline-none" type="text" name="address" id="address" placeholder="address" 
 				/>
       </div>
 					<div>
-						<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="password">Password</label>
+						<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="password">Mật khẩu</label>
 						<input {...register("password")} className="w-full bg-gray-100 px-4 py-2 rounded-lg focus:outline-none" type="text" name="password" id="password" placeholder="password" 
 						/>
       </div>
 						<div>
-							<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="confirm">Confirm password</label>
+							<label className="text-gray-800 font-semibold block my-2 text-md" htmlFor="confirm">Xác nhận lại mật khẩu</label>
 							<input {...register("confirmPassword")} className="w-full bg-gray-100 px-4 py-2 rounded-lg focus:outline-none" type="text" name="confirmPassword" id="confirmPassword" placeholder="confirm password" 
 							/>
       </div>

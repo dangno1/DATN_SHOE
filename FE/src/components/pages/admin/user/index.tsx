@@ -14,7 +14,6 @@ const AdminUser = () => {
     email: user.email,
   }));
 console.log(dataSource);
-
   const columns = [
     {
       title: "STT",
@@ -23,12 +22,12 @@ console.log(dataSource);
       render: (_text: unknown, _record: unknown, rowIndex: number) => rowIndex + 1,
     },
     {
-      title: "fullname",
+      title: "Họ và tên",
       dataIndex: "fullname",
       key: "fullname",
     },
     {
-      title: "username",
+      title: "Tên tài khoản",
       dataIndex: "username",
       key: "username",
     },
@@ -38,12 +37,12 @@ console.log(dataSource);
       key: "email",
     },
     {
-      title: "Phone",
+      title: "Số điện thoại",
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Address",
+      title: "Địa chỉ",
       dataIndex: "address",
       key: "address",
     },
@@ -52,7 +51,7 @@ console.log(dataSource);
   return (
     <div>
       <header className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl mt-2 ml-2">Quản lý user</h2>
+        <h2 className="text-2xl mt-2 ml-2">Quản lý người dùng</h2>
         <Button className="m-2 mt-4" type="primary" style={{ backgroundColor: "var(--primary-color)", color: "1890ff", border: "none" }}>
           <Link to="/admin/add">Thêm admin</Link>
         </Button>
