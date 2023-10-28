@@ -37,28 +37,28 @@ const Signup = () => {
             </div>
             <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
                 <div className="text-center mb-10">
-                    <h1 className="font-bold text-3xl text-gray-900 mb-5">REGISTER</h1>
-                    <p>Enter your information to register</p>
+                    <h1 className="font-bold text-3xl text-gray-900 mb-5">Đăng ký</h1>
+                    <p>Nhập thông tin của bạn để đăng ký</p>
                 </div>
                 <div>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex -mx-3">
                         <div className="w-1/2 px-3 mb-5">
-                            <label htmlFor="" className="text-xs font-semibold px-1">Full Name</label>
+                            <label htmlFor="" className="text-xs font-semibold px-1">Họ và tên</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
                                 <input type="text" 
-                                className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter full name"
+                                className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nhập họ và tên"
                                 id="fullname"
                                 {...register("fullname")}
                                 />
                             </div>
                         </div>
                         <div className="w-1/2 px-3 mb-5">
-                            <label htmlFor="" className="text-xs font-semibold px-1">User Name</label>
+                            <label htmlFor="" className="text-xs font-semibold px-1">Tên tài khoản</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
-                                <input type="text" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter your login name"
+                                <input type="text" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nhập tên tài khoản"
                                 id="username"
                                 {...register("username")}/>
                             </div>
@@ -66,19 +66,19 @@ const Signup = () => {
                     </div>
                     <div className="flex -mx-3">
                         <div className="w-1/2 px-3 mb-5">
-                            <label htmlFor="" className="text-xs font-semibold px-1">Phone</label>
+                            <label htmlFor="" className="text-xs font-semibold px-1">Số điện thoại</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
-                                <input type="text" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter your phone number"
+                                <input type="text" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nhập số điện thoại"
                                  id="phone"
                                  {...register("phone")}/>
                             </div>
                         </div>
                         <div className="w-1/2 px-3 mb-5">
-                            <label htmlFor="" className="text-xs font-semibold px-1">Address</label>
+                            <label htmlFor="" className="text-xs font-semibold px-1">Địa chỉ</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
-                                <input type="text" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Enter the address"
+                                <input type="text" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nhập địa chỉ"
                                   id="address"
                                   {...register("address")}/>
                             </div>
@@ -89,7 +89,7 @@ const Signup = () => {
                             <label htmlFor="" className="text-xs font-semibold px-1">Email</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-email-outline text-gray-400 text-lg"></i></div>
-                                <input type="email" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="johnsmith@example.com"
+                                <input type="email" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nhập email có dạng johnsmith@example.com"
                                 id="email"
                                 {...register("email")}/>
                             </div>
@@ -97,10 +97,10 @@ const Signup = () => {
                     </div>
                     <div className="flex -mx-3">
                         <div className="w-full px-3 mb-5">
-                            <label htmlFor="" className="text-xs font-semibold px-1">Password</label>
+                            <label htmlFor="" className="text-xs font-semibold px-1">Mật khẩu</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-lock-outline text-gray-400 text-lg"></i></div>
-                                <input type="password" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="************"
+                                <input type="password" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nhập mật khẩu"
                                  id="password"
                                  {...register("password")}/>
                             </div>
@@ -108,10 +108,10 @@ const Signup = () => {
                     </div>
                     <div className="flex -mx-3">
                         <div className="w-full px-3 mb-5">
-                            <label htmlFor="" className="text-xs font-semibold px-1">Confirm Password</label>
+                            <label htmlFor="" className="text-xs font-semibold px-1">Xác nhận mật khẩu</label>
                             <div className="flex">
                                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-lock-outline text-gray-400 text-lg"></i></div>
-                                <input type="password" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="************"
+                                <input type="password" className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nhập lại mật khẩu"
                                  {...register("confirmPassword")}/>
                             </div>
                         </div>
@@ -121,7 +121,7 @@ const Signup = () => {
                         <button
                       type="submit"
                       className="mt-5 tracking-wide font-semibold bg-slate-900 text-white w-full py-4 rounded-lg hover:bg-white hover:text-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                     Sign in
+                     Đăng ký
                     </button>                        
                     </div>
                     </div>
@@ -129,7 +129,7 @@ const Signup = () => {
                     <div className="flex -mx-3 mt-3">
                         <div className="w-full px-3 mb-5 text-center text-black hover:text-blue-400">
                         <Link to="/signin">
-                        Do you want to switch to the login page?  
+                        Bạn có muốn chuyển sang trang đăng nhập? 
                         </Link>
                         </div>
                     </div>

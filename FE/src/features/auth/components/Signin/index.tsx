@@ -45,8 +45,8 @@ const Signin = () => {
            </div>
             <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
                 <div className="text-center mb-10">
-                    <h1 className="font-bold text-3xl text-gray-900 mb-5">LOGIN</h1>
-                    <p>Enter your information to login</p>
+                    <h1 className="font-bold text-3xl text-gray-900 mb-5">ĐĂNG NHẬP</h1>
+                    <p>Nhập thông tin của bạn để đăng nhập</p>
                 </div>
                 <div className="flex flex-col items-center mb-7">
                   <button className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-green-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
@@ -76,7 +76,7 @@ const Signin = () => {
                 <div>
                 <div className="mx-auto max-w-xs">
                   <form onSubmit={handleSubmit(onSubmit)}>
-                  <label htmlFor="" className="text-xs font-semibold px-1">First name</label>
+                  <label htmlFor="" className="text-xs font-semibold px-1">Email</label>
                   <div className="flex mt-3 mb-3">
                   <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
                     <input
@@ -86,7 +86,7 @@ const Signin = () => {
                       {...register("email")}
                     />
                     </div>
-                     <label htmlFor="" className="text-xs font-semibold px-1">Password</label>
+                     <label htmlFor="" className="text-xs font-semibold px-1">Mật khẩu</label>
                      <div className="flex mt-3">
                      <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi  mdi-lock-outline text-gray-400 text-lg"></i></div>
                     <input
@@ -99,14 +99,14 @@ const Signin = () => {
                     <button
                       type="submit"
                       className="mt-5 tracking-wide font-semibold bg-slate-900 text-white w-full py-4 rounded-lg hover:bg-white hover:text-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                     Sign in
+                     Đăng nhập
                     </button>
                   </form>
                   </div>
                     <div className="flex -mx-3 mt-5">
                         <div className="w-full px-3 mb-5 text-center text-black hover:text-blue-400">
                         <Link to="/signup">
-                        Do you want to switch to the registration page?
+                        Bạn có muốn chuyển sang trang đăng ký?
                         </Link>
                         </div>
                     </div>
