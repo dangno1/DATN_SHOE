@@ -5,7 +5,7 @@ import { BsBagPlus } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import Social from "../home/social";
 import Blog from "../home/blog";
-
+import { Link } from "react-router-dom";
 const Men = () => {
   const { id } = useParams<{ id: string }>();
   console.log(id);
@@ -108,7 +108,7 @@ const Men = () => {
       >
         {data?.products.map((product: IProduct) => (
           <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-            <a href="#">
+            <Link to={`/detail/${product._id}`}>
               <img
                 src={product?.image}
                 alt="Product"
@@ -135,7 +135,7 @@ const Men = () => {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ))}
       </section>
