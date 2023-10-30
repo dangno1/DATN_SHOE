@@ -44,10 +44,8 @@ export const router = createBrowserRouter([
     element: <LayoutWebsite />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "Men/:id", element: <Men /> },
-      { path: "detail", element: <Detail /> },
-      { path: "kids", element: <Kids /> },
-      { path: "women", element: <Women /> },  
+      { path: "detail/:id", element: <Detail /> },
+      { path: "Men/:id", element: <Men /> }, 
       { path: "Kids/:id", element: <Kids /> },
       { path: "Women/:id", element: <Women /> },
       {path: "products", element:<Products/>},
