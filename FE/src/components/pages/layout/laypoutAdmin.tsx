@@ -33,11 +33,11 @@ const LayoutAdmin = () => {
           theme="light"
           mode="inline"
           defaultSelectedKeys={["1"]}
-          className="h-full">
-          <Menu.Item key="1" icon={<AiOutlineDashboard />}>
+          className="h-full font-semibold">
+          <Menu.Item key="1" icon={<AiOutlineDashboard />} >
             <Link to={"/admin"}>ADMIN</Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<AiOutlineUser />}>
+          <Menu.Item key="2" icon={<AiOutlineUser />} >
             <Link to="/admin/users">Users</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<AiOutlineShopping />}>
@@ -72,16 +72,16 @@ const LayoutAdmin = () => {
           </Menu.Item>
         </Menu>
       </Sider>
-      <Layout className="w-full">
+      <Layout className="w-full bg-white">
         <Header className="bg-white">
           <Button
             type="text"
             icon={collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
             onClick={() => setCollapsed(!collapsed)}
-            className="font-[16px] w-[64px] h-[64px] "
+            className="font-[16px] w-[64px] h-[64px]"
           />
         </Header>
-        <Content className="w-full">
+        <Content className="w-full bg-gray-200 rounded-lg">
           <Outlet />
         </Content>
       </Layout>

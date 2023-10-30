@@ -1,7 +1,11 @@
+import { useOrderedProductMutation } from "@/api/orderedProduct";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const CartDetail = () => {
+  const [orderedProduct] = useOrderedProductMutation();
+  const [errors, setErrors] = useState({});
+
   const location = useLocation();
   const checkedItems = location.state.checkedItems;
 
@@ -20,15 +24,84 @@ const CartDetail = () => {
       setAddress(firstItem.userAddress);
     }
   }, [checkedItems]);
-
-  console.log(checkedItems);
-
   let totalPrice = 0;
-  checkedItems.forEach((element: { price: number; }) => {
+  checkedItems.forEach((element: { price: number }) => {
     totalPrice += element.price;
   });
 
-  
+  const handleOrder = async () => {
+    setErrors({});
+
+   if (!name || !email || !phoneNumber || !address) {
+    const newErrors = {
+      name: !name ? "Name is required" : null,
+      email: !email ? "Email is required" : null,
+      phoneNumber: !phoneNumber ? "Phone Number is required" : null,
+      address: !address ? "Address is required" : null,
+    };
+
+    if (name) {
+      if (/\d/.test(name)) {
+        newErrors.name = "Name cannot contain numbers";
+      }
+      if (!name.replace(/\s/g, '').length) {
+        newErrors.name = "Name cannot be all whitespace";
+      }
+      if (name.length < 6) {
+        newErrors.name = "Name must be at least 6 characters long";
+      }
+    }
+
+    if (email) {
+      const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+      if (!emailPattern.test(email)) {
+        newErrors.email = "Email is not in a valid format";
+      }
+    }
+
+    if (phoneNumber) {
+      const phoneNumberPattern = /^\d{10}$/;
+      if (!phoneNumberPattern.test(phoneNumber) || phoneNumber.includes(' ')) {
+        newErrors.phoneNumber = "Phone Number is not in a valid format";
+      }
+    }
+
+    setErrors(newErrors);
+    
+    return;
+  }
+    const productsArray = checkedItems.map(
+      (item: {
+        productName: unknown;
+        initialPrice: unknown;
+        price: unknown;
+        image: unknown;
+        color: unknown;
+        size: unknown;
+        quantity: unknown;
+      }) => ({
+        productName: item?.productName,
+        productInitialPrice: item?.initialPrice,
+        productPrice: item?.price,
+        productImage: item?.image,
+        productColor: item?.color,
+        productSize: item?.size,
+        productQuantity: item?.quantity,
+      })
+    );
+
+    const orderData = {
+      userName: name,
+      userEmail: email,
+      userPhone: phoneNumber,
+      userAddress: address,
+      products: productsArray,
+      status: "Chờ Xác Nhận",
+    };
+
+    orderedProduct(orderData);
+    
+  };
 
   return (
     <>
@@ -37,7 +110,7 @@ const CartDetail = () => {
           <div className="text-2xl font-semibold font-sans leading-10">
             SHIPPING ADDRESS
           </div>
-          <div className="pt-5 flex gap-5">
+          <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
@@ -45,6 +118,9 @@ const CartDetail = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+          </div>
+          <div className="text-red-500 pl-1">{errors?.name}</div>
+          <div  className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
@@ -53,6 +129,7 @@ const CartDetail = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+          <div className="text-red-500 pl-1">{errors?.email}</div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
@@ -62,6 +139,7 @@ const CartDetail = () => {
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </div>
+          <div className="text-red-500 pl-1">{errors?.phoneNumber}</div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
@@ -71,6 +149,7 @@ const CartDetail = () => {
               onChange={(e) => setAddress(e.target.value)}
             />
           </div>
+          <div className="text-red-500 pl-1">{errors?.address}</div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
@@ -78,6 +157,7 @@ const CartDetail = () => {
               placeholder="Building name/ floor etc"
             />
           </div>
+
           <div className="pt-5 flex gap-5">
             <select className="border w-full p-4 bg-white">
               <option value="1">Province</option>
@@ -223,9 +303,15 @@ const CartDetail = () => {
             >
               <img src={item?.image} />
               <div>
-                <div className="text-gray-800 pb-3">Product Name: {item?.productName}</div>
-                <div className="text-gray-500 pb-3">Price: ${item.initialPrice}</div>
-                <div className="text-gray-500 pb-3">Total Price: ${item?.price}</div>
+                <div className="text-gray-800 pb-3">
+                  Product Name: {item?.productName}
+                </div>
+                <div className="text-gray-500 pb-3">
+                  Price: ${item.initialPrice}
+                </div>
+                <div className="text-gray-500 pb-3">
+                  Total Price: ${item?.price}
+                </div>
                 <div className="text-gray-500">
                   Size: {item?.size} / Color: {item?.color}
                 </div>
@@ -272,12 +358,12 @@ const CartDetail = () => {
               />
             </div>
           </div>
-
-          {/* <input
-            type="submit"
+          <button
+            onClick={handleOrder}
             className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black"
-          /> */}
-          <button className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black">BUY</button>
+          >
+            BUY
+          </button>
           <div className="text-2xl pt-10 font-semibold font-sans leading-10">
             Sign In
           </div>

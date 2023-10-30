@@ -9,8 +9,8 @@ const productApi = createApi({
     baseUrl: `http://localhost:8000/api`,
   }),
   endpoints: (builder) => ({
-    getProducts: builder.query<IProduct[], void>({
-      query: () => `/products`,
+    getProducts: builder.query<IProduct[], void | boolean>({
+      query: (trashcan) => `/products?trashcan=${trashcan}`,
       providesTags: ["Product"],
     }),
     getProduct: builder.query<IProduct, number | string>({
@@ -37,7 +37,7 @@ const productApi = createApi({
         Array.from(product.image).forEach((file) => {
           data.append("image", file);
         });
-
+        
         Array.from(product.thumbnail).forEach((file: any) => {
           data.append("thumbnail", file);
         });
@@ -53,13 +53,12 @@ const productApi = createApi({
 
     updateProduct: builder.mutation<IProduct, IProduct>({
       query: (product) => {
-        console.log(product);
-
         const data = new FormData();
         data.append("name", product.name);
         data.append("desc", product.desc);
         data.append("brand", product.brand);
         data.append("categoryId", product.categoryId);
+        data.append("isDelete", JSON.stringify(product.isDelete));
 
         data.append("variants", JSON.stringify(product.variants));
 
@@ -79,6 +78,16 @@ const productApi = createApi({
       },
       invalidatesTags: ["Product"],
     }),
+    removeThumbnail: builder.mutation<
+      void,
+      { id: number | string; publicId: number | string }
+    >({
+      query: (params) => ({
+        url: `/products/thumbnail/${params.id}/${params.publicId}`,
+        method: "delete",
+      }),
+      invalidatesTags: ["Product"],
+    }),
   }),
 });
 
@@ -90,4 +99,5 @@ export const {
   useAddProductMutation,
   useUpdateProductMutation,
   useRemoveProductMutation,
+  useRemoveThumbnailMutation,
 } = productApi;

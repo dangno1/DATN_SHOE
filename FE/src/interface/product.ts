@@ -3,6 +3,7 @@ export interface IProduct {
   color: any;
   size: any;
   id:  | null | undefined;
+  id: Key | null | undefined;
   _id?: string | number;
   name: string;
   image: string;
@@ -10,6 +11,8 @@ export interface IProduct {
   desc: string;
   brand: string;
   categoryId: string;
+  isDelete: boolean;
+  updatedAt: string;
   variants: {
     size: number;
     color: string;

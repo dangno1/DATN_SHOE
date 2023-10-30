@@ -9,4 +9,5 @@ export interface ICart {
   price: number;
   category: string;
   color: string;
+  size: number;
 }
