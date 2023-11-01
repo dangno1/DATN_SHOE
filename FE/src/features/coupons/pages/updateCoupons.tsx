@@ -74,28 +74,69 @@ const UpdateCoupons = () => {
               <div className="w-full h-full relative">
                 <label
                   className=" text-gray-500 text-sm px-2 bg-white absolute top-[0] left-[10px] translate-y-[-70%] "
-                  htmlFor="value">
-                  value
+                  htmlFor="code">
+                  code
                 </label>
                 <input
                   className="mb-5 appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:outline-blue-400 focus:border-transparent "
-                  type="number"
-                  {...register("value")}
+                  type="text"
+                  {...register("code")}
                   placeholder="1...100"
-                  defaultValue={data?.value}
+                  defaultValue={data?.code}
                   autoFocus
                 />
-                {errors.value && (
+                {errors.code && (
                   <p className="text-pink-600 text-[13px] font-[600]">
-                    {errors.value.message}
+                    {errors.code.message}
                   </p>
                 )}
               </div>
+              <br />
+              {/* <div className="w-full h-full relative">
+                <label
+                  className=" text-gray-500 text-sm px-2 bg-white absolute top-[0] left-[10px] translate-y-[-70%] "
+                  htmlFor="value">
+                  discountType
+                </label>
+                <input
+                  className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:outline-blue-400 focus:border-transparent "
+                  type="number"
+                  {...register("discountType")}
+                  placeholder="loại giảm giá"
+                  defaultValue={data?.discountType}
+                />
+                {errors.discountType && (
+                  <p className="text-pink-600 text-[13px] font-[600]">
+                    {errors.discountType.message}
+                  </p>
+                )}
+              </div> */}
+              <br />
               <div className="w-full h-full relative">
                 <label
                   className=" text-gray-500 text-sm px-2 bg-white absolute top-[0] left-[10px] translate-y-[-70%] "
                   htmlFor="value">
-                  value
+                  discountValue
+                </label>
+                <input
+                  className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:outline-blue-400 focus:border-transparent "
+                  type="number"
+                  {...register("discountValue")}
+                  placeholder="100..."
+                  defaultValue={data?.discountValue}
+                />
+                {errors.discountValue && (
+                  <p className="text-pink-600 text-[13px] font-[600]">
+                    {errors.discountValue.message}
+                  </p>
+                )}
+              </div>
+              <br />
+              <div className="w-full h-full relative">
+                <label
+                  className=" text-gray-500 text-sm px-2 bg-white absolute top-[0] left-[10px] translate-y-[-70%] "
+                  htmlFor="value">
+                  quantity
                 </label>
                 <input
                   className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:outline-blue-400 focus:border-transparent "
@@ -110,6 +151,7 @@ const UpdateCoupons = () => {
                   </p>
                 )}
               </div>
+              
               <div className="w-max grid grid-cols-2 items-center justify-items-start mt-[10px] gap-x-[10px] ">
                 <Button
                   type="submit"
