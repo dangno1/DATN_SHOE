@@ -1,5 +1,5 @@
 // import React, { useState } from "react";
-import { Image, Popconfirm, Skeleton, Table, notification } from "antd";
+import { Image, Popconfirm, Table, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useGetProductsQuery, useRemoveProductMutation, useUpdateProductMutation } from "@/api/product";
 import { IProduct } from "@/interface/product";
@@ -10,7 +10,6 @@ import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { HiMiniPencilSquare, HiOutlineTrash, HiPlus } from "react-icons/hi2";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import { useState } from "react";
-import { BsFillImageFill } from "react-icons/bs";
 import '../index.css'
 
 const ListProduct = () => {
@@ -41,24 +40,25 @@ const ListProduct = () => {
 
   const columns: ColumnsType<IProduct> = [
     {
-      title: "Thông tin",
+      title: "Hình ảnh",
       dataIndex: "image",
       key: "image",
       className: "w-[200px] max-w-max",
       render: (_, product: IProduct) =>
-        <div className="w-max grid grid-cols-[max-content_max-content] gap-x-[10px] ">
-          {product ? (< Image
-            className="rounded-[10px] bg-slate-300 w-full h-full max-w-[68px]"
-            src={product.image}
-            alt="image"
-          />) : <Skeleton.Node active className="!w-full max-h-[68px] !rounded-[10px]">
-            <BsFillImageFill style={{ fontSize: 40, color: '#bfbfbf' }} />
-          </Skeleton.Node>}
-          <div className="w-max max-h-[68px] grid grid-cols-1 grid-rows-3 items-end mr-5 ">
-            <p title={product.name} className="w-[300px] text-[1rem] font-semibold truncate">{product.name}</p>
-            <p className="w-[300px] text-xs font-semibold truncate">{product.brand}</p>
-            <p className="text-gray-500 text-[10px]">{new Date(product.updatedAt).toLocaleString()}</p>
-          </div>
+        < Image
+          className="rounded-[10px] bg-slate-300 w-full h-full max-w-[68px]"
+          src={product.image as unknown as string}
+          alt="image"
+        />
+    },
+    {
+      title: "Tên sản phẩm",
+      dataIndex: "name",
+      key: "name",
+      className: "min-w-max max-w-[200px]",
+      render: (name: string) =>
+        <div className="truncate">
+          {name}
         </div>
     },
     {
