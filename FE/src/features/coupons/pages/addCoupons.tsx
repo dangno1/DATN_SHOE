@@ -38,9 +38,13 @@ const AddCoupons = () => {
     reset,
   } = useForm<ICoupons>({
     resolver: joiResolver(couponsSchema),
+    // defaultValues: {
+    //   discountType: "cố định",
+    // }
   });
 
   const onSubmit = (data: ICoupons) => {
+    console.log(onSubmit);
     addCoupons(data);
     reset();
   };
@@ -68,16 +72,45 @@ const AddCoupons = () => {
       <CardBody className="w-[400px] px-0">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <muiComponent.TextField
-            {...register("value")}
-            type="number"
-            label="value"
+            {...register("code")}
+            type="text"
+            label="code"
             size="small"
             className="w-full"
-            placeholder="1...100"
+            placeholder="coupons"
           />
-          {errors.value && (
+          {errors.code && (
             <p className="text-pink-600 text-[13px] font-[600]">
-              {errors.value.message}
+              {errors.code.message}
+            </p>
+          )}
+          {/* <muiComponent.TextField
+            {...register("discountType")}
+            select
+            label="discountType"
+            size="small"
+            className="w-full"
+          >
+            <MenuItem value="discountType">Phần trăm</MenuItem>
+          </muiComponent.TextField>
+
+          {errors.discountType && (
+            <p className="text-pink-600 text-[13px] font-[600]">
+              {errors.discountType.message}
+            </p>
+          )} */}
+
+          <muiComponent.TextField
+            {...register("discountValue")}
+            type="number"
+            label="discountValue"
+            size="small"
+            className="w-full"
+            placeholder="giá trị giảm giá"
+          />
+          {errors.discountValue && (
+            <p className="text-pink-600 text-[13px] font-[600]">
+              {errors.discountValue.message}
             </p>
           )}
           <muiComponent.TextField
@@ -95,6 +128,7 @@ const AddCoupons = () => {
           )}
           <div className="w-max grid grid-cols-2 items-center justify-items-start mt-[10px] gap-x-[10px] ">
             <Button
+            
               type="submit"
               disabled={isLoading}
               className="capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">

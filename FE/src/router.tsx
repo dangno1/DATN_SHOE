@@ -30,9 +30,6 @@ import ListColor from "./features/color/components/list";
 import ListCategory from "./features/category/components/list";
 import AddCategory from "./features/category/pages/addCategory";
 import UpdateCategory from "./features/category/pages/updateCategory";
-import UpdateUser from "./components/pages/admin/user/updateUser";
-import UpdateEmail from "./components/pages/admin/user/updateEmail";
-import ChangePassword from "./components/pages/admin/user/changePassword";
 import AddCoupons from "./features/coupons/pages/addCoupons";
 import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
@@ -47,10 +44,8 @@ export const router = createBrowserRouter([
     element: <LayoutWebsite />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "Men/:id", element: <Men /> },
-      { path: "detail", element: <Detail /> },
-      { path: "kids", element: <Kids /> },
-      { path: "women", element: <Women /> },  
+      { path: "detail/:id", element: <Detail /> },
+      { path: "Men/:id", element: <Men /> }, 
       { path: "Kids/:id", element: <Kids /> },
       { path: "Women/:id", element: <Women /> },
       {path: "products", element:<Products/>},
@@ -67,18 +62,6 @@ export const router = createBrowserRouter([
         element: <OderHistory />,
       },
       { path: "user", element: <UserPage /> },
-      {
-        path: "/update/:id",
-        element: <UpdateUser />,
-      },
-      {
-        path: "/update/email/:id",
-        element: <UpdateEmail />,
-      },
-      {
-        path: "/changePassword/:id",
-        element: <ChangePassword />,
-      },
     ],
   },
   {

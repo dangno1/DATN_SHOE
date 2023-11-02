@@ -80,6 +80,18 @@ const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
+    changePassword: builder.mutation<
+     IUser,
+    IUser
+    >({
+      query: (user) => ({
+        url: `/api/user/changePassword/${user._id}`,
+        method: "PATCH",
+        body: {...user,_id:undefined},
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 export const {
@@ -89,6 +101,7 @@ export const {
   useSigninMutation,
   useSignupMutation,
   useUpdateUserMutation,
+  useChangePasswordMutation
 } = userApi;
 export const authReducer = userApi.reducer;
 export default userApi;

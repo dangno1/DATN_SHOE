@@ -29,14 +29,15 @@ const ListCoupons = () => {
   const [openDialog, setOpenDialog] = useState<string>("close");
   const [idCoupons, setIdCoupons] = useState<string>("")
 
-
   const { data: couponsDatas } = useGetAllCouponsQuery();
-  const TABLE_HEAD = ["Stt", "Value", "Quantity", "CreatedAt", "UpdatedAt", "Action"];
+  const TABLE_HEAD = ["Stt", "code", "discountValue", "Quantity", "CreatedAt", "UpdatedAt", "Action"];
   const TABLE_ROWS = couponsDatas?.map(
-    ({ _id, value, quantity, createdAt, updatedAt }: ICoupons) =>
+    ({ _id, code,discountValue, quantity, createdAt, updatedAt }: ICoupons) =>
       couponsDatas && {
         _id,
-        value,
+        code,
+        // discountType,
+        discountValue,
         quantity,
         createdAt,
         updatedAt,
@@ -58,7 +59,6 @@ const ListCoupons = () => {
     };
     handleDeleteCoupons(idCoupons)
   }, [deleteCoupons, idCoupons, openDialog])
-
 
 
   return (
@@ -156,7 +156,17 @@ const ListCoupons = () => {
                     </td>
                     <td className={classes}>
                       <div className="flex items-center gap-3 min-w-[200px] ">
-                        <Typography>{row.value}</Typography>
+                        <Typography>{row.code}</Typography>
+                      </div>
+                    </td>
+                    {/* <td className={classes}>
+                      <div className="flex items-center gap-3 min-w-[200px] ">
+                        <Typography>{row.discountType}</Typography>
+                      </div>
+                    </td> */}
+                    <td className={classes}>
+                      <div className="flex items-center gap-3 min-w-[200px] ">
+                        <Typography>{row.discountValue}</Typography>
                       </div>
                     </td>
                     <td className={classes}>
