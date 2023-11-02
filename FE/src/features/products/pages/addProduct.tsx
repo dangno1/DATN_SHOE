@@ -19,6 +19,7 @@ import { BsArrowLeftShort, BsImage } from "react-icons/bs";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlineTrash, HiPlus } from "react-icons/hi2";
+import '../index.css'
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
@@ -74,6 +75,8 @@ const AddProduct = () => {
   const handleInputThambnail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thumbnails = event.target.files ? Array.from(event.target.files) : []
     const urls = thumbnails.map((file: File) => URL.createObjectURL(file))
+    console.log(urls);
+
 
     if (thumbnails.length > 20) {
       openNotificationWithIcon("error", `Vui lòng chọn tối đa 20 ảnh`)
@@ -132,28 +135,21 @@ const AddProduct = () => {
 
   return (
     <>
-      {contextHolder}
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading || isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      <div className="m-5 bg-white p-5 rounded-lg">
+      <div className="m-5 bg-white p-5 rounded-lg border-2 border-slate-300">
         <h4 className="mb-8 font-semibold text-3xl">Thêm mới sản phẩm</h4>
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-3 gap-[20px]">
           {/* left */}
           <div className="col-span-2">
             <div className="h-max mb-[20px]">
-              <label className="text-slate-600 font-semibold">Tên sản phẩm*</label>
+              <label className="text-slate-600 font-semibold">Tên sản phẩm</label>
               <input {...register("name")} type="text" minLength={3} required placeholder="giày af1..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
             </div>
             <div className="h-max mb-[20px]">
-              <label className="text-slate-600 font-semibold">Thương hiệu*</label>
+              <label className="text-slate-600 font-semibold">Thương hiệu</label>
               <input {...register("brand")} type="text" minLength={3} required placeholder="Thương hiệu*..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 font-môn focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
             </div>
-            <div className="h-max mb-[20px] col-span-2">
-              <label className="text-slate-600 font-semibold">Mô tả*</label>
+            <div className="h-max mb-[20px] col-span-2 space-y-[5px]">
+              <label className="text-slate-600 font-semibold">Mô tả</label>
               <Controller
                 name="desc"
                 control={control}
@@ -169,16 +165,87 @@ const AddProduct = () => {
                 )}
               />
             </div>
-            {/* biến thể */}
-            <div className="h-max col-span-2">
-              <label className="text-slate-600 font-semibold">Biến thể*</label>
-              <div className="border border-slate-300">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="rounded-[5px] flex gap-2 p-2 mb-[10px]">
-                    <div className="w-[150px] h-max">
-                      <label className="text-slate-600 font-semibold">Size*</label>
+          </div>
+          {/* right */}
+          <div className="">
+            <div className="mb-[20px]">
+              <label className="text-slate-600 font-semibold">Danh mục sản phẩm*</label>
+              <select required {...register("categoryId")}
+                className="w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ">
+                <option value="" >Category</option>
+                {
+                  categoryData?.map((category: ICategory) => <option key={category._id} value={category._id}>{category.name}</option>)
+                }
+              </select>
+            </div>
+            <div className="mb-[20px]">
+              <label className="text-slate-600 font-semibold block">Hình ảnh</label>
+              <div className="min-h-[110px] max-h-[150px] border border-slate-300 rounded-md mt-[5px] p-4">
+                <label htmlFor="inputImage" className="h-[48px] grid items-center">
+                  <div className="w-max h-full grid grid-cols-[max-content_max-content] gap-2 items-center">
+                    <BsImage className="w-5 h-5" />
+                    <div className="align-bottom grid grid-cols-[max-content_max-content] place-items-center w-max">
+                      Chọn 1 ảnh
+                    </div>
+                  </div>
+                </label>
+                {(image && image?.url.length > 0) &&
+                  <div className="w-full h-max grid grid-cols-[90%_auto] rounded-md overflow-hidden border border-slate-300 mt-[10px]">
+                    <div className="w-max h-max min-h-[48px] grid grid-cols-[max-content_max-content] gap-x-4 items-center">
+                      <Image key={image.url[0]} src={image.url[0]} alt="image"
+                        className="w-[50px] max-w-[50px] !h-full bg-center object-cover rounded-l-md" />
+                      <div className="text-black w-max max-w-[200px] truncate">
+                        {image.files[0]?.name}
+                      </div>
+                    </div>
+                    <div className="grid items-center justify-items-end pr-2 cursor-pointer">
+                      <AiOutlineClose className="w-4 h-4 hover:fill-red-500 "
+                        onClick={() => setImage(() => handleRemoveImage(image, 0))} />
+                    </div>
+                  </div>}
+                <input {...register("image")} type="file" id="inputImage"
+                  required onChange={handleInputImage}
+                  accept="image/jpeg, image/gif, image/png"
+                  className="w-0 h-0 opacity-0" />
+              </div>
+            </div>
+            <div className="mb-[20px]">
+              <label className="text-slate-600 font-semibold block">Album ảnh</label>
+              <div className="min-h-[110px] h-max border border-slate-300 p-4 rounded-md mt-[5px]">
+                <label htmlFor="inputThumbnail" className="h-[48px] grid items-center">
+                  <div className="w-max h-full grid grid-cols-[max-content_max-content] gap-2 items-center">
+                    <BsImage className="w-5 h-5" />
+                    <div className="align-bottom grid grid-cols-[max-content_max-content] place-items-center w-max">
+                      Chọn 1 hoặc nhiều ảnh
+                    </div>
+                  </div>
+                </label>
+                {thumbnail && <div className="w-full max-h-[150px] grid grid-cols-2 gap-3 overflow-auto mt-[10px]">
+                  {thumbnail.url.map((image: string, index: number) => (
+                    <div key={image} className="w-full max-w-[300px] h-[50px] grid grid-cols-[85%_auto] border border-slate-300 rounded-md overflow-hidden">
+                      <div className="w-max grid grid-cols-[max-content_max-content] gap-x-2 items-center">
+                        <Image src={image} alt="image" className="w-[50px] max-w-[50px] !h-[50px] bg-center object-cover rounded-l-md" />
+                        <div className="text-black max-w-[80px] truncate cursor-default" title={thumbnail?.files[index]?.name}>{thumbnail?.files[index]?.name}</div>
+                      </div>
+                      <div className="grid place-items-center cursor-pointer">
+                        <AiOutlineClose className="fill-orange-700 w-4 h-4" onClick={() => setThumbnail(() => handleRemoveImage(thumbnail, index))} />
+                      </div>
+                    </div>
+                  ))}
+                </div>}
+              </div>
+              <input {...register("thumbnail")} type="file" multiple id="inputThumbnail" required onChange={handleInputThambnail} accept="image/jpeg, image/gif, image/png" className="hidden" />
+            </div>
+          </div>
+          {/* biến thể */}
+          <div className="h-max col-span-3 relative">
+            <label className="text-slate-600 font-semibold">Sản phẩm biến thể</label>
+            <div className="before:w-full before:h-[1px] before:bg-slate-300 before:absolute mt-2">
+              {fields.map((field, index) => (
+                <div key={field.id} className="rounded-[5px] grid grid-cols-[95%_auto] gap-2 place-items-center p-2 pt-5 mb-[10px]">
+                  <div className="w-full grid grid-cols-5 gap-4">
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">Kích cỡ</label>
                       <select required {...register(`variants.${index}.sizeId`)} className="w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ">
                         <option value="" >Size</option>
                         {
@@ -186,8 +253,8 @@ const AddProduct = () => {
                         }
                       </select>
                     </div>
-                    <div className="w-[150px] h-max">
-                      <label className="text-slate-600 font-semibold">Color*</label>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">Màu sắc</label>
                       <select required {...register(`variants.${index}.colorId`)} className="w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ">
                         <option value="" >Color</option>
                         {
@@ -195,16 +262,16 @@ const AddProduct = () => {
                         }
                       </select>
                     </div>
-                    <div className="w-[150px] h-max">
-                      <label className="text-slate-600 font-semibold">Giá*</label>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">Giá gốc</label>
                       <input {...register(`variants.${index}.price`)} type="number" required placeholder="500..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
                     </div>
-                    <div className="w-[150px] h-max">
-                      <label className="text-slate-600 font-semibold">Giảm giá*</label>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">Giá khuyến mãi</label>
                       <input {...register(`variants.${index}.discount`)} type="number" required placeholder="500..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
                     </div>
-                    <div className="w-[150px] h-max">
-                      <label className="text-slate-600 font-semibold">Số lượng*</label>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">Số lượng</label>
                       <input {...register(`variants.${index}.quantity`)} type="number" required placeholder="500..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
                     </div>
                     <div className="hidden">
@@ -219,122 +286,59 @@ const AddProduct = () => {
                         {...register(`variants.${index}.status`)}
                       />
                     </div>
-                    <div className="w-max min-h-full max-h-full grid place-items-center mt-[23px]">
-                      {fields.length > 1 && (
-                        <Popconfirm
-                          title
-                          description="Xóa biến thể?"
-                          okText="Yes"
-                          cancelText="No"
-                          okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-                          cancelButtonProps={{ className: "border-slate-400" }}
-                          onConfirm={() => remove(index)}
-                        >
-                          <Tooltip title="Xóa biến thể" placement="right">
-                            <HiOutlineTrash className="stroke-red-600 w-5 h-5 cursor-pointer" />
-                          </Tooltip>
-                        </Popconfirm>
-                      )}
-                    </div>
                   </div>
-                ))}
-                <Tooltip title="Thêm biến thể" className="m-auto grid place-items-center mb-[18px]">
-                  <div className="w-8 h-8 rounded-[50%] bg-gray-300">
-                    <HiPlus
-                      onClick={() =>
-                        append({
-                          sizeId: "",
-                          colorId: "",
-                          price: null,
-                          quantity: null,
-                          discount: null,
-                          amountSold: 0,
-                          status: 1,
-                        } as any)
-                      }
-                      className="w-4 h-4 cursor-pointer"
-                    />
+                  <div className="w-max min-h-full max-h-full grid place-items-center mt-[23px]">
+                    {fields.length > 1 && (
+                      <Popconfirm
+                        title
+                        description="Xóa biến thể?"
+                        okText="Yes"
+                        cancelText="No"
+                        okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+                        cancelButtonProps={{ className: "border-slate-400" }}
+                        onConfirm={() => remove(index)}
+                      >
+                        <Tooltip title="Xóa biến thể" placement="right">
+                          <HiOutlineTrash className="stroke-red-600 w-5 h-5 cursor-pointer" />
+                        </Tooltip>
+                      </Popconfirm>
+                    )}
                   </div>
-                </Tooltip>
-              </div>
-            </div>
-          </div>
-          {/* right */}
-          <div className="">
-            <div className="mb-[20px]">
-              <label className="text-slate-600 font-semibold">Category*</label>
-              <select required {...register("categoryId")} className="w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ">
-                <option value="" >Category</option>
-                {
-                  categoryData?.map((category: ICategory) => <option key={category._id} value={category._id}>{category.name}</option>)
-                }
-              </select>
-            </div>
-            <div className="mb-[20px]">
-              <label className="text-slate-600 font-semibold block">Hình ảnh</label>
-              <div className="h-max max-h-[48px] grid grid-cols-[max-content_auto] gap-x-4 place-items-center border border-slate-300 rounded-md mt-[5px]">
-                <label htmlFor="inputImage" className="min-h-[48px] grid place-items-center">
-                  <div className="w-max m-auto h-full grid grid-cols-[max-content_max-content] gap-2 place-items-center pl-6">
-                    <BsImage className="w-5 h-5" />
-                    <div className="align-bottom grid grid-cols-[max-content_max-content] place-items-center w-max">
-                      upload
-                    </div>
-                  </div>
-                </label>
-                {(image && image?.url.length > 0) &&
-                  <div className="w-full h-max grid grid-cols-[90%_auto] rounded-md overflow-hidden">
-                    <div className="w-max h-max min-h-[48px] grid grid-cols-[max-content_max-content] gap-x-4 items-center ">
-                      <Image key={image.url[0]} src={image.url[0]} alt="image" className="w-[50px] max-w-[50px] !h-[45px] bg-center object-cover rounded-md" />
-                      <div className="text-black">{image.files[0]?.name}</div>
-                    </div>
-                    <div className="grid items-center justify-items-end pr-2 cursor-pointer">
-                      <AiOutlineClose className="w-4 h-4 hover:fill-red-500" onClick={() => setImage(() => handleRemoveImage(image, 0))} />
-                    </div>
-                  </div>}
-                <input {...register("image")} type="file" id="inputImage" required onChange={handleInputImage} accept="image/jpeg, image/gif, image/png" className="w-0 h-0 opacity-0" />
-              </div>
-            </div>
-            <div className="mb-[20px]">
-              <label className="text-slate-600 font-semibold block">Album ảnh</label>
-              <div className="h-max max-h-full border border-slate-300 px-4 rounded-md">
-                <label htmlFor="inputThumbnail" className="h-[48px] grid items-center">
-                  <div className="w-max h-full grid grid-cols-[max-content_max-content] gap-2 items-center pl-2">
-                    <BsImage className="w-5 h-5" />
-                    <div className="align-bottom grid grid-cols-[max-content_max-content] place-items-center w-max">
-                      upload
-                    </div>
-                  </div>
-                </label>
-                {thumbnail && <div className="w-full max-h-[150px] grid grid-cols-2 gap-3 overflow-auto mt-[10px]">
-                  {thumbnail.url.map((image: string, index: number) => (
-                    <div key={image} className="w-full max-w-[300px] h-[50px] grid grid-cols-[85%_auto] border border-slate-300 rounded-md overflow-hidden">
-                      <div className="w-max grid grid-cols-[max-content_max-content] gap-x-2 items-center">
-                        <Image src={image} alt="image" className="w-[50px] max-w-[50px] !h-[50px] bg-center object-cover rounded-md" />
-                        <div className="text-black w-[90px] max-w-[90px] truncate cursor-default" title={thumbnail?.files[index]?.name}>{thumbnail?.files[index]?.name}</div>
-                      </div>
-                      <div className="grid place-items-center cursor-pointer">
-                        <AiOutlineClose className="w-4 h-4 hover:fill-red-500" onClick={() => setThumbnail(() => handleRemoveImage(thumbnail, index))} />
-                      </div>
-                    </div>
-                  ))}
-                </div>}
-              </div>
-              <input {...register("thumbnail")} type="file" multiple id="inputThumbnail" required onChange={handleInputThambnail} accept="image/jpeg, image/gif, image/png" className="hidden" />
+                </div>
+              ))}
+              <Tooltip title="Thêm biến thể" className="m-auto grid place-items-center mb-[18px]">
+                <div className="w-8 h-8 rounded-[50%] bg-gray-300">
+                  <HiPlus
+                    onClick={() =>
+                      append({
+                        sizeId: "",
+                        colorId: "",
+                        price: null,
+                        quantity: null,
+                        discount: null,
+                        amountSold: 0,
+                        status: 1,
+                      } as any)
+                    }
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </div>
+              </Tooltip>
             </div>
           </div>
           <div className="w-max grid grid-cols-[max-content_max-content_max-content] gap-x-2 place-items-center col-span-2">
             <Button
               type="submit"
               variant="contained"
-              className="float-right !font-semibold"
+              className="float-right !font-semibold !bg-[#58b4ff] !shadow-none"
               startIcon={<HiPlus className="stroke-1" />}
             >
-              Thêm sản phẩm
+              Thêm mới
             </Button>
             <Button
               onClick={() => navigate("/admin/product")}
               variant="contained"
-              className="float-right !font-semibold"
+              className="float-right !font-semibold !bg-[#df5e5e] !shadow-none"
               startIcon={<BsArrowLeftShort className="stroke-[0.5]" />}
             >
               Quay lại
@@ -342,6 +346,13 @@ const AddProduct = () => {
           </div>
         </form >
       </div >
+      {contextHolder}
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading || isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };
