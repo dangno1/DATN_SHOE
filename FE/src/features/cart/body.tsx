@@ -24,7 +24,9 @@ const BodyCart = () => {
       setCheckedItems([...checkedItems, item]);
     } else {
       itemPrice = -item.price;
-      setCheckedItems(checkedItems.filter((checkedItem) => checkedItem !== item));
+      setCheckedItems(
+        checkedItems.filter((checkedItem) => checkedItem !== item)
+      );
     }
     setTotalPrice(totalPrice + itemPrice);
   };
@@ -32,7 +34,7 @@ const BodyCart = () => {
   const deleteCart = (id: ICart) => {
     deleteProductCart(id);
     console.log("Xoa Thanh Cong");
-  }
+  };
 
   // console.log(checkedItems);
 
@@ -41,32 +43,32 @@ const BodyCart = () => {
       <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr] gap-10 pb-32">
         <div className="pt-20 lg:pl-36">
           <h2 className="text-4xl font-semibold font-sans leading-10">
-            YOUR BAG
+            GIỎ HÀNG CỦA BẠN
           </h2>
           <p className="pt-5 text-base leading-3 text-gray-800">
-            TOTAL (2 items){" "}
+            TỔNG CỘNG (2 sản phẩm){" "}
             <span className="font-semibold pl-2"> 2,250,000₫</span>
           </p>
           <p className="pt-5 pb-5 text-base leading-3 text-gray-800">
-            Items in your bag are not reserved — check out now to make them
-            yours.
+            Các sản phẩm trong giỏ hàng của bạn chưa được đặt trước - hãy thanh
+            toán ngay để sở hữu chúng.
           </p>
           <div className="bg-slate-100 p-4">
             <div className="font-medium text-lg">
-              Mid Season Sale is on: Up to 50% off
+              Khuyến mãi Mùa Giữa Mùa: Giảm giá lên đến 50%
             </div>
             <div className="text-gray-700 pt-1">
-              Terms & Conditions and Exclusions apply.
+              Áp dụng Điều khoản và Loại trừ.
             </div>
             <div className="pt-4 tracking-wide border-black border-b w-24">
-              SHOP NOW
+              MUA NGAY
             </div>
           </div>
 
           {carts?.data.map((item: ICart) => (
             <div className="pt-7" key={item._id}>
-              <div className="border border-black gap-3 grid grid-cols-1 lg:grid-cols-[5fr,10fr,1fr]">
-                <img src={item?.image} alt="" width={"100%"} height={"240px"} />
+              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[5fr,10fr,1fr]">
+                <img className="border rounded-xl" src={item?.image} alt="" width={"100%"} height={"240px"} />
                 <div className="p-5">
                   <div className="flex justify-between">
                     <p>{item?.productName}</p>
@@ -75,9 +77,9 @@ const BodyCart = () => {
                   <div className="pt-2 uppercase">
                     SOLAR GOLD / CORE BLACK / {item?.color}
                   </div>
-                  <div className="pt-5">Product Size: {item?.size}</div>
+                  <div className="pt-5">Khích cỡ: {item?.size}</div>
                   <div className="pt-2">
-                    Quantity still in stock:
+                    Số lượng hàng trong kho:
                     <span className="font-medium text-lg">1000</span>
                   </div>
                   <div className="flex items-center pt-14">
@@ -104,7 +106,12 @@ const BodyCart = () => {
                   </div>
                 </div>
                 <div className="pt-5">
-                  <a className="mr-4 p-1 cursor-pointer flex justify-center items-center bg-red-500 text-white rounded-full hover:bg-red-800" onClick={() => deleteCart(item?._id)}>X</a>
+                  <a
+                    className="mr-4 p-1 cursor-pointer flex justify-center items-center bg-red-500 text-white rounded-full hover:bg-red-800"
+                    onClick={() => deleteCart(item?._id)}
+                  >
+                    X
+                  </a>
                   <div className="pt-5 pl-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -132,11 +139,11 @@ const BodyCart = () => {
           ))}
 
           <div className="text-3xl font-semibold font-sans leading-10 pt-20">
-            TOP PICKS FOR YOU
+            LỰA CHỌN HÀNG ĐẦU DÀNH CHO BẠN
           </div>
           <div className="flex gap-2">
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-xl">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/d24a194891044c1fb0a17d049d19b86a_9366/IE9704_01_standard.jpg"
                   alt=""
@@ -162,7 +169,7 @@ const BodyCart = () => {
               </div>
             </div>
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-xl">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/c6875e65e704417daeccb1d414cb5e21_9366/IG8980_01_standard.jpg"
                   alt=""
@@ -188,7 +195,7 @@ const BodyCart = () => {
               </div>
             </div>
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-xl">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/27a43e53d1dc43c29df7eebc35869087_9366/IG9841_01_standard.jpg"
                   alt=""
@@ -214,7 +221,7 @@ const BodyCart = () => {
               </div>
             </div>
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-xl">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/ba9ded80550147deb919ae6f01380bb3_9366/GX4285_01_standard.jpg"
                   alt=""
@@ -242,11 +249,11 @@ const BodyCart = () => {
           </div>
         </div>
         <div className="pt-20 lg:pr-24">
-          <div className="border border-black rounded-md">
+          <div className="shadow-slate-800 border rounded-xl rounded-md">
             <Link to="/cartDetail" state={{ checkedItems }}>
               <div className="bg-black flex rounded-md justify-between items-center p-1 pl-3 pr-3 mr-1 mb-1">
                 <div className="text-white text-base font-semibold font-sans leading-10">
-                  CHECKOUT
+                  THANH TOÁN
                 </div>
                 <div>
                   <svg
@@ -266,7 +273,7 @@ const BodyCart = () => {
             </Link>
           </div>
           <div className="pt-10 text-xl font-semibold font-sans leading-10">
-            ORDER SUMMARY
+            TÓM TẮT THEO THỨ TỰ
           </div>
           <div>
             <div className="flex justify-between items-center pt-5">
@@ -279,13 +286,13 @@ const BodyCart = () => {
             </div>
             <div className="flex justify-between items-center pt-5">
               <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
-                Total
+                Tổng Giá
               </p>
               <span className="text-gray-900">{totalPrice}₫</span>
             </div>
             <div className="pt-10">
               <div className="font-semibold font-sans leading-10">
-                ACCEPTED PAYMENT METHODS
+                PHƯƠNG THỨC THANH TOÁN ĐƯỢC CHẤP NHẬN
               </div>
               <div className="flex pt-2 gap-2">
                 <img

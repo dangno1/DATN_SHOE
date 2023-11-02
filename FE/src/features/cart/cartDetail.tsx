@@ -5,8 +5,8 @@ import { useLocation } from "react-router-dom";
 const CartDetail = () => {
   const [orderedProduct] = useOrderedProductMutation();
   const [errors, setErrors] = useState({});
-
   const location = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const checkedItems = location.state.checkedItems;
 
   // user
@@ -32,44 +32,50 @@ const CartDetail = () => {
   const handleOrder = async () => {
     setErrors({});
 
-   if (!name || !email || !phoneNumber || !address) {
-    const newErrors = {
-      name: !name ? "Name is required" : null,
-      email: !email ? "Email is required" : null,
-      phoneNumber: !phoneNumber ? "Phone Number is required" : null,
-      address: !address ? "Address is required" : null,
-    };
+    if (!name || !email || !phoneNumber || !address) {
+      const newErrors = {
+        name: !name ? "Name is required" : null,
+        email: !email ? "Email is required" : null,
+        phoneNumber: !phoneNumber ? "Phone Number is required" : null,
+        address: !address ? "Address is required" : null,
+      };
 
-    if (name) {
-      if (/\d/.test(name)) {
-        newErrors.name = "Name cannot contain numbers";
+      if (name) {
+        if (/\d/.test(name)) {
+          newErrors.name = "Name cannot contain numbers";
+        }
+        if (!name.replace(/\s/g, "").length) {
+          newErrors.name = "Name cannot be all whitespace";
+        }
+        if (name.length < 6) {
+          newErrors.name = "Name must be at least 6 characters long";
+        }
       }
-      if (!name.replace(/\s/g, '').length) {
-        newErrors.name = "Name cannot be all whitespace";
+
+      if (email) {
+        const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        if (!emailPattern.test(email)) {
+          newErrors.email = "Email is not in a valid format";
+        }
       }
-      if (name.length < 6) {
-        newErrors.name = "Name must be at least 6 characters long";
+
+      if (phoneNumber) {
+        const phoneNumberPattern = /^\d{10}$/;
+        if (
+          !phoneNumberPattern.test(phoneNumber) ||
+          phoneNumber.includes(" ")
+        ) {
+          newErrors.phoneNumber = "Phone Number is not in a valid format";
+        }
       }
+
+      setErrors(newErrors);
+
+      return;
     }
 
-    if (email) {
-      const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-      if (!emailPattern.test(email)) {
-        newErrors.email = "Email is not in a valid format";
-      }
-    }
 
-    if (phoneNumber) {
-      const phoneNumberPattern = /^\d{10}$/;
-      if (!phoneNumberPattern.test(phoneNumber) || phoneNumber.includes(' ')) {
-        newErrors.phoneNumber = "Phone Number is not in a valid format";
-      }
-    }
-
-    setErrors(newErrors);
     
-    return;
-  }
     const productsArray = checkedItems.map(
       (item: {
         productName: unknown;
@@ -100,27 +106,36 @@ const CartDetail = () => {
     };
 
     orderedProduct(orderData);
-    
   };
+
+    // Function to open the modal
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    // Function to close the modal
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
 
   return (
     <>
       <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr]  lg:gap-20 pb-32">
         <div className="pt-20 lg:pl-36">
           <div className="text-2xl font-semibold font-sans leading-10">
-            SHIPPING ADDRESS
+            THỔNG TIN ĐỊA CHỈ GIAO HÀNG
           </div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
-              placeholder="Name"
+              placeholder="Họ Và Tên"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="text-red-500 pl-1">{errors?.name}</div>
-          <div  className="pt-5">
+          <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
@@ -134,7 +149,7 @@ const CartDetail = () => {
             <input
               className="border w-full p-4"
               type="text"
-              placeholder="Phone Number"
+              placeholder="Số điện thoại"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
@@ -144,50 +159,18 @@ const CartDetail = () => {
             <input
               className="border w-full p-4"
               type="text"
-              placeholder="Address"
+              placeholder="Địa Chỉ"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
           </div>
           <div className="text-red-500 pl-1">{errors?.address}</div>
-          <div className="pt-5">
-            <input
-              className="border w-full p-4"
-              type="text"
-              placeholder="Building name/ floor etc"
-            />
-          </div>
-
-          <div className="pt-5 flex gap-5">
-            <select className="border w-full p-4 bg-white">
-              <option value="1">Province</option>
-              <option value="1">test</option>
-              <option value="1">test</option>
-            </select>
-            <select className="border w-full p-4 bg-white">
-              <option value="1">District</option>
-              <option value="1">test</option>
-              <option value="1">test</option>
-            </select>
-          </div>
-          <div className="pt-5 flex gap-5">
-            <select className="border w-full p-4 bg-white">
-              <option value="1">Ward</option>
-              <option value="1">test</option>
-              <option value="1">test</option>
-            </select>
-            <input
-              className="border w-full p-4"
-              type="text"
-              placeholder="Postal Code"
-            />
-          </div>
           <div className="text-3xl font-semibold font-sans leading-10 pt-20">
-            TOP PICKS FOR YOU
+            LỰA CHỌN HÀNG ĐẦU DÀNH CHO BẠN
           </div>
           <div className="flex gap-2">
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-x">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/d24a194891044c1fb0a17d049d19b86a_9366/IE9704_01_standard.jpg"
                   alt=""
@@ -213,7 +196,7 @@ const CartDetail = () => {
               </div>
             </div>
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-x">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/c6875e65e704417daeccb1d414cb5e21_9366/IG8980_01_standard.jpg"
                   alt=""
@@ -239,7 +222,7 @@ const CartDetail = () => {
               </div>
             </div>
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-x">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/27a43e53d1dc43c29df7eebc35869087_9366/IG9841_01_standard.jpg"
                   alt=""
@@ -265,7 +248,7 @@ const CartDetail = () => {
               </div>
             </div>
             <div className="pt-10">
-              <div className="relative border border-black">
+              <div className="relative shadow-slate-800 border rounded-x">
                 <img
                   src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/ba9ded80550147deb919ae6f01380bb3_9366/GX4285_01_standard.jpg"
                   alt=""
@@ -294,7 +277,7 @@ const CartDetail = () => {
         </div>
         <div className="pt-20 lg:pr-24">
           <div className="text-2xl font-semibold font-sans leading-10 pb-5">
-            ORDER DETAILS
+            CHI TIẾT ĐẶT HÀNG
           </div>
           {checkedItems.map((item: any, index: number) => (
             <div
@@ -321,27 +304,27 @@ const CartDetail = () => {
           ))}
 
           <div className="text-2xl font-semibold font-sans leading-10 pt-10">
-            ORDER SUMMARY
+            TÓM TẮT THEO THỨ TỰ
           </div>
           <div className="flex justify-between items-center pt-5">
-            <p className="text-gray-800">2 items</p>
+            <p className="text-gray-800">2 Sản phẩm</p>
             <span className="text-gray-900">${totalPrice}</span>
           </div>
           <div className="flex justify-between items-center pt-5 border-b pb-2">
-            <p className="text-gray-800">Delivery</p>
-            <p className="text-gray-900">Free</p>
+            <p className="text-gray-800">Vận chuyển</p>
+            <p className="text-gray-900">Miễn Phí</p>
           </div>
 
           <div className="flex justify-between items-center pt-5">
             <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
-              Total Price
+              Tổng Giá
             </p>
             <span className="text-gray-900">${totalPrice}</span>
           </div>
 
           <div className="mt-10">
             <div className="font-semibold font-sans leading-10">
-              ACCEPTED PAYMENT METHODS
+              PHƯƠNG THỨC THANH TOÁN ĐƯỢC CHẤP NHẬN
             </div>
             <div className="flex pt-2 gap-2">
               <img
@@ -359,37 +342,67 @@ const CartDetail = () => {
             </div>
           </div>
           <button
-            onClick={handleOrder}
+            onClick={() => {
+              // handleOrder();
+              openModal();
+            }}
             className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black"
           >
-            BUY
+            Mua
           </button>
+          {isModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="modal-container bg-yellow-50 w-96 h-56 p-8 rounded-lg shadow-lg">
+                <p className="text-lg mb-4">Nhập mã OTP (6 chữ số):</p>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded-lg"
+                  maxlength="6"
+                />
+                <div className="flex mt-10 gap-4">
+                <button
+                  onClick={closeModal} 
+                  className="bg-red-500 hover:bg-red-600 text-white rounded p-2"
+                >
+                  Close
+                </button>
+
+                <button
+                  onClick={handleOrder}
+                  className="bg-blue-500 hover:bg-blue-600 text-white rounded p-2"
+                >
+                  Submit
+                </button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="text-2xl pt-10 font-semibold font-sans leading-10">
-            Sign In
+            Đăng Nhập
           </div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
-              placeholder="Email Address"
+              placeholder="Email"
             />
           </div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
-              placeholder="Password"
+              placeholder="Mật Khẩu"
             />
           </div>
           <div className="pt-5">
             <input
               className="border w-full p-4"
               type="text"
-              placeholder="Comfirm password"
+              placeholder="Xác Nhận Mật Khẩu"
             />
           </div>
           <button className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black">
-            Sign Up
+            Đăng Nhập
           </button>
         </div>
       </div>
