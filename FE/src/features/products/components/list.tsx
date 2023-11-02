@@ -43,10 +43,10 @@ const ListProduct = () => {
       title: "Hình ảnh",
       dataIndex: "image",
       key: "image",
-      className: "w-[200px] max-w-max",
+      className: "w-[150px] max-w-[150px]",
       render: (_, product: IProduct) =>
         < Image
-          className="rounded-[10px] bg-slate-300 w-full h-full max-w-[68px]"
+          className="rounded-[10px] bg-slate-300 w-full max-w-[68px] !h-[68px] max-h-[68px] object-cover "
           src={product.image as unknown as string}
           alt="image"
         />
@@ -55,7 +55,7 @@ const ListProduct = () => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
-      className: "min-w-max max-w-[200px]",
+      className: "w-[200px] max-w-[200px]",
       render: (name: string) =>
         <div className="truncate">
           {name}
@@ -65,14 +65,14 @@ const ListProduct = () => {
       title: "Mô tả",
       dataIndex: "desc",
       key: "desc",
-      className: "w-[400px] max-w-[400px]  ",
+      className: "w-[600px] max-w-[600px]",
       render: (desc) => <div dangerouslySetInnerHTML={{ __html: desc }} className="w-full max-h-[87px] overflow-y-auto scroll-hiden cursor-n-resize pr-5" />,
     },
     {
       title: "Danh mục",
       dataIndex: "categoryId",
       key: "categoryId",
-      align: "center",
+      className: "w-[200px] max-w-[200px]",
       render: (categoryId) => {
         const nameCate = dataCategory?.find(
           (category: ICategory) => category._id === categoryId
@@ -81,11 +81,21 @@ const ListProduct = () => {
       },
     },
     {
+      title: "Thương hiệu",
+      dataIndex: "brand",
+      key: "brand",
+      className: "w-[120px] max-w-[120px]",
+      render: (branh: string) =>
+        <div className="truncate">
+          {branh}
+        </div>
+    },
+    {
       title: "Hành động",
       dataIndex: "_id",
       key: "_id",
       align: "center",
-      className: "w-[150px] max-w-[150px]",
+      className: "w-auto",
       render: (_id: string) =>
         _id && (
           <div className="w-max m-auto grid grid-cols-3 place-items-center gap-3 cursor-pointer">
