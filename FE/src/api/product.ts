@@ -34,11 +34,11 @@ const productApi = createApi({
 
         data.append("variants", JSON.stringify(product.variants));
 
-        Array.from(product.image).forEach((file) => {
+        product.image.forEach((file: File) => {
           data.append("image", file);
         });
-        
-        Array.from(product.thumbnail).forEach((file: any) => {
+
+        product.thumbnail.forEach((file: File) => {
           data.append("thumbnail", file);
         });
 
