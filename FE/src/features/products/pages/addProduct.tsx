@@ -32,6 +32,14 @@ const AddProduct = () => {
 
   const navigate = useNavigate();
 
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (type: NotificationType, message: string) => {
+    api[type]({
+      message: 'Thông báo',
+      description: message
+    });
+  };
+
   const [AddProduct, { isLoading }] = useAddProductMutation();
   const { data: categoryData } = useGetCategoryesQuery();
   const { data: sizeData } = useGetSizesQuery();
@@ -63,35 +71,27 @@ const AddProduct = () => {
     name: "variants",
   });
 
-  const [api, contextHolder] = notification.useNotification();
-
-  const openNotificationWithIcon = (type: NotificationType, message: string) => {
-    api[type]({
-      message: 'Thông báo',
-      description: message
-    });
-  };
-
   const handleInputThambnail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thumbnails = event.target.files ? Array.from(event.target.files) : []
-    const urls = thumbnails.map((file: File) => URL.createObjectURL(file))
-    console.log(urls);
+    const combineThumb = thumbnail ? [...thumbnail.files, ...thumbnails] : thumbnails
 
 
-    if (thumbnails.length > 20) {
-      openNotificationWithIcon("error", `Vui lòng chọn tối đa 20 ảnh`)
-      const newThumbnails = thumbnails.splice(0, 20)
+    const urls = combineThumb.map((file: File) => URL.createObjectURL(file))
 
-      const newUrl = newThumbnails.map((file: File) => URL.createObjectURL(file))
+
+    if (combineThumb.length > 20) {
+      openNotification("error", `Chọn tối đa 20 ảnh`)
+      const newThumb = combineThumb.splice(0, 20)
+      const newUrl = newThumb.map((file: File) => URL.createObjectURL(file))
       setThumbnail({
-        files: newThumbnails,
+        files: newThumb,
         url: newUrl
       })
       return;
     }
 
     setThumbnail({
-      files: thumbnails,
+      files: combineThumb,
       url: urls,
     })
 
@@ -124,10 +124,7 @@ const AddProduct = () => {
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
       await AddProduct({ ...data, thumbnail: newThumbnail, image: newImage })
-      notification.success({
-        message: "Thêm sản phẩm thành công",
-        placement: "topRight",
-      });
+      openNotification("success", "Thêm sản phẩm thành công")
     } catch (error: any) {
       return error.message
     }
@@ -135,9 +132,9 @@ const AddProduct = () => {
 
   return (
     <>
-      <div className="m-5 bg-white p-5 rounded-lg border-2 border-slate-300">
-        <h4 className="mb-8 font-semibold text-3xl">Thêm mới sản phẩm</h4>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-3 gap-[20px]">
+      <div className="p-5">
+        <h4 className="mb-8 font-bold text-3xl uppercase text-slate-700">Thêm mới sản phẩm</h4>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-3 gap-[20px] bg-white p-5 rounded-lg">
           {/* left */}
           <div className="col-span-2">
             <div className="h-max mb-[20px]">
@@ -220,19 +217,18 @@ const AddProduct = () => {
                     </div>
                   </div>
                 </label>
-                {thumbnail && <div className="w-full max-h-[150px] grid grid-cols-2 gap-3 overflow-auto mt-[10px]">
-                  {thumbnail.url.map((image: string, index: number) => (
-                    <div key={image} className="w-full max-w-[300px] h-[50px] grid grid-cols-[85%_auto] border border-slate-300 rounded-md overflow-hidden">
-                      <div className="w-max grid grid-cols-[max-content_max-content] gap-x-2 items-center">
-                        <Image src={image} alt="image" className="w-[50px] max-w-[50px] !h-[50px] bg-center object-cover rounded-l-md" />
-                        <div className="text-black max-w-[80px] truncate cursor-default" title={thumbnail?.files[index]?.name}>{thumbnail?.files[index]?.name}</div>
-                      </div>
-                      <div className="grid place-items-center cursor-pointer">
-                        <AiOutlineClose className="fill-orange-700 w-4 h-4" onClick={() => setThumbnail(() => handleRemoveImage(thumbnail, index))} />
-                      </div>
+                <div className="w-full max-h-[150px] grid grid-cols-2 gap-3 overflow-auto mt-[10px]">
+                  {thumbnail && thumbnail.url.map((image: string, index: number) =>
+                  (<div key={image} className="w-full max-w-[300px] h-[50px] grid grid-cols-[85%_auto] border border-slate-300 rounded-md overflow-hidden">
+                    <div className="w-max grid grid-cols-[max-content_max-content] gap-x-2 items-center">
+                      <Image src={image} alt="image" className="w-[50px] max-w-[50px] !h-[50px] bg-center object-cover rounded-l-md" />
+                      <div className="text-black max-w-[80px] truncate cursor-default" title={thumbnail?.files[index]?.name}>{thumbnail?.files[index]?.name}</div>
                     </div>
-                  ))}
-                </div>}
+                    <div className="grid place-items-center cursor-pointer">
+                      <AiOutlineClose className="fill-orange-700 w-4 h-4" onClick={() => setThumbnail(() => handleRemoveImage(thumbnail, index))} />
+                    </div>
+                  </div>))}
+                </div>
               </div>
               <input {...register("thumbnail")} type="file" multiple id="inputThumbnail" required onChange={handleInputThambnail} accept="image/jpeg, image/gif, image/png" className="hidden" />
             </div>
@@ -326,6 +322,7 @@ const AddProduct = () => {
               </Tooltip>
             </div>
           </div>
+          {/* button */}
           <div className="w-max grid grid-cols-[max-content_max-content_max-content] gap-x-2 place-items-center col-span-2">
             <Button
               type="submit"
@@ -346,13 +343,15 @@ const AddProduct = () => {
           </div>
         </form >
       </div >
-      {contextHolder}
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading || isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <>
+        {contextHolder}
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading || isLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </>
     </>
   );
 };

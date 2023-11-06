@@ -1,5 +1,4 @@
-// import React, { useState } from "react";
-import { Image, Popconfirm, Table, notification } from "antd";
+import { Image, Popconfirm, Table, Tooltip, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useGetProductsQuery, useRemoveProductMutation, useUpdateProductMutation } from "@/api/product";
 import { IProduct } from "@/interface/product";
@@ -7,47 +6,71 @@ import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
 import { useNavigate } from "react-router-dom";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
-import { HiMiniPencilSquare, HiOutlineTrash, HiPlus } from "react-icons/hi2";
-import { AiOutlineUnorderedList } from "react-icons/ai";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ITrashCan, showTrashCan } from "@/app/trashcan.slice";
+import { BsArrowLeftShort, BsPencilSquare, BsTrash3, BsListUl, BsPlus, BsArrowCounterclockwise } from "react-icons/bs";
 import '../index.css'
 
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
+
 const ListProduct = () => {
-  const [showTrashCan, setShowTrashCan] = useState(false)
-  const { data: dataProduct } = useGetProductsQuery(showTrashCan);
+  const dispatch = useDispatch()
+  const trashCanState = useSelector((state: { trashCan: ITrashCan }) => state.trashCan?.value)
+
+  const { data: dataProduct } = useGetProductsQuery(trashCanState);
   const { data: dataCategory } = useGetCategoryesQuery();
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
   const [deleteProdcut, { isLoading: isLoadingDelete }] = useRemoveProductMutation();
 
   const navigate = useNavigate();
 
-  const handleTrushCan = async (id: string) => {
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (type: NotificationType, message: string) => {
+    api[type]({
+      message: 'Thông báo',
+      description: message
+    });
+  };
+
+  const handleTrushCan = async (id: string, action?: string) => {
     const product = dataProduct?.find((product: IProduct) => product._id === id)
-    if (product?.isDelete === true) {
+    const oldImage = [...product?.image as File[]]
+    if (product?.isDelete === true && action === undefined) {
       await deleteProdcut(String(id))
-      notification.success({
-        message: "Xóa thành công",
-        placement: "topRight",
-      });
+      openNotification('success', 'Xóa thành công')
       return
     }
-    await updateProduct({ ...product, isDelete: true } as IProduct)
-    notification.success({
-      message: "Đã di chuyển sản phẩm đến thùng rác",
-      placement: "topRight",
-    });
+
+    if (action === 'recovery') {
+      await updateProduct({ ...product, image: oldImage, isDelete: false, _id: id } as IProduct)
+      openNotification('success', 'Khôi phục thành công')
+      return
+    }
+
+    await updateProduct({ ...product, image: oldImage, isDelete: true, _id: id } as IProduct)
+    openNotification('success', 'Đã di chuyển sản phẩm đến thùng rác')
   };
 
   const columns: ColumnsType<IProduct> = [
     {
+      title: "STT",
+      dataIndex: "_id",
+      key: "_id",
+      className: "w-[60px] max-w-[100px]",
+      fixed: "left",
+      align: "center",
+      render: (_, product: IProduct, index: number) =>
+        <div key={product._id} className="truncate">{index + 1}</div>
+    },
+    {
       title: "Hình ảnh",
       dataIndex: "image",
       key: "image",
-      className: "w-[150px] max-w-[150px]",
-      render: (_, product: IProduct) =>
+      className: "min-w-[100px] w-[120px] max-w-[150px]",
+      render: (image: string) =>
         < Image
           className="rounded-[10px] bg-slate-300 w-full max-w-[68px] !h-[68px] max-h-[68px] object-cover "
-          src={product.image as unknown as string}
+          src={image}
           alt="image"
         />
     },
@@ -55,9 +78,9 @@ const ListProduct = () => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
-      className: "w-[200px] max-w-[200px]",
+      className: "capitalize w-[130px] max-w-[130px] md:min-w-[200px] lg:min-w-[200px] lg:max-w-[200px]",
       render: (name: string) =>
-        <div className="truncate">
+        <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
           {name}
         </div>
     },
@@ -65,26 +88,29 @@ const ListProduct = () => {
       title: "Mô tả",
       dataIndex: "desc",
       key: "desc",
-      className: "w-[600px] max-w-[600px]",
-      render: (desc) => <div dangerouslySetInnerHTML={{ __html: desc }} className="w-full max-h-[87px] overflow-y-auto scroll-hiden cursor-n-resize pr-5" />,
+      className: "min-w-[100px] w-max max-w-[500px]",
+      render: (desc) =>
+        <div dangerouslySetInnerHTML={{ __html: desc }}
+          className="max-h-[48px] overflow-y-auto scroll-hiden cursor-n-resize pr-5"
+        />,
     },
     {
       title: "Danh mục",
       dataIndex: "categoryId",
       key: "categoryId",
-      className: "w-[200px] max-w-[200px]",
+      className: "min-w-[100px] w-[150px] max-w-[150px] capitalize",
       render: (categoryId) => {
         const nameCate = dataCategory?.find(
           (category: ICategory) => category._id === categoryId
         );
-        return categoryId && <div>{nameCate?.name}</div>;
+        return categoryId && <div className="truncate">{nameCate?.name}</div>;
       },
     },
     {
       title: "Thương hiệu",
       dataIndex: "brand",
       key: "brand",
-      className: "w-[120px] max-w-[120px]",
+      className: "min-w-[120px] w-[150px] max-w-[150px] capitalize",
       render: (branh: string) =>
         <div className="truncate">
           {branh}
@@ -96,6 +122,7 @@ const ListProduct = () => {
       key: "_id",
       align: "center",
       className: "w-auto",
+      fixed: "right",
       render: (_id: string) =>
         _id && (
           <div className="w-max m-auto grid grid-cols-3 place-items-center gap-3 cursor-pointer">
@@ -108,10 +135,24 @@ const ListProduct = () => {
               cancelButtonProps={{ className: "border-slate-400" }}
               onConfirm={() => handleTrushCan(_id)}
             >
-              <HiOutlineTrash className="stroke-red-600 w-4 h-4" />
+              <Tooltip placement="right" title="Xóa">
+                <BsTrash3 onClick={() => handleTrushCan} className="fill-red-600 w-4 h-4" />
+              </Tooltip>
             </Popconfirm>
-            <HiMiniPencilSquare onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
-            <AiOutlineUnorderedList onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
+            {trashCanState
+              ? <Tooltip placement="top" title="Khôi phục">
+                <BsArrowCounterclockwise onClick={() => handleTrushCan(_id, "recovery")} className="w-4 h-4" />
+              </Tooltip>
+              : <>
+                <Tooltip placement="right" title="Sửa">
+                  <BsPencilSquare onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
+                </Tooltip>
+                <Tooltip placement="right" title="Chi tiết">
+                  <BsListUl onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
+                </Tooltip>
+
+              </>
+            }
           </div >
         ),
     },
@@ -124,29 +165,34 @@ const ListProduct = () => {
   }))
 
   return (
-    <div className="mx-5">
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading || isLoadingDelete}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      <div className="h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center">
-        <div className="h-full w-max grid items-center font-bold uppercase text-3xl ml-2 text-slate-700">Danh sách sản phẩm</div>
+    <>
+      <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center'>
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">{trashCanState ? "Thùng Rác" : "Danh sách sản phẩm"}</div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
-            onClick={() => navigate("add")}
+            onClick={() => {
+              trashCanState ? dispatch(showTrashCan(!trashCanState)) : navigate("add")
+            }}
             variant="contained"
-            className="float-right !font-semibold"
-            startIcon={<HiPlus className="stroke-1" />}
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            startIcon={trashCanState ? <BsArrowLeftShort /> : <BsPlus className="w-6 h-6" />}
           >
-            Thêm sản phẩm
+            {trashCanState ? "Quay lại" : "Thêm Mới"}
           </Button>
-          <HiOutlineTrash onClick={() => setShowTrashCan(!showTrashCan)} className="stroke-red-500 w-8 h-8 cursor-pointer" />
+          {!trashCanState && <BsTrash3 onClick={() => dispatch(showTrashCan(!trashCanState))} className="fill-slate-600 w-7 h-7 cursor-pointer" />}
         </div>
       </div>
-      <Table columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} className="w-full max-w-[100vw] relative" />
-    </div>
+      <Table columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
+      <>
+        {contextHolder}
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading || isLoadingDelete}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </>
+    </>
   );
 };
 
