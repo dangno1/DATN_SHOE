@@ -21,6 +21,7 @@ import sizeApi, { sizeReducer } from "../api/size";
 import colorApi, { colorReducer } from "@/api/color";
 import cartApi, { cartReducer } from "@/api/cart";
 import couponsApi, { couponsReducer } from "@/api/coupons";
+import orderApi, { orderReducer } from "@/api/order";
 
 
 // Cấu hình persist ( lưu localStorage )
@@ -31,6 +32,7 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   [cartApi.reducerPath]: cartReducer,
+  [orderApi.reducerPath]: orderReducer,
   [productApi.reducerPath]: productReducer,
   [categoryApi.reducerPath]: categoryReducer,
   [sizeApi.reducerPath]: sizeReducer,
@@ -52,7 +54,8 @@ export const store = configureStore({
       categoryApi.middleware,
       sizeApi.middleware,
       colorApi.middleware,
-      couponsApi.middleware
+      couponsApi.middleware,
+      orderApi.middleware
     ),
 });
 export type AppDispatch = typeof store.dispatch;

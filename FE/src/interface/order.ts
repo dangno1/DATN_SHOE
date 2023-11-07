@@ -1,7 +1,7 @@
 export interface IOrder {
-    id: string; 
+    _id: string; 
     orderItem: {
-      name: string;
+      productName: string;
       quantity: number;
       image: string;
       price: number;
@@ -9,10 +9,11 @@ export interface IOrder {
       productId: string;
     };
     shippingAddress: {
-      name: string;
+      username: string;
       address: string;
       email: string;
-      phone: number;
+      phone:  string ;
+      status: string;
     };
   }
   

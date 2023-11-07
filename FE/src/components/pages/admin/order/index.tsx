@@ -1,205 +1,161 @@
 import { useState } from 'react';
+import {useGetOrdersQuery} from '@/api/order'
+import { IOrder } from '@/interface/order';
 
 const index = () => {
 
 
-    interface User {
-        userName: string;
-        email: string;
-        phone: string;
-        image: string;
-    }
+    // interface User {
+    //     userName: string;
+    //     email: string;
+    //     phone: string;
+    //     image: string;
+    // }
 
-    interface OrderItem {
-        ProductName: string;
-        ProductQuantity: number;
-        ProductImage: string;
-        ProductPrice: number;
-        product: string;
-    }
+    // interface OrderItem {
+    //     ProductName: string;
+    //     ProductQuantity: number;
+    //     ProductImage: string;
+    //     ProductPrice: number;
+    //     product: string;
+    // }
 
-    interface dataOrder {
-        code: string;
-        time: string;
-        total: number;
-        OrderItems: OrderItem[];
-        user: User[];
-        node: string;
-        status: string;
-        id: number;
-    }
-    // db
-    const dataOrder = [
-        {
-            "code": "5FHLA$UL",
-            "time": "Ngày 6 tháng 1 năm 2022",
-            "total": 200,
-            "OrderItems": [
-                {
-                    "ProductName": "Product 1",
-                    "ProductQuantity": 3,
-                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
-                    "ProductPrice": 10.99,
-                    "product": "product_id_1"
-                },
-            ],
-            "user": [
-                {
-                    "userName": "Quang",
-                    "email": "quangnv@gmail.com",
-                    "phone": "0347917363",
-                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
-                }
-            ],
-            "node": "che tên đơn hàng",
-            "status": "Delivering",
-            "id": 1
-        },
+    // interface dataOrder {
+    //     code: string;
+    //     time: string;
+    //     total: number;
+    //     OrderItems: OrderItem[];
+    //     user: User[];
+    //     node: string;
+    //     status: string;
+    //     id: number;
+    // }
+    // // db
+    // const dataOrder = [
+    //     {
+    //         "code": "5FHLA$UL",
+    //         "time": "Ngày 6 tháng 1 năm 2022",
+    //         "total": 200,
+    //         "OrderItems": [
+    //             {
+    //                 "ProductName": "Product 1",
+    //                 "ProductQuantity": 3,
+    //                 "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+    //                 "ProductPrice": 10.99,
+    //                 "product": "product_id_1"
+    //             },
+    //         ],
+    //         "user": [
+    //             {
+    //                 "userName": "Quang",
+    //                 "email": "quangnv@gmail.com",
+    //                 "phone": "0347917363",
+    //                 "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+    //             }
+    //         ],
+    //         "node": "che tên đơn hàng",
+    //         "status": "Delivering",
+    //         "id": 1
+    //     },
 
-        {
-            "code": "5FHLASGS",
-            "time": "Ngày 6 tháng 1 năm 2022",
-            "total": 200,
-            "OrderItems": [
-                {
-                    "ProductName": "Product 1",
-                    "ProductQuantity": 3,
-                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
-                    "ProductPrice": 10.99,
-                    "product": "product_id_1"
-                },
-            ],
-            "user": [
-                {
-                    "userName": "Quang",
-                    "email": "quangnv@gmail.com",
-                    "phone": "0347917362",
-                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
-                }
-            ],
-            "node": "giao nhanh giup toi",
-            "status": "Returns",
-            "id": 2
-        },
-        {
-            "code": "5FHLAHA",
-            "time": "Ngày 6 tháng 1 năm 2022",
-            "total": 200,
-            "OrderItems": [
-                {
-                    "ProductName": "Product 1",
-                    "ProductQuantity": 3,
-                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
-                    "ProductPrice": 10.99,
-                    "product": "product_id_1"
-                },
-            ],
-            "user": [
-                {
-                    "userName": "Quang",
-                    "email": "quangnv@gmail.com",
-                    "phone": "0347917361",
-                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
-                }
-            ],
-            "node": "che tên đơn hàng",
-            "status": "Returns",
-            "id": 3
-        },
-        {
-            "code": "5FHL@@",
-            "time": "Ngày 6 tháng 1 năm 2022",
-            "total": 200,
-            "OrderItems": [
-                {
-                    "ProductName": "Product 1",
-                    "ProductQuantity": 3,
-                    "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
-                    "ProductPrice": 10.99,
-                    "product": "product_id_1"
-                },
-            ],
-            "user": [
-                {
-                    "userName": "Quang",
-                    "email": "quangnv@gmail.com",
-                    "phone": "0347917360",
-                    "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
-                }
-            ],
-            "node": "che tên đơn hàng",
-            "status": "Delivered",
-            "id": 4
-        },
-    ];
+    //     {
+    //         "code": "5FHLASGS",
+    //         "time": "Ngày 6 tháng 1 năm 2022",
+    //         "total": 200,
+    //         "OrderItems": [
+    //             {
+    //                 "ProductName": "Product 1",
+    //                 "ProductQuantity": 3,
+    //                 "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+    //                 "ProductPrice": 10.99,
+    //                 "product": "product_id_1"
+    //             },
+    //         ],
+    //         "user": [
+    //             {
+    //                 "userName": "Quang",
+    //                 "email": "quangnv@gmail.com",
+    //                 "phone": "0347917362",
+    //                 "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+    //             }
+    //         ],
+    //         "node": "giao nhanh giup toi",
+    //         "status": "Returns",
+    //         "id": 2
+    //     },
+    //     {
+    //         "code": "5FHLAHA",
+    //         "time": "Ngày 6 tháng 1 năm 2022",
+    //         "total": 200,
+    //         "OrderItems": [
+    //             {
+    //                 "ProductName": "Product 1",
+    //                 "ProductQuantity": 3,
+    //                 "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+    //                 "ProductPrice": 10.99,
+    //                 "product": "product_id_1"
+    //             },
+    //         ],
+    //         "user": [
+    //             {
+    //                 "userName": "Quang",
+    //                 "email": "quangnv@gmail.com",
+    //                 "phone": "0347917361",
+    //                 "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+    //             }
+    //         ],
+    //         "node": "che tên đơn hàng",
+    //         "status": "Returns",
+    //         "id": 3
+    //     },
+    //     {
+    //         "code": "5FHL@@",
+    //         "time": "Ngày 6 tháng 1 năm 2022",
+    //         "total": 200,
+    //         "OrderItems": [
+    //             {
+    //                 "ProductName": "Product 1",
+    //                 "ProductQuantity": 3,
+    //                 "ProductImage": "https://p-vn.ipricegroup.com/trends-article/3-dac-diem-co-mot-khong-hai-cua-giay-the-thao-adidas-superstar-de-nghiem-nhien-tro-thanh-bieu-tuong-cua-thuong-hieu-medium.jpg",
+    //                 "ProductPrice": 10.99,
+    //                 "product": "product_id_1"
+    //             },
+    //         ],
+    //         "user": [
+    //             {
+    //                 "userName": "Quang",
+    //                 "email": "quangnv@gmail.com",
+    //                 "phone": "0347917360",
+    //                 "image": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
+    //             }
+    //         ],
+    //         "node": "che tên đơn hàng",
+    //         "status": "Delivered",
+    //         "id": 4
+    //     },
+    // ];
 
     const [searchCode, setSearchCode] = useState('');
+    const { data: orders } = useGetOrdersQuery();
     const [selectedStatus, setSelectedStatus] = useState('');
 
-    const filteredOrders = dataOrder.filter((order) => {
+    const filteredOrders: IOrder[] = orders?.filter((order:IOrder ) => {
         const searchTerm = searchCode.toLowerCase();
-        const codeMatch = order.code.toLowerCase().includes(searchTerm);
-        const phoneMatch = order.user[0].phone.toLowerCase().includes(searchTerm);
-        const emailMatch = order.user[0].email.toLowerCase().includes(searchTerm);
-        const statusMatch = selectedStatus === '' || order.status.toLowerCase() === selectedStatus.toLowerCase();
+        const codeMatch = order.orderItem.productId.toLowerCase().includes(searchTerm);
+        const phoneMatch = order.shippingAddress?.phone.toLowerCase().includes(searchTerm);
+        const emailMatch = order.shippingAddress.email.toLowerCase().includes(searchTerm);
+        const statusMatch = selectedStatus === '' || order.shippingAddress.status.toLowerCase() === selectedStatus.toLowerCase();
         return (codeMatch || phoneMatch || emailMatch) && statusMatch;
-    });
+    }) || [];
+    
 
 
-    const [isPopupVisible, setPopupVisible] = useState(false);
+    
 
-    const [selectedProduct, setSelectedProduct] = useState<OrderItem | null>(null);
-
-    const openPopup = (product: OrderItem) => {
-        setSelectedProduct(product);
-        setPopupVisible(true);
-    };
-
-
-
-    const closePopup = () => {
-        setPopupVisible(false);
-    };
 
     return (
         <div>
-            {isPopupVisible && (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-2 rounded-md popup">
-                        <button
-                            className="absolute top-1 right-1 p-1 text-gray-500 hover:text-gray-700 rounded-md bg-white"
-                            onClick={closePopup}
-                        >
-                            Đóng
-                        </button>
-                        <div className="text-center">
-                            <div className="text-center">
-                                {selectedProduct && (
-                                    <div className="flex flex-col items-center">
-                                        <div className="w-full h-96 relative">
-                                            <img
-                                                src={selectedProduct.ProductImage}
-                                                alt={selectedProduct.ProductName}
-                                                className="w-full h-full object-contain rounded-md"
-                                            />
-                                        </div>
-                                        <h2 className="text-3xl font-bold text-gray-900 mt-6">
-                                            {selectedProduct.ProductName}
-                                        </h2>
-                                        <p className="text-xl text-gray-600 mt-2">
-                                            Quantity: {selectedProduct.ProductQuantity}
-                                        </p>
-                                        <p className="text-xl text-gray-600">
-                                            Price: {selectedProduct.ProductPrice}đ
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )
-            }
+           
 
             <div className="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded" >
                 {/* navbar Lọc */}
@@ -304,7 +260,7 @@ const index = () => {
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                                         {filteredOrders.map((order, index) => (
-                                            <tr key={order.id}>
+                                            <tr key={order._id}>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap" >
                                                     <div className="inline-flex items-center gap-x-3">
                                                         <input type="checkbox" className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700" />
@@ -312,35 +268,35 @@ const index = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                                                    <p onClick={() => openPopup(order.OrderItems[0])} className="leading-relaxed text-red-500">{order.code}
+                                                    <p  className="leading-relaxed text-red-500">{order.orderItem.productId}
                                                     </p>
                                                 </td>
-                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.time}</td>
+                                                {/* <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.time}</td> */}
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                     <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
                                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                         </svg>
 
-                                                        <h2 className="text-sm font-normal">{order.total}đ</h2>
+                                                        <h2 className="text-sm font-normal">{order.orderItem.totalPrice}đ</h2>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                                                     <div className="flex items-center gap-x-2">
-                                                        <img className="object-cover w-8 h-8 rounded-full" src={order.user[0].image} alt={order.user[0].email} />
+                                                        <img className="object-cover w-8 h-8 rounded-full" src="" alt={order.shippingAddress.email} />
 
                                                         <div>
-                                                            <h2 className="text-sm font-medium text-gray-800 dark:text-white "> {order.user[0].userName} </h2>
-                                                            <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{order.user[0].phone}</p>
-                                                            <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{order.user[0].email}</p>
+                                                            <h2 className="text-sm font-medium text-gray-800 dark:text-white "> {order.shippingAddress.username} </h2>
+                                                            <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{order.shippingAddress.phone}</p>
+                                                            <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{order.shippingAddress.email}</p>
                                                         </div>
                                                     </div>
                                                 </td>
 
-                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.node}</td>
+                                                {/* <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.node}</td> */}
                                                 <td className='px-4 py-4 text-sm whitespace-nowrap'>
                                                     < select id="cars" className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-300">
-                                                        <option value="" className="py-2">{order.status}</option>
+                                                        <option value="" className="py-2">{order.shippingAddress.status}</option>
                                                     </select>
                                                 </td>
 
