@@ -3,7 +3,7 @@ export interface IOrder {
   userName: string,
   userEmail: string,
   userAddress: string,
-  userPhone:  string,
+  userPhone:  number,
   products: {
     productName: string,
     productInitialPrice: string,
