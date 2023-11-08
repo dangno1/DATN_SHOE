@@ -1,19 +1,19 @@
 export interface IOrder {
-    _id: string; 
-    orderItem: {
-      productName: string;
-      quantity: number;
-      image: string;
-      price: number;
-      totalPrice: number;
-      productId: string;
-    };
-    shippingAddress: {
-      username: string;
-      address: string;
-      email: string;
-      phone:  string ;
-      status: string;
-    };
+    _id: string | number | undefined; 
+  userName: string,
+  userEmail: string,
+  userAddress: string,
+  userPhone:  string,
+  products: {
+    productName: string,
+    productInitialPrice: string,
+    productPrice: string,
+    productImage: string,
+    productColor: string,
+    productSize: number,
+    productQuantity: number
+  }[],
+  orderCode: string,
+  status: string
   }
   
