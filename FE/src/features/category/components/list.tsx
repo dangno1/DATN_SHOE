@@ -19,6 +19,7 @@ import { ICategory } from "@/interface/category";
 import { Modal, Popconfirm, notification } from "antd";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const ListCategory = () => {
   const [formAdd, setFormAdd] = useState<boolean>(false)
@@ -46,8 +47,24 @@ const ListCategory = () => {
     });
   };
 
+  const { register, handleSubmit } = useForm()
+
+  const onSubmit = (data: unknown) => {
+    console.log(data);
+
+  }
+
   return (
     <>
+      <Modal open={true}
+        centered
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input type="text" {...register("category")} className="border border-slate-500" />
+          <button type="submit">Submit</button>
+        </form>
+      </Modal>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isLoading}
@@ -102,7 +119,7 @@ const ListCategory = () => {
                 <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-50%] " />
               </div>
               <Button
-                onClick={() => setFormAdd(true)}
+                onClick={() => navigate("add")}
                 className="flex items-center gap-3 bg-black relative pl-[40px]">
                 <muiIcons.AddIcon className="absolute top-[50%] left-[10px] translate-y-[-50%] " />
                 Thêm mới
