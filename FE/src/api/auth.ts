@@ -13,6 +13,7 @@ const userApi = createApi({
       query: () => `/api/users/`,
       providesTags: ["User"],
     }),
+    
     getUserById: builder.query<IUser, number | string>({
       query: (id) => `/api/user/${id}`,
       providesTags: ["User"],
@@ -53,12 +54,7 @@ const userApi = createApi({
       invalidatesTags: ["User"],
     }),
     addUser: builder.mutation<
-      {
-        data: unknown;
-        success: boolean;
-        messages: [];
-        user: { role: string };
-      },
+      IUser,
       IUser
     >({
       query: (user) => ({
@@ -92,6 +88,29 @@ const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
+    forgotPassword: builder.mutation<
+    { message: string },
+    { email: string }
+  >({
+    query: (email) => ({
+      url: `/api/auth/forgotpassword`, 
+      method: "POST",
+      body: { email },
+    }),
+  }),
+
+  resetPassword: builder.mutation<
+    { message: string },
+    { email: string, otp: number, newPassword: string }
+  >({
+    query: (data) => ({
+      url: `/api/auth/resetpassword`,
+      method: "POST",
+      body: data,
+    }),
+  }),
+
   }),
 });
 export const {
@@ -101,7 +120,9 @@ export const {
   useSigninMutation,
   useSignupMutation,
   useUpdateUserMutation,
-  useChangePasswordMutation
+  useChangePasswordMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation
 } = userApi;
 export const authReducer = userApi.reducer;
 export default userApi;

@@ -35,6 +35,7 @@ import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
 import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
+import ForgotPassword from "./features/auth/components/ForgotPassword";
 
 
 export const router = createBrowserRouter([
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
   {
     path: "signup",
     element: <Signup />,
+  },
+  {
+    path: "forgotPassword",
+    element: <ForgotPassword />,
   },
   {
     path: "/admin",
