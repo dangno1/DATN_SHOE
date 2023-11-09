@@ -1,12 +1,11 @@
 import { useGetProductsQuery } from "@/api/product";
-import { IProduct } from "@/interface/product";
 import { useEffect, useState } from "react";
 import Slider from "./banner";
 import Social from "./social";
 import Blog from "./blog";
 
 const Products = () => {
-  const { data } = useGetProductsQuery();
+  const { data } = useGetProductsQuery(false);
   const [filter, setFilter] = useState({
     price: "",
     color: "",
