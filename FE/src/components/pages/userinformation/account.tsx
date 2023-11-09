@@ -237,8 +237,8 @@ const Account = () => {
       }
     </DialogContent>
     <DialogActions>
-      <Button onClick={()=> setOpenDialog(false)} className="capitalize bg-gradient-to-r from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Cancel</Button>
-      <Button type='submit' className="capitalize bg-gradient-to-r bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Subscribe</Button>
+      <Button onClick={()=> setOpenDialog(false)} className="capitalize  from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Thoát</Button>
+      <Button type='submit' className="capitalize  bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Lưu</Button>
     </DialogActions>
     </form>
   </Dialog>
@@ -284,8 +284,8 @@ const Account = () => {
       }
     </DialogContent>
     <DialogActions>
-      <Button onClick={()=> setOpenDialog(false)} className="capitalize bg-gradient-to-r from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Cancel</Button>
-      <Button type='submit' className="capitalize bg-gradient-to-r bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Subscribe</Button>
+      <Button onClick={()=> setOpenDialog(false)} className="capitalize  from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Thoát</Button>
+      <Button type='submit' className="capitalize  bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Lưu</Button>
     </DialogActions>
     </form>
   </Dialog>
