@@ -125,6 +125,7 @@ const UpdateProduct = () => {
 
       await UpdateProduct({ ...data, thumbnail: newThumbnail, image: newImage, _id: id })
       openNotificationWithIcon("success", "Cập nhật sản phẩm thành công")
+      reset()
     } catch (error: any) {
       return error.message
     }
@@ -161,7 +162,7 @@ const UpdateProduct = () => {
                 render={({ field: { onChange, value } }) => (
                   <CKEditor
                     editor={ClassicEditor}
-                    data={value}
+                    data={value || ''}
                     onChange={(_event, editor) => {
                       const data = editor.getData();
                       onChange(data);
