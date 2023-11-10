@@ -2,66 +2,58 @@ import { useGetColorsQuery } from "@/api/color";
 import { useGetProductQuery } from "@/api/product";
 import { useGetSizesQuery } from "@/api/size";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import { AiFillHeart ,AiOutlineShoppingCart } from "react-icons/ai";
-import {useCreateCartMutation} from "@/api/cart";
+import { AiFillHeart, AiOutlineShoppingCart } from "react-icons/ai";
+import { useCreateCartMutation } from "@/api/cart";
+import { ICart } from "@/interface/cart";
 
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
-  const { handleSubmit } = useForm();
 
   const [addCart] = useCreateCartMutation();
 
-  // const navigate = useNavigate();
-  const onSubmit = async () => {
-    console.log("Calling onSubmit");
-    
+  const navigate = useNavigate();
+  const handleAddCar = async() => {
     if (productData) {
-      console.log("productData exists:", productData);
-  
-      const productToAdd = {
-        // userName: 'Tên người dùng', 
-        // userEmail: 'Email người dùng', 
+      const productToAdd:ICart = {
+        userName: 'quang2903',
+        userEmail: 'ngovanquang290103@gmail.com',
+        userAddress: 'HaNoi',
         productName: productData.name,
         quantity: amount,
         price: productData.variants[0].price,
-        
+        initialPrice: productData.variants[0].price,
+        totalPrice: 300000,
+        category: productData.categoryId,
+        image: String(productData.image),
+        color: productData.variants[0].colorId,
+        status:'giao hang'
       };
-  
-      console.log("Product to add:", productToAdd);
-  
+
+      const data = await addCart(productToAdd);
+      alert("Thêm thành công")
+      data && navigate("/cart")
+      console.log(data);
       
-        console.log("addCart exists");
-       const data = await addCart(productToAdd);
-        // navigate("/cart");
-        console.log(data);
-        
       
     } else {
       console.error("productData is not defined.");
     }
   };
-  
-  console.log("data",onSubmit);
-  
 
-
-
-  const [images ,setImage ]=useState<any>()
+  const [images, setImage] = useState<(File | File[] | undefined)[]>()
   useEffect(() => {
-  const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
+    const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
     setImage(listImage)
   }, [productData])
-  console.log( images);
-  
+
   const [activeImgId, setActiveImageId] = useState(1); // Initialize active image ID to 1
 
   const handleImageClick = (id: number) => {
@@ -83,14 +75,13 @@ const Inforproduct = () => {
           <p>Loading...</p>
         ) : (
           productData && (
-            <form action="" onSubmit={handleSubmit(onSubmit)}>
               <div className="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
                 <div className="flex flex-wrap -mx-4">
                   <div className="w-full px-4 md:w-1/2">
                     <div className="sticky top-0 z-50 overflow-hidden">
                       <div className="relative mb-6 lg:mb-10 lg:h-2/4">
                         <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-                          {images.map((item: any, index:number) => (
+                          {images.map((item: any, index: number) => (
                             <SwiperSlide key={index}>
                               <img
                                 src={item}
@@ -103,12 +94,12 @@ const Inforproduct = () => {
                         </Swiper>
                       </div>
                       <div className="flex-wrap hidden md:flex">
-                         {images?.map((item: any,index : number) => (
+                        {images?.map((item: any, index: number) => (
                           <div key={item} className="w-1/2 p-2 sm:w-1/4">
                             <a
                               href="#"
                               className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
-                              onClick={() => handleImageClick(index   + 1)}
+                              onClick={() => handleImageClick(index + 1)}
                             >
                               <img src={item} alt="" className="object-cover w-full lg:h-20" />
                             </a>
@@ -198,15 +189,16 @@ const Inforproduct = () => {
                       </div>
                       <div className="flex flex-wrap items-center -mx-4">
                         <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
-                          <button type="submit" className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300"
-                          onClick={onSubmit}
+                          <button
+                           className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300"
+                            onClick={()=>handleAddCar()}
                           >
-                            Thêm vào giỏ hàng <AiOutlineShoppingCart/>
+                            Thêm vào giỏ hàng<AiOutlineShoppingCart />
                           </button>
                         </div>
                         <div className="w-full px-4 mb-4 lg:mb-0 lg:w-1/2">
                           <button className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
-                            Thêm vào ưa thích <AiFillHeart/>
+                            Thêm vào ưa thích <AiFillHeart />
                           </button>
                         </div>
                       </div>
@@ -214,7 +206,6 @@ const Inforproduct = () => {
                   </div>
                 </div>
               </div>
-            </form>
           )
         )}
       </section>
