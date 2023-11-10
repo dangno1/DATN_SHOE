@@ -28,27 +28,26 @@ import UserPage from "./components/pages/userinformation/userPage";
 import ListSize from "./features/size/components/list";
 import ListColor from "./features/color/components/list";
 import ListCategory from "./features/category/components/list";
-import AddCategory from "./features/category/pages/addCategory";
-import UpdateCategory from "./features/category/pages/updateCategory";
 import AddCoupons from "./features/coupons/pages/addCoupons";
 import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
 import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
+import ForgotPassword from "./features/auth/components/ForgotPassword";
 
 
 export const router = createBrowserRouter([
 
   {
-    path: "/", 
+    path: "/",
     element: <LayoutWebsite />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "detail/:id", element: <Detail /> },
-      { path: "Men/:id", element: <Men /> }, 
+      { path: "Men/:id", element: <Men /> },
       { path: "Kids/:id", element: <Kids /> },
       { path: "Women/:id", element: <Women /> },
-      {path: "products", element:<Products/>},
+      { path: "products", element: <Products /> },
       {
         path: "cart",
         element: <Cart />,
@@ -73,6 +72,10 @@ export const router = createBrowserRouter([
     element: <Signup />,
   },
   {
+    path: "forgotPassword",
+    element: <ForgotPassword />,
+  },
+  {
     path: "/admin",
     element: <LayoutAdmin />,
     children: [
@@ -88,11 +91,13 @@ export const router = createBrowserRouter([
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
       {
+        path: "product/trashCan",
+        element: <ListProduct />,
+      },
+      {
         path: "categoryes",
         element: <ListCategory />,
       },
-      { path: "categoryes/add", element: <AddCategory /> },
-      { path: "categoryes/update/:id", element: <UpdateCategory /> },
       {
         path: "size",
         element: <ListSize />,

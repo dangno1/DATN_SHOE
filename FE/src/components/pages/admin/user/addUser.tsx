@@ -2,10 +2,9 @@
 import { useForm } from "react-hook-form";
 import { useAddUserMutation } from "@/api/auth";
 import { IUser } from "@/interface/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const AddAdmin = () => {
 	const {register,handleSubmit} = useForm<IUser>();
-	const navigate = useNavigate();
 	const [addUser, { isLoading }] = useAddUserMutation();
 	
 	const onSubmit = (data: IUser) => {
@@ -13,10 +12,9 @@ const AddAdmin = () => {
 		.unwrap()
 		.then((res) =>{
 			if (res?.data) {
-				navigate("/admin/users")
 				console.log("ok");
 			} else {
-				console.log("Messages:", res.messages);
+				console.log("Messages:",res.data);
 				console.log(res);
 			}
 		});

@@ -50,6 +50,7 @@ const AddProduct = () => {
     register,
     handleSubmit,
     control,
+    reset
   } = useForm<IProduct>({
     defaultValues: {
       variants: [
@@ -75,9 +76,7 @@ const AddProduct = () => {
     const thumbnails = event.target.files ? Array.from(event.target.files) : []
     const combineThumb = thumbnail ? [...thumbnail.files, ...thumbnails] : thumbnails
 
-
     const urls = combineThumb.map((file: File) => URL.createObjectURL(file))
-
 
     if (combineThumb.length > 20) {
       openNotification("error", `Chọn tối đa 20 ảnh`)
@@ -119,12 +118,17 @@ const AddProduct = () => {
   }
 
 
-  const onSubmit = async (data: IProduct) => {
+  const handleAddproduct = async (data: IProduct) => {
     try {
+      console.log(data);
+
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
       await AddProduct({ ...data, thumbnail: newThumbnail, image: newImage })
       openNotification("success", "Thêm sản phẩm thành công")
+      reset()
+      setImage(null)
+      setThumbnail(null)
     } catch (error: any) {
       return error.message
     }
@@ -134,7 +138,7 @@ const AddProduct = () => {
     <>
       <div className="p-5">
         <h4 className="mb-8 font-bold text-3xl uppercase text-slate-700">Thêm mới sản phẩm</h4>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-3 gap-[20px] bg-white p-5 rounded-lg">
+        <form onSubmit={handleSubmit(handleAddproduct)} className="grid grid-cols-3 gap-[20px] bg-white p-5 rounded-lg">
           {/* left */}
           <div className="col-span-2">
             <div className="h-max mb-[20px]">
@@ -153,7 +157,7 @@ const AddProduct = () => {
                 render={({ field: { onChange, value } }) => (
                   <CKEditor
                     editor={ClassicEditor}
-                    data={value}
+                    data={value || ''}
                     onChange={(_event, editor) => {
                       const data = editor.getData();
                       onChange(data);

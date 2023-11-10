@@ -55,9 +55,9 @@ const UpdateProduct = () => {
     const urls = combineThumb.map((file: File) => URL.createObjectURL(file))
 
 
-    if (combineThumb.length > 20) {
-      openNotificationWithIcon("error", `Chọn tối đa 20 ảnh`)
-      const newThumb = combineThumb.splice(0, 20)
+    if (combineThumb.length > 20 - Number(productData?.thumbnail.length)) {
+      openNotificationWithIcon("error", `Chọn tối đa ${20 - Number(productData?.thumbnail.length)} ảnh`)
+      const newThumb = combineThumb.splice(0, 20 - Number(productData?.thumbnail.length))
       const newUrl = newThumb.map((file: File) => URL.createObjectURL(file))
       setThumbnail({
         files: newThumb,
@@ -72,7 +72,6 @@ const UpdateProduct = () => {
     })
 
   }
-
 
   const handleInputImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files ? Array.from(event.target.files) : []
@@ -125,6 +124,7 @@ const UpdateProduct = () => {
 
       await UpdateProduct({ ...data, thumbnail: newThumbnail, image: newImage, _id: id })
       openNotificationWithIcon("success", "Cập nhật sản phẩm thành công")
+      reset()
     } catch (error: any) {
       return error.message
     }
@@ -161,7 +161,7 @@ const UpdateProduct = () => {
                 render={({ field: { onChange, value } }) => (
                   <CKEditor
                     editor={ClassicEditor}
-                    data={value}
+                    data={value || ''}
                     onChange={(_event, editor) => {
                       const data = editor.getData();
                       onChange(data);
