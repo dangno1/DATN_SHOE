@@ -3,21 +3,58 @@ import { useGetProductQuery } from "@/api/product";
 import { useGetSizesQuery } from "@/api/size";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { AiFillHeart ,AiOutlineShoppingCart } from "react-icons/ai";
+import {useCreateCartMutation} from "@/api/cart";
+
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
   const { handleSubmit } = useForm();
-  const onSubmit = (formData: any) => {
+
+  const [addCart] = useCreateCartMutation();
+
+  // const navigate = useNavigate();
+  const onSubmit = async () => {
+    console.log("Calling onSubmit");
+    
+    if (productData) {
+      console.log("productData exists:", productData);
+  
+      const productToAdd = {
+        // userName: 'Tên người dùng', 
+        // userEmail: 'Email người dùng', 
+        productName: productData.name,
+        quantity: amount,
+        price: productData.variants[0].price,
+        
+      };
+  
+      console.log("Product to add:", productToAdd);
+  
+      
+        console.log("addCart exists");
+       const data = await addCart(productToAdd);
+        // navigate("/cart");
+        console.log(data);
+        
+      
+    } else {
+      console.error("productData is not defined.");
+    }
   };
-  console.log("productData: ", productData);
+  
+  console.log("data",onSubmit);
+  
+
+
+
   const [images ,setImage ]=useState<any>()
   useEffect(() => {
   const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
@@ -161,7 +198,9 @@ const Inforproduct = () => {
                       </div>
                       <div className="flex flex-wrap items-center -mx-4">
                         <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
-                          <button type="submit" className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
+                          <button type="submit" className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300"
+                          onClick={onSubmit}
+                          >
                             Thêm vào giỏ hàng <AiOutlineShoppingCart/>
                           </button>
                         </div>
