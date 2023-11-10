@@ -18,7 +18,6 @@ import {
 import { Alert, Stack } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import * as aiIcon from "react-icons/ai";
 
 const ListSize = () => {
   const [deleteSize, { isSuccess }] = useRemoveSizeMutation();
@@ -103,14 +102,13 @@ const ListSize = () => {
               <div className="w-full md:w-72 relative h-full">
                 <Input
                   placeholder="Search..."
-                  className="border outline-transparent focus:border-gray-500 border-gray-400 rounded-lg"
-                />
+                  className="border outline-transparent focus:border-gray-500 border-gray-400 rounded-lg" crossOrigin={undefined} />
                 <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-50%] " />
               </div>
               <Button
                 onClick={() => navigate("add")}
                 className="flex items-center gap-3 bg-black relative pl-[40px]">
-                <aiIcon.AiOutlinePlus className="absolute w-5 h-5 top-[50%] left-[10px] translate-y-[-50%] " />
+                <muiIcons.AddIcon className="absolute w-5 h-5 top-[50%] left-[10px] translate-y-[-50%] " />
                 Thêm mới
               </Button>
             </div>

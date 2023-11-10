@@ -4,12 +4,13 @@ import { useGetProductsQuery, useRemoveProductMutation, useUpdateProductMutation
 import { IProduct } from "@/interface/product";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { ITrashCan, showTrashCan } from "@/app/trashcan.slice";
-import { BsArrowLeftShort, BsPencilSquare, BsTrash3, BsListUl, BsPlus, BsArrowCounterclockwise } from "react-icons/bs";
+import { BsPencilSquare, BsTrash3, BsListUl, BsPlus, BsArrowCounterclockwise } from "react-icons/bs";
 import '../index.css'
+import { useEffect } from "react";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
@@ -23,6 +24,13 @@ const ListProduct = () => {
   const [deleteProdcut, { isLoading: isLoadingDelete }] = useRemoveProductMutation();
 
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    pathname === '/admin/product/trashCan'
+      ? dispatch(showTrashCan(true))
+      : dispatch(showTrashCan(false))
+  }, [dispatch, pathname])
 
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (type: NotificationType, message: string) => {
@@ -136,7 +144,7 @@ const ListProduct = () => {
               onConfirm={() => handleTrushCan(_id)}
             >
               <Tooltip placement="right" title="Xóa">
-                <BsTrash3 onClick={() => handleTrushCan} className="fill-red-600 w-4 h-4" />
+                <BsTrash3 className="fill-red-600 w-4 h-4" />
               </Tooltip>
             </Popconfirm>
             {trashCanState
@@ -167,21 +175,20 @@ const ListProduct = () => {
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center'>
-        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">{trashCanState ? "Thùng Rác" : "Danh sách sản phẩm"}</div>
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">{trashCanState ? "Thùng Rác" : "Tất cả sản phẩm"}</div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
-          <Button
+          {!trashCanState && <Button
             onClick={() => {
-              trashCanState ? dispatch(showTrashCan(!trashCanState)) : navigate("add")
+              trashCanState ? dispatch(showTrashCan(!trashCanState)) && navigate('/admin/product') : navigate("add")
             }}
             variant="contained"
             className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
-            startIcon={trashCanState ? <BsArrowLeftShort /> : <BsPlus className="w-6 h-6" />}
+            startIcon={<BsPlus className="w-6 h-6" />}
           >
-            {trashCanState ? "Quay lại" : "Thêm Mới"}
-          </Button>
-          {!trashCanState && <BsTrash3 onClick={() => dispatch(showTrashCan(!trashCanState))} className="fill-slate-600 w-7 h-7 cursor-pointer" />}
+            Thêm Mới
+          </Button>}
         </div>
-      </div>
+      </div >
       <Table columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
       <>
         {contextHolder}
@@ -195,5 +202,4 @@ const ListProduct = () => {
     </>
   );
 };
-
 export default ListProduct;

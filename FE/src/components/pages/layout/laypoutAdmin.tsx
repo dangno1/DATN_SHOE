@@ -1,7 +1,7 @@
 import { RiCoupon2Line } from "react-icons/ri";
 import { BiCategory } from "react-icons/bi";
 import { Button, Layout, Menu } from "antd";
-import { useState, } from "react";
+import { useEffect, useState, } from "react";
 import {
   AiOutlineMenuFold,
   AiOutlineMenuUnfold,
@@ -17,15 +17,18 @@ import { TfiDashboard } from 'react-icons/tfi'
 
 import { NavLink, Outlet } from "react-router-dom";
 import { HiOutlineTrash } from "react-icons/hi2";
-import { useDispatch } from "react-redux";
-import { showTrashCan } from "@/app/trashcan.slice";
 import { BsBoxSeam, BsPlusLg } from "react-icons/bs";
 
 const { Header, Sider, Content } = Layout;
 
 const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    window.addEventListener('resize', function () {
+      this.innerWidth <= 640 ? setCollapsed(true) : setCollapsed(false)
+    })
+  }, [])
 
   return (
     <Layout className="min-h-[100vh] w-full max-w-[100vw] ">
@@ -55,12 +58,12 @@ const LayoutAdmin = () => {
                 children: [
                   {
                     key: 4,
-                    label: <NavLink to="/admin/product" onClick={() => dispatch(showTrashCan(false))}>Danh sách Sản phẩm</NavLink>,
+                    label: <NavLink to="/admin/product">Tất cả Sản phẩm</NavLink>,
                     icon: <AiOutlineOrderedList />
                   },
                   {
                     key: 5,
-                    label: <NavLink to="/admin/product/add">Thêm mới</NavLink>,
+                    label: <NavLink to="/admin/product/add">Thêm mới sản phẩm</NavLink>,
                     icon: <BsPlusLg />
                   },
 
@@ -68,7 +71,7 @@ const LayoutAdmin = () => {
 
                   {
                     key: 6,
-                    label: <NavLink to="/admin/product" onClick={() => dispatch(showTrashCan(true))}>Thùng rác</NavLink>,
+                    label: <NavLink to="/admin/product/trashCan">Thùng rác</NavLink>,
                     icon: <HiOutlineTrash />
                   },
 
