@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IColor } from "@/interface/color";
+import { IColorExtend } from "@/features/color/components/list";
 
 const colorApi = createApi({
   reducerPath: "colors",
@@ -23,7 +24,7 @@ const colorApi = createApi({
       }),
       invalidatesTags: ["Color"],
     }),
-    addColor: builder.mutation<IColor, IColor>({
+    addColor: builder.mutation<IColor, IColorExtend>({
       query: (color) => ({
         url: `/color`,
         method: "post",
@@ -31,7 +32,7 @@ const colorApi = createApi({
       }),
       invalidatesTags: ["Color"],
     }),
-    updateColor: builder.mutation<IColor, IColor>({
+    updateColor: builder.mutation<IColor, IColorExtend>({
       query: (color) => ({
         url: `/color/update/${color._id}`,
         method: "PATCH",

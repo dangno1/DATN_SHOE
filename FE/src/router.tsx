@@ -8,10 +8,6 @@ import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
 import AddProduct from "./features/products/pages/addProduct";
 import UpdateProduct from "./features/products/pages/updateProduct";
-import AddSize from "./features/size/pages/addSize";
-import UpdateSize from "./features/size/pages/updateSize";
-import UpdateColor from "./features/color/pages/updateColor";
-import AddColor from "./features/color/pages/addColor";
 import Detail from "./components/pages/detail/Detail";
 import Kids from "./components/pages/kids/kids";
 import Women from "./components/pages/women/home";
@@ -28,8 +24,6 @@ import UserPage from "./components/pages/userinformation/userPage";
 import ListSize from "./features/size/components/list";
 import ListColor from "./features/color/components/list";
 import ListCategory from "./features/category/components/list";
-import AddCoupons from "./features/coupons/pages/addCoupons";
-import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
 import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
@@ -98,23 +92,13 @@ export const router = createBrowserRouter([
         element: <ListSize />,
       },
       {
-        path: "size/add",
-        element: <AddSize />,
-      },
-      { path: "size/update/:id", element: <UpdateSize /> },
-      {
         path: "color",
         element: <ListColor />,
       },
-      { path: "color/add", element: <AddColor /> },
-      { path: "color/update/:id", element: <UpdateColor /> },
       {
         path: "coupons",
         element: <ListCoupons />,
       },
-      { path: "coupons/add", element: <AddCoupons /> },
-      { path: "coupons/update/:id", element: <UpdateCoupons /> },
-
       {
         path: "carts",
         element: <Carts />,

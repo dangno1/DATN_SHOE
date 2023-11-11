@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ISize } from "@/interface/size";
+import { ISizeExtend } from "@/features/size/components/list";
 
 const sizeApi = createApi({
   reducerPath: "size",
@@ -23,7 +24,7 @@ const sizeApi = createApi({
       }),
       invalidatesTags: ["Size"],
     }),
-    addSize: builder.mutation<ISize, ISize>({
+    addSize: builder.mutation<ISize, ISizeExtend>({
       query: (size) => ({
         url: `/size`,
         method: "post",
@@ -31,7 +32,7 @@ const sizeApi = createApi({
       }),
       invalidatesTags: ["Size"],
     }),
-    updateSize: builder.mutation<ISize, ISize>({
+    updateSize: builder.mutation<ISize, ISizeExtend>({
       query: (data) => {
         return {
           url: `/size/update/${data._id}`,
