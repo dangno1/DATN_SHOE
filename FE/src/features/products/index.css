@@ -1,0 +1,11 @@
+.scroll-hiden::-webkit-scrollbar {
+  display: none;
+}
+
+.ck-file-dialog-button {
+  display: none !important;
+}
+
+/* .ck .ck-dropdown {
+  display: none !important;
+} */

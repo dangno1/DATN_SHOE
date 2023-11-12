@@ -1,74 +1,21 @@
-import { Button, Table } from "antd";
+import { useGetUserQuery } from "@/api/auth";
+import { IUser } from "@/interface/auth";
+import { Button, Table, Input, Select } from "antd";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Option } from "rc-select";
 
 const AdminUser = () => {
-  interface DataType {
-    fullname: string;
-    username: string;
-    email: string;
-    phone: string;
-    address: string;
-  }
-
-  const dataSource: DataType[] = [
-    {
-      fullname: "Nguyễn Đình Đăng",
-      username: "dinhdang",
-      phone: "0974169738",
-      address: "nam dinh",
-      email: "dang@gmail.com",
-    },
-    {
-      fullname: "Phan Văn Lợi",
-      username: "vanloi",
-      phone: "0974169738",
-      address: "nam dinh",
-      email: "loi@gmail.com",
-    },
-    {
-      fullname: "Ngô Văn Quang",
-      username: "vanquang",
-      phone: "0974169738",
-      address: "nam dinh",
-      email: "quang@gmail.com",
-    },
-    {
-      fullname: "Nguyễn Quý Minh",
-      username: "quyminh",
-      phone: "0974169738",
-      address: "nam dinh",
-      email: "minh@gmail.com",
-    },
-    {
-        fullname: "Doãn Trường Duy",
-        username: "truongduy",
-        phone: "0974169738",
-        address: "nam dinh",
-        email: "duy@gmail.com",
-      },
-    {
-      fullname: "Nguyễn Hoàng Linh",
-      username: "hoanglinh",
-      phone: "0974169738",
-      address: "nam dinh",
-      email: "linh@gmail.com",
-    },
-      {
-        fullname: "Nguyễn Văn Tùng",
-        username: "vantung",
-        phone: "0974169738",
-        address: "nam dinh",
-        email: "tung@gmail.com",
-      },
-    
-  ];
+  const { data: userData } = useGetUserQuery();
+  const [searchText, setSearchText] = useState(''); // State to track the search text
+  const [filterRole, setFilterRole] = useState('all'); // State to track the role filter
 
   const columns = [
     {
       title: "STT",
       dataIndex: "stt",
       key: "stt",
-      render: (text, record, rowIndex) => rowIndex + 1,
+      render: (_text: unknown, _record: unknown, rowIndex: number) => rowIndex + 1,
     },
     {
       title: "fullname",
@@ -95,27 +42,86 @@ const AdminUser = () => {
       dataIndex: "address",
       key: "address",
     },
-    {
-      render: () => {
-        return (
-          <>
-          </>
-        )
-      },
-    },
-  ]
+  ];
+
+  // Function to update the filtered users based on the search text and role
+  const updateFilteredUsers = () => {
+    let filteredUsers = userData?.datas;
+
+    if (searchText) {
+      filteredUsers = filteredUsers.filter((user: IUser) => {
+        const searchMatch =
+          user.fullname.toLowerCase().includes(searchText.toLowerCase()) ||
+          user.username.toLowerCase().includes(searchText.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchText.toLowerCase()) ||
+          user.phone.toLowerCase().includes(searchText.toLowerCase());
+
+        return searchMatch;
+      });
+    }
+
+    if (filterRole !== 'all') {
+      filteredUsers = filteredUsers.filter((user: IUser) => user.role === filterRole);
+    }
+
+    return filteredUsers;
+  };
 
   return (
     <div>
-      <header className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl">Quản lý user</h2>
-        <Button type="primary" style={{ backgroundColor: 'var(--primary-color)', color: '1890ff', border: 'none' }}>
+    <header className="flex items-center justify-between mb-4">
+      <h2 className="text-2xl mt-2 ml-2">Quản lý user</h2>
+      <div className="flex items-center">
+        <div style={{ marginRight: '10px' }}>
+          <Select
+            className="ml-2 text-center"
+            defaultValue="all"
+            style={{ width: 120 }}
+            onChange={(value) => setFilterRole(value)}
+            
+          >
+            <Option value="all">Tất cả</Option>
+            <Option value="admin">Admin</Option>
+            <Option value="member">Member</Option>
+          </Select>
+        </div>
+        <Input
+          type="text"
+          className="p-2 ml-20 mr-2"
+          placeholder="Tìm kiếm theo fullname, username, email, phone"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <Button
+          type="primary"
+          onClick={() => setFilterRole('all')}
+          // className="text-white bg-black"
+          style={{
+            backgroundColor: "black",
+            color: "white",
+            border: "none",
+          }}
+        >
+          Tìm kiếm
+        </Button>
+      </div>
+      <div className="flex items-center">
+        <Button
+          className="m-2 mt-4"
+          type="primary"
+          style={{
+            backgroundColor: "var(--primary-color)",
+            color: "1890ff",
+            border: "none",
+          }}
+        >
           <Link to="/admin/add">Thêm admin</Link>
         </Button>
-      </header>
-      <Table dataSource={dataSource} columns={columns} pagination={{ pageSize: 7 }} />
-    </div>
-  )
-}
+      </div>
+    </header>
+    <Table dataSource={updateFilteredUsers()} columns={columns} />
+  </div>
+  );
+};
 
 export default AdminUser;

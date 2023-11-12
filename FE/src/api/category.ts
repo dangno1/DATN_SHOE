@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ICategory } from "@/interface/category";
+import { ICategoryExtend } from "@/features/category/components/list";
 
 const categoryApi = createApi({
   reducerPath: "categoryes",
@@ -23,16 +24,16 @@ const categoryApi = createApi({
       }),
       invalidatesTags: ["Category"],
     }),
-    addCategory: builder.mutation<ICategory, ICategory>({
-      query: (category) => ({
+    addCategory: builder.mutation<ICategory, ICategoryExtend>({
+      query: (category: ICategoryExtend) => ({
         url: `/categoryes`,
         method: "post",
         body: category,
       }),
       invalidatesTags: ["Category"],
     }),
-    updateCategory: builder.mutation<ICategory, ICategory>({
-      query: (category) => ({
+    updateCategory: builder.mutation<ICategory, ICategoryExtend>({
+      query: (category: ICategoryExtend) => ({
         url: `/categoryes/update/${category._id}`,
         method: "PATCH",
         body: { ...category, _id: undefined },

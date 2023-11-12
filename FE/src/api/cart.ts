@@ -31,9 +31,17 @@ const cartApi = createApi({
       invalidatesTags: ["Carts"],
     }),
 
+    deleteProductCart: builder.mutation<ICart, Partial<ICart>>({
+      query: (_id) => ({
+        url: `/cart/delete/${_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Carts"],
+    })
+
   }),
 });
 
-export const { useGetAllProductCartsQuery, useQuantityPlusMutation, useQuantityMinusMutation } = cartApi;
+export const { useDeleteProductCartMutation ,useGetAllProductCartsQuery, useQuantityPlusMutation, useQuantityMinusMutation } = cartApi;
 export const cartReducer = cartApi.reducer;
 export default cartApi;

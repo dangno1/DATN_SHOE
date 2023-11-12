@@ -1,11 +1,13 @@
 export interface IProduct {
   _id?: string | number;
   name: string;
-  image: string;
-  thumbnail: string[];
+  image: File[];
+  thumbnail: File[];
   desc: string;
   brand: string;
   categoryId: string;
+  isDelete: boolean;
+  updatedAt: string;
   variants: {
     sizeId: string;
     colorId: string;

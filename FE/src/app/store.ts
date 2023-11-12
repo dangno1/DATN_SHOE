@@ -19,18 +19,20 @@ import productApi, { productReducer } from "../api/product";
 import categoryApi, { categoryReducer } from "../api/category";
 import sizeApi, { sizeReducer } from "../api/size";
 import colorApi, { colorReducer } from "@/api/color";
+import userApi, { authReducer } from "@/api/auth";
 import cartApi, { cartReducer } from "@/api/cart";
 import couponsApi, { couponsReducer } from "@/api/coupons";
-import orderApi, { orderReducer } from "@/api/order";
-
+import orderedProductApi, { orderedProductReducer } from "@/api/orderedProduct";
+import trashcanSlice from "./trashcan.slice";
 
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["cart"],
+  whitelist: ["cart", "trashCan"],
 };
 const rootReducer = combineReducers({
+  [userApi.reducerPath]: authReducer,
   [cartApi.reducerPath]: cartReducer,
   [orderApi.reducerPath]: orderReducer,
   [productApi.reducerPath]: productReducer,
@@ -38,6 +40,8 @@ const rootReducer = combineReducers({
   [sizeApi.reducerPath]: sizeReducer,
   [colorApi.reducerPath]: colorReducer,
   [couponsApi.reducerPath]: couponsReducer,
+  [orderedProductApi.reducerPath]: orderedProductReducer,
+  trashCan: trashcanSlice,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -55,7 +59,9 @@ export const store = configureStore({
       sizeApi.middleware,
       colorApi.middleware,
       couponsApi.middleware,
-      orderApi.middleware
+      orderedProductApi.middleware,
+      userApi.middleware,
+      couponsApi.middleware
     ),
 });
 export type AppDispatch = typeof store.dispatch;

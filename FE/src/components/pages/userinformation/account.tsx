@@ -1,5 +1,80 @@
+// import { Button } from 'antd';
+import { useEffect, useState } from 'react';
+import {Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Button } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { useChangePasswordMutation, useUpdateUserMutation } from '@/api/auth';
+import { IUser } from '@/interface/auth';
 const Account = () => {
+  const [updateUser,] = useUpdateUserMutation()
+  const [changePassword] = useChangePasswordMutation()
+  const [userData, setUserData] = useState<IUser>();
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [openDialogs, setOpenDialogs] = useState<boolean>(false);
+  const [openForm , setOpenForm ] = useState<string>('');
+  const [openForms , setOpenForms ] = useState<string>('');
+  useEffect(() => {
+    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
+    const user = localStorage.getItem('user');
+    if (user) {
+      // Dữ liệu đã được lưu trong localStorage
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // Xóa thông tin người dùng khỏi localStorage
+    localStorage.removeItem('user');
+    window.location.href = '/';
+  }
+  
+  const {
+    register,
+    handleSubmit,
+    reset
+  } = useForm<
+  {fullname:string,
+    email?: string,
+    username:string,
+    phone:string,
+    address:string,
+    oldPassword:string,
+    newPassword:string,
+    confirmPassword:string
+  }>()
+
+  
+  useEffect(() => {
+   userData && reset({fullname:userData.fullname,
+    username:userData.username,
+    phone:userData.phone,
+    address:userData.address,
+    email:userData.email
+  })
+  }, [reset, userData]);
+
+  const onSubmit = async (data : {
+    _id:string,
+    email?: string,
+    fullname:string,
+    username:string,
+    phone:string,
+    address:string,
+  })=>{ 
+    await updateUser({...data, _id: String(userData?._id)})
+  }
+
+  const onSubmits =async(data:{
+    _id:string,
+    newPassword:string,
+    oldPassword:string,
+    confirmPassword:string
+  })=>{await changePassword({...data, _id: String(userData?._id)})
+  }
+  
   return (
+    <>
     <div>
       <div className="max-w-screen-2xl mx-auto p-14 ">
         <h4 className="font-bold text-2xl align-items-center pb-5">
@@ -15,26 +90,55 @@ const Account = () => {
           <h4 className="customSpacing___7RI69 gl-heading-font-set-standard-14___1p8HS font-bold text-xl pb-5 pt-3">
             THÔNG TIN CHI TIẾT
           </h4>
+          {userData ? (
           <div className="info-item align-items-center">
-            <div>Nguyễn Qúy Minh PH 2 4 6 2 6</div>
-            <div>01-01-2003</div>
-            <div>Giới Tính: Nam</div>
-            <div className="text-blue-500 cursor-pointer">Chỉnh sửa</div>
+            {/* <label>Fullname</label> */}
+            <div>{userData.fullname}</div>
+            {/* <label>Username</label> */}
+            <div>{userData.username}</div>
+            {/* <label>Phone</label> */}
+            <div>{userData.phone}</div>
+            {/* <label>Address</label> */}
+            <div>{userData.address}</div>
+            <Button className="text-blue-500 cursor-pointer" onClick={()=> {
+              setOpenDialog(true)
+              setOpenForm("infor")
+            }}>
+            Chỉnh sửa
+            </Button>
           </div>
+          ):(
+            <p>Không có thông tin người dùng để hiển thị.</p>
+          )}
           <br />
           <hr />
           <div>
             <h4 className="font-bold text-xl pt-5 pb-3">CHI TIẾT ĐĂNG NHẬP</h4>
             <h5>Email</h5>
-            <div>minhnqph2345@gmail.com</div>
-            <div className="text-blue-500 cursor-pointer">Chỉnh sửa</div>
+            <div>{userData?.email}</div>
+            <div>
+              <Button className="text-blue-500 cursor-pointer" onClick={()=> {
+                setOpenDialog(true)
+                setOpenForm("email")
+              }}>
+              Chỉnh sửa
+              </Button>
+            </div>
+
           </div>
           <br />
           <hr />
           <div>
             <h5 className="font-bold text-xl pt-5 pb-3">Mật khẩu</h5>
-            <div>************</div>
-            <div className="text-blue-500 cursor-pointer">Chỉnh sửa</div>
+            <div>{userData?.password}*****************</div>
+            <div>
+              <Button className="text-blue-500 cursor-pointer" onClick={()=> {
+                setOpenDialogs(true)
+                setOpenForms("password")
+              }}>
+              Chỉnh sửa
+              </Button>
+            </div>
           </div>
           <br /> <br />
           <hr />
@@ -52,7 +156,7 @@ const Account = () => {
             </span>
           </div>
           <button className="col-s-12 col-m-6">
-            <span className="gl-icon__wrapper text-red-500 cursor-pointer">Đăng xuất</span>
+            <span onClick={handleLogout} className="gl-icon__wrapper text-red-500 cursor-pointer">Đăng xuất</span>
           </button>
         </div>
       </div>
@@ -70,6 +174,122 @@ const Account = () => {
         </div>
       </div>
     </div>
+    <Dialog open={openDialog} onClose={()=> setOpenDialog(false)} fullWidth scroll="body">
+    <DialogTitle>User</DialogTitle>
+    <form action="" onSubmit={handleSubmit(onSubmit)} >
+    <DialogContent>
+      {
+        openForm === 'infor' ? 
+        <div>
+          <label className="text-lg font-medium ">Họ và tên</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="fullname"
+          type="text"
+          fullWidth
+          variant="standard"
+          {...register('fullname')}
+        />
+        <label className="text-lg font-medium">Tên tài khoản</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="username"
+          type="text"
+          fullWidth
+          variant="standard"
+           {...register('username')}
+        />
+         <label className="text-lg font-medium">Số điện thoại</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="phone"
+          type="text"
+          fullWidth
+          variant="standard"
+           {...register('phone')}
+        />
+         <label className="text-lg font-medium">Địa chỉ</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="address"
+          type="text"
+          fullWidth
+          variant="standard"
+           {...register('address')}
+        />
+        </div> :  openForm === 'email' ? 
+        <div>
+          <label>Email</label>
+          <TextField
+          autoFocus
+          margin="dense"
+          id="email"
+          type="text"
+          fullWidth
+          variant="standard"
+          {...register('email')}
+        />
+        </div>: <div></div>
+      }
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={()=> setOpenDialog(false)} className="capitalize  from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Thoát</Button>
+      <Button type='submit' className="capitalize  bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Lưu</Button>
+    </DialogActions>
+    </form>
+  </Dialog>
+
+  <Dialog open={openDialogs} onClose={()=> setOpenDialogs(false)} fullWidth scroll="body">
+    <DialogTitle>User</DialogTitle>
+    <form action="" onSubmit={handleSubmit(onSubmits)} >
+    <DialogContent>
+      {
+         openForms === 'password' ?
+        <div>
+          <label className="text-lg font-medium ">Mật khẩu cũ</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="oldPassword"
+          type="text"
+          fullWidth
+          variant="standard"
+          {...register('oldPassword')}
+        />
+        <label className="text-lg font-medium">Mật khẩu mới</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="newPassword"
+          type="text"
+          fullWidth
+          variant="standard"
+           {...register('newPassword')}
+        />
+         <label className="text-lg font-medium">Xác nhận mật khẩu mới</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="confirmPassword"
+          type="text"
+          fullWidth
+          variant="standard"
+           {...register('confirmPassword')}
+        />
+        </div>: <div></div>
+      }
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={()=> setOpenDialog(false)} className="capitalize  from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Thoát</Button>
+      <Button type='submit' className="capitalize  bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Lưu</Button>
+    </DialogActions>
+    </form>
+  </Dialog>
+   </>
   );
 };
 
