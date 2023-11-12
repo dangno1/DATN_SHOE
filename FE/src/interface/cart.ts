@@ -10,4 +10,5 @@ export interface ICart {
   category: string;
   color: string;
   size: number;
+  otp: string;
 }
