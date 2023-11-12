@@ -38,6 +38,7 @@ import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
 import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
+import SaleProduct from "./components/pages/home/newProduct";
 
 
 export const router = createBrowserRouter([
@@ -54,6 +55,8 @@ export const router = createBrowserRouter([
       { path: "Kids/:id", element: <Kids /> },
       { path: "Women/:id", element: <Women /> },
       {path: "products", element:<Products/>},
+      {path: "sale", element:<SaleProduct/>},
+
       {
         path: "cart",
         element: <Cart />,

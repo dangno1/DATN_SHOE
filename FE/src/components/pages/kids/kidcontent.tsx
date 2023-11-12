@@ -58,16 +58,17 @@ const Kidcontent = () => {
                  <span className="text-gray-400 mr-3 uppercase text-xs">
                  {product?.brand}
                  </span>
-                 <p className="text-lg font-bold text-black truncate block capitalize hover:underline">
+                 <p className="text-lg font-bold text-black truncate block uppercase hover:underline">
                  {product?.name}
                  </p>
                  <div className="flex items-center">
                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                   {product?.variants[0].price}
+                   {product?.variants[0].price.toLocaleString('vi-VN')} VND
                    </p>
                    <del>
                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                       $199
+                     {product?.variants[0].discount} VND
+
                      </p>
                    </del>
                    <div className="ml-auto font-bold text-2xl">

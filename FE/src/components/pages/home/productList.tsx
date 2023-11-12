@@ -5,8 +5,8 @@ import { useState } from "react";
 import { BsBagPlus} from "react-icons/bs";
 
 const ProductList = () => {
-  const { data } = useGetProductsQuery();
-  console.log(data);
+  const { data } = useGetProductsQuery(false);
+  // console.log(data);
   const [alex, setAlex] = useState([]);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const ProductList = () => {
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4 uppercase"> dành riêng cho thành viên</h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase">sản phẩm mới nhất</h1>
       </div>
       <section
         id="Projects"
@@ -50,11 +50,11 @@ const ProductList = () => {
                 </p>
                 <div className="flex items-center">
                   <p className="text-lg font-semibold text-black cursor-auto my-3">
-                    ${product?.variants[0].price}
+                  {product?.variants[0].price.toLocaleString('vi-VN')} VND
                   </p>
                   <del>
                     <p className="text-sm text-gray-600 cursor-auto ml-2">
-                      $1000
+                    {product?.variants[0].discount} VND
                     </p>
                   </del>
                  
