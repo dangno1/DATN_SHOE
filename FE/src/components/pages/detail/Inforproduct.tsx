@@ -10,6 +10,7 @@ import { Navigation } from 'swiper/modules';
 import { AiFillHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import { useCreateCartMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
+import { message } from "antd";
 
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,7 +39,7 @@ const Inforproduct = () => {
       };
 
       const data = await addCart(productToAdd);
-      alert("Thêm thành công")
+      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
       data && navigate("/cart")
       console.log(data);
       
