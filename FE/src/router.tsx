@@ -8,10 +8,6 @@ import Signin from "./features/auth/components/Signin";
 import Signup from "./features/auth/components/Signup";
 import AddProduct from "./features/products/pages/addProduct";
 import UpdateProduct from "./features/products/pages/updateProduct";
-import AddSize from "./features/size/pages/addSize";
-import UpdateSize from "./features/size/pages/updateSize";
-import UpdateColor from "./features/color/pages/updateColor";
-import AddColor from "./features/color/pages/addColor";
 import Detail from "./components/pages/detail/Detail";
 import Kids from "./components/pages/kids/kids";
 import Women from "./components/pages/women/home";
@@ -28,35 +24,27 @@ import UserPage from "./components/pages/userinformation/userPage";
 import ListSize from "./features/size/components/list";
 import ListColor from "./features/color/components/list";
 import ListCategory from "./features/category/components/list";
-import AddCategory from "./features/category/pages/addCategory";
-import UpdateCategory from "./features/category/pages/updateCategory";
-import UpdateUser from "./components/pages/admin/user/updateUser";
-import UpdateEmail from "./components/pages/admin/user/updateEmail";
-import ChangePassword from "./components/pages/admin/user/changePassword";
-import AddCoupons from "./features/coupons/pages/addCoupons";
-import UpdateCoupons from "./features/coupons/pages/updateCoupons";
 import ListCoupons from "./features/coupons/components/list";
 import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
 import SaleProduct from "./components/pages/home/newProduct";
+import ForgotPassword from "./features/auth/components/ForgotPassword";
+
 
 
 export const router = createBrowserRouter([
 
   {
-    path: "/", 
+    path: "/",
     element: <LayoutWebsite />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "detail/:id", element: <Detail /> },
       { path: "Men/:id", element: <Men /> },
-      { path: "detail", element: <Detail /> },
-      { path: "kids", element: <Kids /> },
-      { path: "women", element: <Women /> },  
       { path: "Kids/:id", element: <Kids /> },
       { path: "Women/:id", element: <Women /> },
       {path: "products", element:<Products/>},
       {path: "sale", element:<SaleProduct/>},
-
       {
         path: "cart",
         element: <Cart />,
@@ -70,18 +58,6 @@ export const router = createBrowserRouter([
         element: <OderHistory />,
       },
       { path: "user", element: <UserPage /> },
-      {
-        path: "/update/:id",
-        element: <UpdateUser />,
-      },
-      {
-        path: "/update/email/:id",
-        element: <UpdateEmail />,
-      },
-      {
-        path: "/changePassword/:id",
-        element: <ChangePassword />,
-      },
     ],
   },
   {
@@ -91,6 +67,10 @@ export const router = createBrowserRouter([
   {
     path: "signup",
     element: <Signup />,
+  },
+  {
+    path: "forgotPassword",
+    element: <ForgotPassword />,
   },
   {
     path: "/admin",
@@ -108,33 +88,25 @@ export const router = createBrowserRouter([
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
       {
+        path: "product/trashCan",
+        element: <ListProduct />,
+      },
+      {
         path: "categoryes",
         element: <ListCategory />,
       },
-      { path: "categoryes/add", element: <AddCategory /> },
-      { path: "categoryes/update/:id", element: <UpdateCategory /> },
       {
         path: "size",
         element: <ListSize />,
       },
       {
-        path: "size/add",
-        element: <AddSize />,
-      },
-      { path: "size/update/:id", element: <UpdateSize /> },
-      {
         path: "color",
         element: <ListColor />,
       },
-      { path: "color/add", element: <AddColor /> },
-      { path: "color/update/:id", element: <UpdateColor /> },
       {
         path: "coupons",
         element: <ListCoupons />,
       },
-      { path: "coupons/add", element: <AddCoupons /> },
-      { path: "coupons/update/:id", element: <UpdateCoupons /> },
-
       {
         path: "carts",
         element: <Carts />,

@@ -1,6 +1,9 @@
+import { IProduct } from "./product";
+
 export interface ISize {
   _id?: string | number;
   value: number;
-  createdAt: string;
-  updatedAt: string;
+  products?: IProduct[];
+  createdAt?: string;
+  updatedAt?: string;
 }

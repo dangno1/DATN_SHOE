@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useGetProductsQuery } from "@/api/product";
-import { IProduct } from "@/interface/product";
 import { useEffect, useState } from "react";
 import Slider from "./banner";
 import Social from "./social";

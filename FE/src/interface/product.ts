@@ -1,12 +1,8 @@
 export interface IProduct {
-  target: { name: any; value: any; };
-  color: any;
-  size: any;
-  id: Key | null | undefined;
   _id?: string | number;
   name: string;
-  image: string;
-  thumbnail: string[];
+  image: File[];
+  thumbnail: File[];
   desc: string;
   brand: string;
   categoryId: string;

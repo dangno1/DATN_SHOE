@@ -6,7 +6,6 @@ import { BsBagPlus} from "react-icons/bs";
 
 const ProductList = () => {
   const { data } = useGetProductsQuery(false);
-  // console.log(data);
   const [alex, setAlex] = useState([]);
 
   useEffect(() => {

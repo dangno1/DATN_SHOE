@@ -34,11 +34,11 @@ const productApi = createApi({
 
         data.append("variants", JSON.stringify(product.variants));
 
-        Array.from(product.image).forEach((file) => {
+        product.image.forEach((file: File) => {
           data.append("image", file);
         });
-        
-        Array.from(product.thumbnail).forEach((file: any) => {
+
+        product.thumbnail.forEach((file: File) => {
           data.append("thumbnail", file);
         });
 
@@ -53,6 +53,8 @@ const productApi = createApi({
 
     updateProduct: builder.mutation<IProduct, IProduct>({
       query: (product) => {
+        console.log(product);
+
         const data = new FormData();
         data.append("name", product.name);
         data.append("desc", product.desc);
@@ -62,13 +64,15 @@ const productApi = createApi({
 
         data.append("variants", JSON.stringify(product.variants));
 
-        Array.from(product.image).forEach((file) => {
-          data.append("image", file);
-        });
+        product.image &&
+          product.image.forEach((file: File) => {
+            data.append("image", file);
+          });
 
-        Array.from(product.thumbnail).forEach((file: any) => {
-          data.append("thumbnail", file);
-        });
+        product.thumbnail &&
+          product.thumbnail.forEach((file: File) => {
+            data.append("thumbnail", file);
+          });
 
         return {
           url: `/products/update/${product._id}`,
