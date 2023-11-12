@@ -1,19 +1,39 @@
-import { useOrderedProductMutation } from "@/api/orderedProduct";
+import {
+  useCheckoutMutation,
+  useGetOrdersQuery,
+  useOrderedProductMutation,
+  useUpdateorderMutation,
+} from "@/api/orderedProduct";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const CartDetail = () => {
   const [orderedProduct] = useOrderedProductMutation();
+  const { data: getOrders } = useGetOrdersQuery();
+  const [updateOrder] = useUpdateorderMutation();
+  const [checkOut] = useCheckoutMutation();
+  // const { data: checkOut } = useCheckoutMutation();
   const [errors, setErrors] = useState({});
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [imageError, setImageError] = useState("");
   const checkedItems = location.state.checkedItems;
+  
+
+  const phuonThuThanhToan = [
+    "https://www.ncb-bank.vn/news/logoslogan_page_4.png",
+    "https://usa.visa.com/dam/VCOM/regional/ve/romania/blogs/hero-image/visa-logo-800x450.jpg",
+    "https://cdn.vox-cdn.com/thumbor/VKD3KfczL8xi89_n32rmbjTpdlg=/1400x1050/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/13674554/Mastercard_logo.jpg",
+    "https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-cash-on-delivery.svg",
+  ];
 
   // user
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
+  // const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
     if (checkedItems && checkedItems.length > 0) {
@@ -31,7 +51,8 @@ const CartDetail = () => {
 
   const handleOrder = async () => {
     setErrors({});
-
+    setImageError("");
+    setIsModalOpen(false);
     if (!name || !email || !phoneNumber || !address) {
       const newErrors = {
         name: !name ? "Name is required" : null,
@@ -70,12 +91,9 @@ const CartDetail = () => {
       }
 
       setErrors(newErrors);
-
       return;
     }
 
-
-    
     const productsArray = checkedItems.map(
       (item: {
         productName: unknown;
@@ -85,6 +103,7 @@ const CartDetail = () => {
         color: unknown;
         size: unknown;
         quantity: unknown;
+        otp: unknown;
       }) => ({
         productName: item?.productName,
         productInitialPrice: item?.initialPrice,
@@ -93,6 +112,7 @@ const CartDetail = () => {
         productColor: item?.color,
         productSize: item?.size,
         productQuantity: item?.quantity,
+        otp: item?.otp,
       })
     );
 
@@ -102,22 +122,42 @@ const CartDetail = () => {
       userPhone: phoneNumber,
       userAddress: address,
       products: productsArray,
+      // paymentMethod: paymentMethod,
       status: "Chờ Xác Nhận",
     };
 
+        
     orderedProduct(orderData);
+    openModal();
+    checkOut(orderData)
+    .then((orderData) => {
+      window.location.href = orderData.data;
+    })
+    .catch((error) => {
+      console.error("Checkout failed:", error);
+    });
+      
+
   };
 
-    // Function to open the modal
-    const openModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    // Function to close the modal
-    const closeModal = () => {
-      setIsModalOpen(false);
-    };
+  const checOTP = () => {
+    const orders = getOrders?.data || [];
+    const lastOrder = orders[orders.length - 1];
+    if (lastOrder && lastOrder.otp === otpValue) {
+      updateOrder(lastOrder);
+      alert("Hợp Lệ");
+    } else {
+      alert("Mã OTP Không Hợp Lệ");
+    }
+  };
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <>
       <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr]  lg:gap-20 pb-32">
@@ -326,25 +366,23 @@ const CartDetail = () => {
             <div className="font-semibold font-sans leading-10">
               PHƯƠNG THỨC THANH TOÁN ĐƯỢC CHẤP NHẬN
             </div>
-            <div className="flex pt-2 gap-2">
-              <img
-                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-visa.svg"
-                alt=""
-              />
-              <img
-                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-master-card.svg"
-                alt=""
-              />
-              <img
-                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-cash-on-delivery.svg"
-                alt=""
-              />
+            <div className="flex pt-2 gap-10">
+              {phuonThuThanhToan.map((phuongThu, index) => (
+                <div key={index}>
+                  <img
+                    className="w-15 h-12"
+                    src={phuongThu}
+                    alt={`Payment Method ${index}`}
+                  />
+                  <input type="radio" name="paymentMethod" value={index} />
+                </div>
+              ))}
             </div>
+            <div className="text-red-500 pl-1">{imageError}</div>
           </div>
           <button
             onClick={() => {
-              // handleOrder();
-              openModal();
+              handleOrder();
             }}
             className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black"
           >
@@ -358,49 +396,27 @@ const CartDetail = () => {
                   type="text"
                   className="w-full p-2 border rounded-lg"
                   maxlength="6"
+                  value={otpValue}
+                  onChange={(e) => setOtpValue(e.target.value)}
                 />
                 <div className="flex mt-10 gap-4">
-                <button
-                  onClick={closeModal} 
-                  className="bg-red-500 hover:bg-red-600 text-white rounded p-2"
-                >
-                  Close
-                </button>
+                  <button
+                    onClick={closeModal}
+                    className="bg-red-500 hover:bg-red-600 text-white rounded p-2"
+                  >
+                    Close
+                  </button>
 
-                <button
-                  onClick={handleOrder}
-                  className="bg-blue-500 hover:bg-blue-600 text-white rounded p-2"
-                >
-                  Submit
-                </button>
+                  <button
+                    onClick={checOTP}
+                    className="bg-blue-500 hover:bg-blue-600 text-white rounded p-2"
+                  >
+                    Submit
+                  </button>
                 </div>
               </div>
             </div>
           )}
-          <div className="text-2xl pt-10 font-semibold font-sans leading-10">
-            Đăng Nhập
-          </div>
-          <div className="pt-5">
-            <input
-              className="border w-full p-4"
-              type="text"
-              placeholder="Email"
-            />
-          </div>
-          <div className="pt-5">
-            <input
-              className="border w-full p-4"
-              type="text"
-              placeholder="Mật Khẩu"
-            />
-          </div>
-          <div className="pt-5">
-            <input
-              className="border w-full p-4"
-              type="text"
-              placeholder="Xác Nhận Mật Khẩu"
-            />
-          </div>
           <button className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black">
             Đăng Nhập
           </button>
