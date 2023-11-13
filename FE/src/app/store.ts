@@ -34,7 +34,6 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [userApi.reducerPath]: authReducer,
   [cartApi.reducerPath]: cartReducer,
-  [orderApi.reducerPath]: orderReducer,
   [productApi.reducerPath]: productReducer,
   [categoryApi.reducerPath]: categoryReducer,
   [sizeApi.reducerPath]: sizeReducer,
