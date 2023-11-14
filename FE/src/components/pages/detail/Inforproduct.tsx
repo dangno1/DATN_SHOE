@@ -2,29 +2,78 @@ import { useGetColorsQuery } from "@/api/color";
 import { useGetProductQuery } from "@/api/product";
 import { useGetSizesQuery } from "@/api/size";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import { AiFillHeart ,AiOutlineShoppingCart } from "react-icons/ai";
+import { AiFillHeart, AiOutlineShoppingCart } from "react-icons/ai";
+import { useCreateCartMutation } from "@/api/cart";
+import { ICart } from "@/interface/cart";
+import { message } from "antd";
+
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
-  const { handleSubmit } = useForm();
-  const onSubmit = (formData: any) => {
-  };
-  console.log("productData: ", productData);
-  const [images ,setImage ]=useState<any>()
+
+  const [addCart] = useCreateCartMutation();
+  const [userData, setUserData] = useState(localStorage);
+
   useEffect(() => {
-  const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+  const navigate = useNavigate();
+  const handleAddCar = async() => {
+    if (!userData.username || !userData.email || !userData.address) {
+      message.
+error({
+  content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
+  duration: 5, 
+});
+setTimeout(() => {   
+  navigate("/signup");},5000);
+      return;
+    }
+    if (productData) {
+      const productToAdd:ICart = {
+        userName: userData.fullname,
+        userEmail: userData.email,
+        userAddress: userData.address,
+        productName: productData.name,
+        quantity: amount,
+        price: productData.variants[0].price,
+        initialPrice: productData.variants[0].price,
+        totalPrice: 300000,
+        category: productData.categoryId,
+        image: String(productData.image),
+        color: productData.variants[0].colorId,
+        status:String(alex[0].variants[0].status)
+      };
+
+      const data = await addCart(productToAdd);
+      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
+      data && setTimeout(() => {   
+        navigate("/cart");},5000);
+      console.log(data);
+      
+      
+    } else {
+      console.error("productData is not defined.");
+    }
+  };
+
+  const [images, setImage] = useState<(File | File[] | undefined)[]>()
+  useEffect(() => {
+    const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
     setImage(listImage)
   }, [productData])
-  console.log( images);
-  
+
   const [activeImgId, setActiveImageId] = useState(1); // Initialize active image ID to 1
 
   const handleImageClick = (id: number) => {
@@ -46,14 +95,15 @@ const Inforproduct = () => {
           <p>Loading...</p>
         ) : (
           productData && (
-            <form action="" onSubmit={handleSubmit(onSubmit)}>
               <div className="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
                 <div className="flex flex-wrap -mx-4">
                   <div className="w-full px-4 md:w-1/2">
                     <div className="sticky top-0 z-50 overflow-hidden">
                       <div className="relative mb-6 lg:mb-10 lg:h-2/4">
-                        <Swiper  navigation={true} modules={[Navigation]} className="mySwiper">
-                          {images.map((item: any, index:number) => (
+
+                        <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+                          {images.map((item: any, index: number) => (
+
                             <SwiperSlide key={index}>
                               <img
                                 src={item}
@@ -66,12 +116,12 @@ const Inforproduct = () => {
                         </Swiper>
                       </div>
                       <div className="flex-wrap hidden md:flex">
-                         {images?.map((item: any,index : number) => (
+                        {images?.map((item: any, index: number) => (
                           <div key={item} className="w-1/2 p-2 sm:w-1/4">
                             <a
                               href="#"
                               className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
-                              onClick={() => handleImageClick(index   + 1)}
+                              onClick={() => handleImageClick(index + 1)}
                             >
                               <img src={item} alt="" className="object-cover w-full lg:h-20" />
                             </a>
@@ -161,13 +211,16 @@ const Inforproduct = () => {
                       </div>
                       <div className="flex flex-wrap items-center -mx-4">
                         <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
-                          <button type="submit" className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
-                            Thêm vào giỏ hàng <AiOutlineShoppingCart/>
+                          <button
+                           className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300"
+                            onClick={()=>handleAddCar()}
+                          >
+                            Thêm vào giỏ hàng<AiOutlineShoppingCart />
                           </button>
                         </div>
                         <div className="w-full px-4 mb-4 lg:mb-0 lg:w-1/2">
                           <button className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
-                            Thêm vào ưa thích <AiFillHeart/>
+                            Thêm vào ưa thích <AiFillHeart />
                           </button>
                         </div>
                       </div>
@@ -175,7 +228,6 @@ const Inforproduct = () => {
                   </div>
                 </div>
               </div>
-            </form>
           )
         )}
       </section>
@@ -185,19 +237,5 @@ const Inforproduct = () => {
 
 export default Inforproduct;
 
-// import { useGetProductQuery } from "@/api/product"
-// import { useEffect, useState } from "react"
-// import { useParams } from "react-router-dom"
-// const Inforproduct=()=> {
-//   const {id} = useParams<{id:string}>()
-// const {data } = useGetProductQuery(id || '')
 
-// const [images ,setImage ]=useState<any>()
-// useEffect(() => {
-// const listImage = [data?.image, ...(data?.thumbnail ? data.thumbnail : [])]
-//   setImage(listImage)
-// }, [data])
-// console.log( images);
-
-// }
 
