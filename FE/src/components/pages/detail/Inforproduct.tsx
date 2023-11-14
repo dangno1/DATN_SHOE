@@ -52,7 +52,7 @@ const Inforproduct = () => {
                   <div className="w-full px-4 md:w-1/2">
                     <div className="sticky top-0 z-50 overflow-hidden">
                       <div className="relative mb-6 lg:mb-10 lg:h-2/4">
-                        <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+                        <Swiper  navigation={true} modules={[Navigation]} className="mySwiper">
                           {images.map((item: any, index:number) => (
                             <SwiperSlide key={index}>
                               <img
@@ -109,7 +109,7 @@ const Inforproduct = () => {
                         </p>
                         <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
                           <span>{productData.variants[0].price}</span>
-                          <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price + 10000}</span>
+                          <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price  + 10000 }$</span>
                         </p>
                         <p className="text-green-600 dark:text-green-300">7 in stock</p>
                       </div>
