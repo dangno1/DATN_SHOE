@@ -9,13 +9,11 @@ const orderApi = createApi({
   }),
   endpoints: (builder) => ({
     getOrders: builder.query<IOrder[], void>({
-      query: () => '/ordersProduct', 
+      query: () => '/ordersProducts', 
       providesTags: ['Orders'],
     }),
     
     }),
-    
-  
 });
 
 export const {

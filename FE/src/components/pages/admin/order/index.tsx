@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useGetOrdersQuery } from '@/api/order'
+import { useGetOrdersQuery } from '@/api/orderedProduct'
 
 
 const Index = () => {
@@ -100,9 +100,9 @@ const Index = () => {
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                 APPLICATION CODE
                                             </th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                            {/* <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                 TIME
-                                            </th>
+                                            </th> */}
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                 TOTAL SERVICE FEES
@@ -112,9 +112,9 @@ const Index = () => {
                                                 RECEIVING PARTY
                                             </th>
 
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                            {/* <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                 ORDER NOTES
-                                            </th>
+                                            </th> */}
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                 STATUS
