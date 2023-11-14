@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const { data } = useGetProductsQuery(false);
-
   console.log(data);
   const [alex, setAlex] = useState<IProduct[]>([]);
   useEffect(() => {
