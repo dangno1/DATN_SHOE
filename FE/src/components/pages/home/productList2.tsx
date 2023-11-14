@@ -3,7 +3,7 @@ import { IProduct } from "@/interface/product";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BsBagPlus } from "react-icons/bs";
-
+import { Link } from "react-router-dom";
 const ProductList2 = () => {
   const { data } = useGetProductsQuery();
   console.log(data);
@@ -32,7 +32,7 @@ const ProductList2 = () => {
       >
         {alex?.map((product: IProduct) => (
           <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-            <a href="#">
+            <Link to={`/detail/${product._id}`}>
               <img
                 src={product?.image}
                 alt="Product"
@@ -59,7 +59,7 @@ const ProductList2 = () => {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ))}
       </section>
