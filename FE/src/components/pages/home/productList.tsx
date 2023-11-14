@@ -7,18 +7,13 @@ import { ICart } from "@/interface/cart";
 import { useCreateCartMutation } from "@/api/cart";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
-type NotificationType = 'success' | 'info' | 'warning' | 'error';
+
 const ProductList = () => {
   const { data } = useGetProductsQuery(false);
   console.log(data);
   const [alex, setAlex] = useState<IProduct[]>([]);
 
-  const openNotification = (type: NotificationType, message: string) => {
-    api[type]({
-      message: 'Thông báo',
-      description: message
-    });
-  };
+  
   
   useEffect(() => {
     if (data) {
@@ -33,10 +28,6 @@ const ProductList = () => {
     }
   }, [data]);
   console.log(alex);
-
-
-
-  
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
 

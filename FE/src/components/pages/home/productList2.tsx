@@ -1,13 +1,17 @@
+import { useCreateCartMutation } from "@/api/cart";
 import { useGetProductsQuery } from "@/api/product";
+import { ICart } from "@/interface/cart";
 import { IProduct } from "@/interface/product";
+import { message } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BsBagPlus } from "react-icons/bs";
+import { useNavigate } from "react-router";
 
 const ProductList2 = () => {
   const { data } = useGetProductsQuery(false);
   console.log(data);
-  const [alex, setAlex] = useState([]);
+  const [alex, setAlex] = useState<IProduct[]>([]);
   useEffect(() => {
     if (data) {
       const productRandom = [];
@@ -21,6 +25,55 @@ const ProductList2 = () => {
     }
   }, [data]);
   console.log(alex);
+  const [addCart] = useCreateCartMutation();
+  const [userData, setUserData] = useState(localStorage);
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+  const navigate = useNavigate();
+  const handleAddCar = async() => {
+    if (!userData.username || !userData.email || !userData.address) {
+      message.
+error({
+  content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
+  duration: 5, 
+});
+setTimeout(() => {   
+  navigate("/signup");},3000);
+      return;
+    }
+    if (data && alex.length > 0) {
+      const productToAdd:ICart = {
+        userName: userData.fullname,
+        userEmail: userData.email,
+        userAddress: userData.address,
+        productName: alex[0].name,
+        quantity: 1,
+        price: alex[0].variants[0].price,
+        initialPrice: alex[0].variants[0].price,
+        totalPrice: alex[0].variants[0].price,
+        category: alex[0].categoryId,
+        image: String(alex[0].image),
+        color: alex[0].variants[0].colorId,
+        status:'giao hang'
+      };
+
+      const data = await addCart(productToAdd);
+      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
+      data && setTimeout(() => {   
+        navigate("/cart");},2000);
+      console.log(data);
+      
+      
+    } else {
+      console.error("data is not defined.");
+    }
+  };
   return (
     <>
       <div className="text-center p-10">
@@ -54,7 +107,7 @@ const ProductList2 = () => {
                       $1000
                     </p>
                   </del>
-                  <div className="ml-auto font-bold text-2xl">
+                  <div className="ml-auto font-bold text-2xl"  onClick={handleAddCar}>
                     <BsBagPlus />
                   </div>
                 </div>
