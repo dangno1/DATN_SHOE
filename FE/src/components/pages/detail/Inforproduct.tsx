@@ -19,14 +19,32 @@ const Inforproduct = () => {
   const { data: productData, isLoading } = useGetProductQuery(id || '');
 
   const [addCart] = useCreateCartMutation();
+  const [userData, setUserData] = useState(localStorage);
 
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
   const navigate = useNavigate();
   const handleAddCar = async() => {
+    if (!userData.username || !userData.email || !userData.address) {
+      message.
+error({
+  content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
+  duration: 5, 
+});
+setTimeout(() => {   
+  navigate("/signup");},5000);
+      return;
+    }
     if (productData) {
       const productToAdd:ICart = {
-        userName: 'quang2903',
-        userEmail: 'ngovanquang290103@gmail.com',
-        userAddress: 'HaNoi',
+        userName: userData.fullname,
+        userEmail: userData.email,
+        userAddress: userData.address,
         productName: productData.name,
         quantity: amount,
         price: productData.variants[0].price,
@@ -40,7 +58,8 @@ const Inforproduct = () => {
 
       const data = await addCart(productToAdd);
       message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
-      data && navigate("/cart")
+      data && setTimeout(() => {   
+        navigate("/cart");},5000);
       console.log(data);
       
       
