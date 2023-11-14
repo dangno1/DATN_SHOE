@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useGetOrdersQuery } from '@/api/orderedProduct'
+import { IOrder } from '@/interface/order';
 
 
 const Index = () => {
@@ -9,7 +10,8 @@ const Index = () => {
 
     const [selectedStatus, setSelectedStatus] = useState('');
 
-    orders && orders.filter((order) => {
+    const filteredOrders = orders
+    ? orders.filter((order:IOrder) => {
         const searchTerm = searchCode.toLowerCase();
         const codeMatch = order.orderCode.toLowerCase().includes(searchTerm);
         const phoneMatch = String(order.userPhone).toLowerCase().includes(searchTerm);
@@ -18,45 +20,40 @@ const Index = () => {
             selectedStatus === '' || order.status.toLowerCase() === selectedStatus.toLowerCase();
         return (codeMatch || phoneMatch || emailMatch) && statusMatch;
     })
+    : [];
+
     return (
         <div>
-
-
             <div className="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded" >
                 {/* navbar Lọc */}
                 <div className="flex items-center px-8">
-                    <p className="text-green-500">Order Status</p>
+                    <p className="text-green-500">Trạng thái đơn hàng</p>
                     <select
                         aria-label="select"
                         className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
                         onChange={e => setSelectedStatus(e.target.value)}
                     >
                         <option className="text-sm text-indigo-800" value="">
-                            All
+                            Tất cả đơn hàng
                         </option>
-                        <option className="text-sm text-indigo-800" value="Delivering">
-                            Delivering
+                        <option className="text-sm text-indigo-800" value="chờ xác nhận">
+                           Chờ xác nhận
                         </option>
-                        <option className="text-sm text-indigo-800" value="Returns">
-                            Returns
+                        <option className="text-sm text-indigo-800" value=" Đang Chuẩn Bị Hàng">
+                        Đang Chuẩn Bị Hàng
                         </option>
-                        <option className="text-sm text-indigo-800" value="Delivered">
-                            Delivered successfully
+                        <option className="text-sm text-indigo-800" value="Đơn Hàng Đang Đến Với Bạn">
+                        Đơn Hàng Đang Đến Với Bạn
+                        </option>
+                        <option className="text-sm text-indigo-800" value=" Giao hàng thành công">
+                       Giao hàng thành công
                         </option>
                     </select>
                 </div>
 
                 <div>
 
-                </div>
-                {/* lọc theo người dùng */}
-                <div>
-                    <p className="text-green-500">Category receiving party</p>
-                    <select aria-label="select" className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1">
-                        <option className="text-sm text-indigo-800">NO Account</option>
-                        <option className="text-sm text-indigo-800">Account</option>
-                    </select>
-                </div>
+                </div>                
                 {/* tìm kiếm mã đơn hàng */}
                 <div className="flex py-3 px-40">
                     <div className="flex w-10 items-center justify-center rounded-tl-lg rounded-bl-lg border-r border-gray-200 bg-white p-5">
@@ -98,35 +95,31 @@ const Index = () => {
 
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                APPLICATION CODE
+                                                Mã đơn hàng
                                             </th>
-                                            {/* <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                TIME
-                                            </th> */}
-
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                TOTAL SERVICE FEES
+                                                Thời gian
                                             </th>
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                RECEIVING PARTY
+                                                Tổng phí dịch vụ
                                             </th>
-
-                                            {/* <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                ORDER NOTES
-                                            </th> */}
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                STATUS
+                                                Thông tin khách hàng
                                             </th>
 
-                                            <th scope="col" className="relative py-3.5 px-4">
-                                                <span className="sr-only">Actions</span>
+                                         
+
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                                Trạng thái đơn hàng
                                             </th>
+
+                                            
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                                        {orders?.map((order, index) => (
+                                        {filteredOrders?.map((order, index) => (
                                             <tr key={order._id}>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap" >
                                                     <div className="inline-flex items-center gap-x-3">
@@ -138,19 +131,19 @@ const Index = () => {
                                                     <p className="leading-relaxed text-red-500">{order.orderCode}
                                                     </p>
                                                 </td>
-                                                {/* <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.time}</td> */}
+                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.timer}</td>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                     <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
                                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                         </svg>
 
-                                                        <h2 className="text-sm font-normal">{order.products[0].productPrice}đ</h2>
+                                                        <h2 className="text-sm font-normal">{order.totalPrice}đ</h2>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                                                     <div className="flex items-center gap-x-2">
-                                                        <img className="object-cover w-8 h-8 rounded-full" src={order.products[0].productImage} alt={order.userEmail} />
+                                                        <img className="object-cover w-8 h-8 rounded-full" src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/OOjs_UI_icon_userAvatar-progressive.svg/1024px-OOjs_UI_icon_userAvatar-progressive.svg.png' alt={order.userEmail} />
 
                                                         <div>
                                                             <h2 className="text-sm font-medium text-gray-800 dark:text-white "> {order.userName} </h2>

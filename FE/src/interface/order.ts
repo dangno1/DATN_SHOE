@@ -14,6 +14,8 @@ export interface IOrder {
     productQuantity: number
   }[],
   orderCode: string,
-  status: string
+  status: string,
+  timer: string;
+  totalPrice: string; 
   }
   
