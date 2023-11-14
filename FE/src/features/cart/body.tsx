@@ -16,6 +16,7 @@ const BodyCart = () => {
 
   const [checkedItems, setCheckedItems] = useState<ICart[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+console.log(carts?.data);
 
   const handleCheckboxChange = (checked: boolean, item: ICart) => {
     let itemPrice;
@@ -35,8 +36,6 @@ const BodyCart = () => {
     deleteProductCart(id);
     console.log("Xoa Thanh Cong");
   };
-
-  // console.log(checkedItems);
 
   return (
     <>
