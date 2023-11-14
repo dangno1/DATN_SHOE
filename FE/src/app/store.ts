@@ -24,16 +24,15 @@ import cartApi, { cartReducer } from "@/api/cart";
 import couponsApi, { couponsReducer } from "@/api/coupons";
 import orderedProductApi, { orderedProductReducer } from "@/api/orderedProduct";
 import commentApi from "@/api/comment";
-
-
+import trashcanSlice from "./trashcan.slice";
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["cart"],
+  whitelist: ["cart", "trashCan"],
 };
 const rootReducer = combineReducers({
-  [userApi.reducerPath]:authReducer,
+  [userApi.reducerPath]: authReducer,
   [cartApi.reducerPath]: cartReducer,
   [productApi.reducerPath]: productReducer,
   [categoryApi.reducerPath]: categoryReducer,
@@ -42,6 +41,8 @@ const rootReducer = combineReducers({
   [couponsApi.reducerPath]: couponsReducer,
   [orderedProductApi.reducerPath]: orderedProductReducer,
   [commentApi.reducerPath]: commentApi.reducer,
+  trashCan: trashcanSlice,
+
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
