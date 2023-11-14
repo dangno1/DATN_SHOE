@@ -60,7 +60,7 @@ setTimeout(() => {
         category: alex[0].categoryId,
         image: String(alex[0].image),
         color: alex[0].variants[0].colorId,
-        status:'giao hang'
+        status:String(alex[0].variants[0].status)
       };
 
       const data = await addCart(productToAdd);
