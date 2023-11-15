@@ -131,7 +131,7 @@ const Index = () => {
                                                     <p className="leading-relaxed text-red-500">{order.orderCode}
                                                     </p>
                                                 </td>
-                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.timer}</td>
+                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{new Date(order.timer).toLocaleString()}</td>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                     <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
                                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
