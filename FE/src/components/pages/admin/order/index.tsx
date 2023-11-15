@@ -9,7 +9,22 @@ const Index = () => {
     console.log(orders);
 
     const [selectedStatus, setSelectedStatus] = useState('');
-
+    const calculateTotalPrice = (order:IOrder) => {
+        if (!order || !order.products || !Array.isArray(order.products)) {
+          return 0; 
+        }
+      
+        return order.products.reduce((total, product) => {
+          const productPrice = parseFloat(product.productPrice);
+          const productQuantity = parseInt(product.productQuantity);
+      
+          if (!isNaN(productPrice) && !isNaN(productQuantity)) {
+            return total + productPrice * productQuantity;
+          }
+      
+          return total;
+        }, 0);
+      };
     const filteredOrders = orders
     ? orders.filter((order:IOrder) => {
         const searchTerm = searchCode.toLowerCase();
@@ -61,10 +76,9 @@ const Index = () => {
                             <path d="M16.72 17.78a.75.75 0 1 0 1.06-1.06l-1.06 1.06ZM9 14.5A5.5 5.5 0 0 1 3.5 9H2a7 7 0 0 0 7 7v-1.5ZM3.5 9A5.5 5.5 0 0 1 9 3.5V2a7 7 0 0 0-7 7h1.5ZM9 3.5A5.5 5.5 0 0 1 14.5 9H16a7 7 0 0 0-7-7v1.5Zm3.89 10.45 3.83 3.83 1.06-1.06-3.83-3.83-1.06 1.06ZM14.5 9a5.48 5.48 0 0 1-1.61 3.89l1.06 1.06A6.98 6.98 0 0 0 16 9h-1.5Zm-1.61 3.89A5.48 5.48 0 0 1 9 14.5V16a6.98 6.98 0 0 0 4.95-2.05l-1.06-1.06Z"></path>
                         </svg>
                     </div>
-                    <input type="text" className="w-full bg-white pl-2 text-base font-semibold outline-0" placeholder="order code to find" id="searchInput"
+                    <input type="text" className="w-full bg-white pl-2 text-base font-semibold outline-0" placeholder="tìm kiếm mã đơn hàng" id="searchInput"
                         value={searchCode}
                         onChange={(e) => setSearchCode(e.target.value)} />
-                    <input type="button" value="Search" className="bg-blue-500 p-4 rounded-tr-lg rounded-br-lg text-white font-semibold hover:bg-blue-800 transition-colors" />
                 </div>
             </div>
 
@@ -138,7 +152,7 @@ const Index = () => {
                                                             <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                         </svg>
 
-                                                        <h2 className="text-sm font-normal">{order.totalPrice}đ</h2>
+                                                        <h2 className="text-sm font-normal">{calculateTotalPrice(order)}đ</h2>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
