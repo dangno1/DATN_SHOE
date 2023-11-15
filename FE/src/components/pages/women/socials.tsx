@@ -1,4 +1,4 @@
-const Social = () => {
+const Socials = () => {
   return (
     <div className=" 2xl:container 2xl:mx-auto  lg:px-20 md:px-6 py-9 px-4">
       <section className="container mx-auto  md:py-4 px-0 md:p-10 md:px-0">
@@ -43,4 +43,4 @@ const Social = () => {
   );
 };
 
-export default Social;
+export default Socials;

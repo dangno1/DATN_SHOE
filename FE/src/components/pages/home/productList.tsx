@@ -3,12 +3,15 @@ import { IProduct } from "@/interface/product";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BsBagPlus} from "react-icons/bs";
+import { ICart } from "@/interface/cart";
+import { useCreateCartMutation } from "@/api/cart";
+import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const { data } = useGetProductsQuery(false);
   console.log(data);
-  const [alex, setAlex] = useState([]);
-
+  const [alex, setAlex] = useState<IProduct[]>([]);
   useEffect(() => {
     if (data) {
       const productRandom = [];
@@ -22,11 +25,59 @@ const ProductList = () => {
     }
   }, [data]);
   console.log(alex);
+  const [addCart] = useCreateCartMutation();
+  const [userData, setUserData] = useState(localStorage);
 
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+  const navigate = useNavigate();
+  const handleAddCar = async() => {
+    if (!userData.username || !userData.email || !userData.address) {
+      message.
+error({
+  content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
+  duration: 5, 
+});
+setTimeout(() => {   
+  navigate("/signup");},3000);
+      return;
+    }
+    if (data && alex.length > 0) {
+      const productToAdd:ICart = {
+        userName: userData.fullname,
+        userEmail: userData.email,
+        userAddress: userData.address,
+        productName: alex[0].name,
+        quantity: 1,
+        price: alex[0].variants[0].price,
+        initialPrice: alex[0].variants[0].price,
+        totalPrice: alex[0].variants[0].price,
+        category: alex[0].categoryId,
+        image: String(alex[0].image),
+        color: alex[0].variants[0].colorId,
+        status:String(alex[0].variants[0].status)
+      };
+
+      const data = await addCart(productToAdd);
+      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
+      data && setTimeout(() => {   
+        navigate("/cart");},2000);
+      console.log(data);
+      
+      
+    } else {
+      console.error("data is not defined.");
+    }
+  };
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4 uppercase"> dành riêng cho thành viên</h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase">sản phẩm mới nhất</h1>
       </div>
       <section
         id="Projects"
@@ -50,16 +101,16 @@ const ProductList = () => {
                 </p>
                 <div className="flex items-center">
                   <p className="text-lg font-semibold text-black cursor-auto my-3">
-                    ${product?.variants[0].price}
+                  {product?.variants[0].price.toLocaleString('vi-VN')} VND
                   </p>
                   <del>
                     <p className="text-sm text-gray-600 cursor-auto ml-2">
-                      $1000
+                    {product?.variants[0].discount} VND
                     </p>
                   </del>
                  
-                  <div className="ml-auto font-bold text-2xl">
-                    <BsBagPlus />
+                  <div className="ml-auto font-bold text-2xl" onClick={handleAddCar}>
+                    <BsBagPlus  />
                   </div>
                   
                 </div>

@@ -186,7 +186,7 @@ const ListCategory = () => {
       <div className="h-[35px] w-full my-3 flex gap-2">
         <form onSubmit={handleSubmit(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="text" placeholder="tìm kiếm theo tên danh mục" {...register('search')}
+            type="text" placeholder="tìm kiếm danh mục" {...register('search')}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
