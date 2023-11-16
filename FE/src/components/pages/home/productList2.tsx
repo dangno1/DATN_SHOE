@@ -10,7 +10,7 @@ import { useNavigate } from "react-router";
 
 const ProductList2 = () => {
   const { data } = useGetProductsQuery(false);
-  console.log(data);
+
   const [alex, setAlex] = useState<IProduct[]>([]);
   useEffect(() => {
     if (data) {
@@ -24,7 +24,7 @@ const ProductList2 = () => {
       setAlex(productRandom);
     }
   }, [data]);
-  console.log(alex);
+
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
 
@@ -74,6 +74,7 @@ setTimeout(() => {
       console.error("data is not defined.");
     }
   };
+
   return (
     <>
       <div className="text-center p-10">

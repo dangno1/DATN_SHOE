@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Seller = () => {
+
   const { data } = useGetProductsQuery(false);
-  console.log(data);
+
   const [alex, setAlex] = useState([]);
   useEffect(() => {
     if (data) {
@@ -19,7 +20,7 @@ const Seller = () => {
       setAlex(productRandom);
     }
   }, [data]);
-  console.log(alex);
+  // console.log(alex);
    
   
   return (

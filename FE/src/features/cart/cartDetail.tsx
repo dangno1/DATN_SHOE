@@ -12,14 +12,13 @@ const CartDetail = () => {
   const { data: getOrders } = useGetOrdersQuery();
   const [updateOrder] = useUpdateorderMutation();
   const [checkOut] = useCheckoutMutation();
-  // const { data: checkOut } = useCheckoutMutation();
   const [errors, setErrors] = useState({});
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [otpValue, setOtpValue] = useState("");
   const [imageError, setImageError] = useState("");
+
   const checkedItems = location.state.checkedItems;
-  
 
   const phuonThuThanhToan = [
     "https://www.ncb-bank.vn/news/logoslogan_page_4.png",
@@ -33,7 +32,7 @@ const CartDetail = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  // const [paymentMethod, setPaymentMethod] = useState("");
+  // const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
 
   useEffect(() => {
     if (checkedItems && checkedItems.length > 0) {
@@ -122,22 +121,12 @@ const CartDetail = () => {
       userPhone: phoneNumber,
       userAddress: address,
       products: productsArray,
-      // paymentMethod: paymentMethod,
+      // paymentMethod: selectedPaymentMethod,
       status: "Chờ Xác Nhận",
     };
 
-        
     orderedProduct(orderData);
     openModal();
-    checkOut(orderData)
-    .then((orderData) => {
-      window.location.href = orderData.data;
-    })
-    .catch((error) => {
-      console.error("Checkout failed:", error);
-    });
-      
-
   };
 
   const checOTP = () => {
@@ -145,7 +134,13 @@ const CartDetail = () => {
     const lastOrder = orders[orders.length - 1];
     if (lastOrder && lastOrder.otp === otpValue) {
       updateOrder(lastOrder);
-      alert("Hợp Lệ");
+      checkOut(lastOrder)
+        .then((orderData) => {
+          window.location.href = orderData.data;
+        })
+        .catch((error) => {
+          console.error("Checkout failed:", error);
+        });
     } else {
       alert("Mã OTP Không Hợp Lệ");
     }
@@ -374,7 +369,13 @@ const CartDetail = () => {
                     src={phuongThu}
                     alt={`Payment Method ${index}`}
                   />
-                  <input type="radio" name="paymentMethod" value={index} />
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={index}
+                    // checked={selectedPaymentMethod == index}
+                    // onChange={() => setSelectedPaymentMethod(index)}
+                  />
                 </div>
               ))}
             </div>

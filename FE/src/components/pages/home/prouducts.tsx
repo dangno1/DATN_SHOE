@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useGetProductsQuery } from "@/api/product";
 import { useEffect, useState } from "react";
 import Slider from "./banner";
@@ -12,14 +10,11 @@ import { useGetCategoryesQuery } from "@/api/category";
 
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
-  // console.log(data);
-  
   const { data: Color } = useGetColorsQuery();
   const { data: Size } = useGetSizesQuery();
   const [productData, setProductData] = useState<IProduct[]>(data); //dùng chung
   const [sortOrder, setSortOrder] = useState("asc");
   const { data: Cate } = useGetCategoryesQuery();
-  // console.log(Cate);
   
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const test = (event:any) => {
@@ -33,6 +28,7 @@ const Products = () => {
   useEffect(() => {
     data && setProductData(data);
   }, [data]);
+
 
   useEffect(() => {
     if (data && selectedSubcategory) {
