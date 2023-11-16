@@ -6,7 +6,7 @@ type NotificationType = "success" | "info" | "warning" | "error";
 
 const OderHistory = () => {
   const { data: order } = useGetOrdersQuery();
-
+  console.log(order);
   const [userData, setUserData] = useState(localStorage);
 
   const [api, contextHolder] = notification.useNotification();
@@ -35,7 +35,7 @@ const OderHistory = () => {
     }
   }, []);
 
-  const orderCart = order?.data.filter(
+  const orderCart = order?.filter(
     (item) => item?.userEmail == userData.email
   );
 
