@@ -1,4 +1,3 @@
-
 import { useState,useEffect } from "react";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
@@ -10,15 +9,12 @@ const Header = () => {
   const [mdOptionsToggle, setMdOptionsToggle] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const { data } = useGetCategoryesQuery();
-  console.log(data);
 
   const [userData, setUserData] = useState(localStorage);
 
   useEffect(() => {
-    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
     const user = localStorage.getItem('user');
     if (user) {
-      // Dữ liệu đã được lưu trong localStorage
       const userData = JSON.parse(user);
       setUserData(userData);
     }

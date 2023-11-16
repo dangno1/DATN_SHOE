@@ -16,7 +16,6 @@ const HomePage = () => {
       <ProductList2 />
       <Social />
       <Blog />
-      {/* <Footer/> */}
     </div>
   );
 };

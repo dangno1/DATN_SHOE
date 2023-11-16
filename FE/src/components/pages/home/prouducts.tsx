@@ -10,13 +10,12 @@ const Products = () => {
     price: "",
     color: "",
     size: "",
-    search: "", // Thêm trường "search" cho tìm kiếm
+    search: "",
   });
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     if (data) {
-      // Áp dụng bộ lọc vào danh sách sản phẩm
       let filtered = [...data];
 
       if (filter.price === "low") {

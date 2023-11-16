@@ -6,7 +6,6 @@ import { BsBagPlus } from "react-icons/bs";
 
 const ProductList2 = () => {
   const { data } = useGetProductsQuery(false);
-  console.log(data);
   const [alex, setAlex] = useState([]);
   useEffect(() => {
     if (data) {
@@ -20,7 +19,6 @@ const ProductList2 = () => {
       setAlex(productRandom);
     }
   }, [data]);
-  console.log(alex);
   return (
     <>
       <div className="text-center p-10">
