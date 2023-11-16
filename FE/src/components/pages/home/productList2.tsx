@@ -6,7 +6,7 @@ import { message } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BsBagPlus } from "react-icons/bs";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const ProductList2 = () => {
   const { data } = useGetProductsQuery(false);
