@@ -9,7 +9,6 @@ const Header = () => {
   const [mdOptionsToggle, setMdOptionsToggle] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const { data } = useGetCategoryesQuery();
-
   const [userData, setUserData] = useState(localStorage);
 
   useEffect(() => {
@@ -124,7 +123,13 @@ const Header = () => {
                 </Link>
               </h1>
               <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8 ">
-              
+              <Link to="/products">
+                  <li className="dropdown inline-block relative">
+                  <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
+                    <span className="mr-1 hover:underline font-bold uppercase">sản phẩm</span>
+                  </button>
+                </li>
+                  </Link>
                 {data?.map((category: ICategory) => (
                   <li className="dropdown inline-block relative">
                     <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
@@ -136,17 +141,21 @@ const Header = () => {
                     </button>
                   </li>
                 ))}
+                  {/* <Link to="new">
                   <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
                     <span className="mr-1 hover:underline font-bold uppercase">Sắp & Mới ra mắt</span>
                   </button>
                 </li>
-
+                  </Link> */}
+                <Link to="/sale">
                 <li className="dropdown inline-block relative">
                   <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
                     <span className="mr-1 hover:underline uppercase font-bold">Giảm giá</span>
                   </button>
                 </li>
+                </Link>
+                
                 
               </ul>
 

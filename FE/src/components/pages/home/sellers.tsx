@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Seller = () => {
-  const { data } = useGetProductsQuery();
-  // console.log(data);
+
+  const { data } = useGetProductsQuery(false);
+
   const [alex, setAlex] = useState([]);
   useEffect(() => {
     if (data) {
@@ -52,10 +53,10 @@ const Seller = () => {
               </p>
               <div className="flex items-center">
                 <p className="text-lg font-semibold text-black cursor-auto my-3">
-                 ${product.variants[0].price}
+                {product?.variants[0].price.toLocaleString('vi-VN')} VND
                 </p>
                 <del>
-                  <p className="text-sm text-gray-600 cursor-auto ml-2">$199</p>
+                  <p className="text-sm text-gray-600 cursor-auto ml-2">199 VND</p>
                 </del>
               </div>
             </div>

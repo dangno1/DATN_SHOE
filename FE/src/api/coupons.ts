@@ -1,4 +1,3 @@
-import { ICouponsExtend } from "@/features/coupons/components/list";
 import { ICoupons } from "@/interface/coupons";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -24,7 +23,7 @@ const couponsApi = createApi({
       }),
       invalidatesTags: ["Coupons"],
     }),
-    addCoupons: builder.mutation<ICoupons, ICouponsExtend>({
+    addCoupons: builder.mutation<ICoupons, ICoupons>({
       query: (coupons) => ({
         url: `/coupons`,
         method: "post",
@@ -32,7 +31,7 @@ const couponsApi = createApi({
       }),
       invalidatesTags: ["Coupons"],
     }),
-    updateCoupons: builder.mutation<ICoupons, ICouponsExtend>({
+    updateCoupons: builder.mutation<ICoupons, ICoupons>({
       query: (coupons) => {
         return {
           url: `/coupons/update/${coupons._id}`,

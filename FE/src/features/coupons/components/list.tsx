@@ -1,15 +1,16 @@
 import { useAddCouponsMutation, useGetAllCouponsQuery, useRemoveCouponsMutation, useUpdateCouponsMutation } from "@/api/coupons";
 import { ICoupons } from "@/interface/coupons";
+import { joiResolver } from '@hookform/resolvers/joi'
 import { Modal, Popconfirm, Table, Tooltip, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { useState, useEffect, Key } from "react";
 import { useForm } from "react-hook-form";
 import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
+import couponsSchema from "@/schemas/coupons";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
-export interface ICouponsExtend extends ICoupons { search?: string }
 
 const ListCoupons = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
@@ -29,24 +30,25 @@ const ListCoupons = () => {
     });
   };
 
-  const { register, handleSubmit, reset } = useForm<ICouponsExtend>()
+  const { register, handleSubmit, reset, setFocus, formState: { errors } } = useForm<ICoupons>({
+    resolver: joiResolver(couponsSchema)
+  })
+  const { register: registerSearch, handleSubmit: handleSubmitSearch } = useForm<{ search: string }>({
+  })
 
   useEffect(() => {
     reset()
   }, [reset, successAdd, successUpdate])
 
   useEffect(() => {
+    setFocus("code")
     if (form._id && form.method === "update") {
       const coupons = couponsData.find((item: ICoupons) => item._id == form._id)
-      reset({
-        _id: form._id,
-        code: coupons?.code,
-        discountValue: coupons?.discountValue,
-        quantity: coupons?.quantity
-      })
-
+      reset({ ...coupons, createdAt: undefined, updatedAt: undefined })
     }
-  }, [form, reset, couponsData])
+
+    reset()
+  }, [form, reset, couponsData, setFocus])
 
   useEffect(() => {
     couponsDatas && setCouponsData(couponsDatas)
@@ -59,16 +61,16 @@ const ListCoupons = () => {
     openNotification('success', "Xóa mã giảm giá thành công")
   };
 
-  const handleAddUpdateCoupons = async (data: ICouponsExtend) => {
+  const handleAddUpdateCoupons = async (data: ICoupons) => {
     try {
       const { open, method } = form
       if (open && method === "add") {
-        await addCoupons({ ...data, search: undefined })
+        await addCoupons(data)
         openNotification('success', "Thêm mã giảm giá thành công")
         return
       }
       if (open && method === "update" && form._id) {
-        await updateCoupons({ ...data, search: undefined })
+        await updateCoupons(data)
         openNotification('success', "Cập nhật mã giảm giá thành công")
         return
       }
@@ -79,7 +81,8 @@ const ListCoupons = () => {
   }
 
   const handleSearch = (data: { search?: string }) => {
-    const newData = couponsDatas && couponsDatas.filter((item: ICoupons) => String(item.code).toLowerCase().includes(String(data.search).toLowerCase()))
+    const newData = couponsDatas
+      && couponsDatas.filter((item: ICoupons) => String(item.code).toLowerCase().includes(String(data.search).toLowerCase()))
     setCouponsData(newData)
   }
 
@@ -106,13 +109,6 @@ const ListCoupons = () => {
       dataIndex: "code",
       key: "code",
       className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[250px] lg:max-w-[300px]",
-      render: (code: string, size: ICoupons) =>
-        <div className="flex items-center gap-2" >
-          <BsPencilSquare
-            className="w-3 h-3 fill-orange-600 cursor-pointer"
-            onClick={() => setForm({ open: true, method: "update", _id: String(size._id) })} />
-          {code}
-        </div >
     },
     {
       title: "Giá trị mã giảm giá(%)",
@@ -128,7 +124,7 @@ const ListCoupons = () => {
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
-      sorter: (a, b) => Number(a.products?.length) - Number(b.products?.length),
+      sorter: (a, b) => Number(a.quantity) - Number(b.quantity),
       showSorterTooltip: { title: "click để sắp xếp theo số lượng mã giảm giá" },
       className: "capitalize w-[150px] max-w-[150px] md:min-w-[200px] lg:min-w-[250px] lg:max-w-[250px]",
       render: (quantity: number) =>
@@ -167,10 +163,15 @@ const ListCoupons = () => {
               cancelButtonProps={{ className: "border-slate-400" }}
               onConfirm={() => handleDeleteCoupons([_id])}
             >
-              <Tooltip placement="right" title="Xóa">
+              <Tooltip placement="top" title="Xóa">
                 <BsTrash3 className="fill-red-600 w-4 h-4" />
               </Tooltip>
             </Popconfirm>
+            <Tooltip placement="top" title="Cập nhật">
+              <BsPencilSquare
+                className="w-4 h-4 fill-gray-700 cursor-pointer"
+                onClick={() => setForm({ open: true, method: "update", _id: _id })} />
+            </Tooltip>
           </div >
         ),
     },
@@ -191,7 +192,7 @@ const ListCoupons = () => {
         </div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
-            onClick={() => setForm({ open: true, method: "add" })}
+            onClick={() => { setForm({ open: true, method: "add" }) }}
             variant="contained"
             className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
             startIcon={<BsPlus className="w-6 h-6" />}
@@ -201,9 +202,9 @@ const ListCoupons = () => {
         </div>
       </div>
       <div className="h-[35px] w-full my-3 flex gap-2">
-        <form onSubmit={handleSubmit(handleSearch)} className="w-max h-full flex items-center relative">
+        <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="text" placeholder="tìm kiếm theo kích thước" {...register('search')}
+            type="text" placeholder="tìm kiếm theo kích thước" {...registerSearch('search')}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
@@ -247,18 +248,39 @@ const ListCoupons = () => {
             onSubmit={handleSubmit(handleAddUpdateCoupons)}
             className="w-full px-[20px] "
           >
-            <label className="text-slate-600 font-semibold block float-left">Tên mã giảm giá</label>
-            <input
-              {...register("code")} type="text" defaultValue={undefined}
-              required autoFocus placeholder="40, 45..."
-              className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full "
-            />
+            <div className="mb-[20px]">
+              <label className="text-slate-600 font-semibold block float-left">Tên mã giảm giá</label>
+              <input
+                {...register("code")} type="text"
+                autoFocus placeholder="Ví dụ: GIAM50..."
+                className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.code && 'border border-red-500'}`}
+              />
+              {errors.code && <span className="text-red-500">{errors.code.message}</span>}
+            </div>
+            <div className="mb-[20px]">
+              <label className="text-slate-600 font-semibold block float-left">Giá trị mã giảm giá(%)</label>
+              <input
+                {...register("discountValue")} type="number"
+                autoFocus placeholder="1-100%"
+                className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.code && 'border border-red-500'}`}
+              />
+              {errors.discountValue && <span className="text-red-500">{errors.discountValue.message}</span>}
+            </div>
+            <div className="mb-[20px]">
+              <label className="text-slate-600 font-semibold block float-left">Số lượng</label>
+              <input
+                {...register("quantity")} type="number"
+                autoFocus placeholder="Số lượng mã giảm giá"
+                className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.code && 'border border-red-500'}`}
+              />
+              {errors.quantity && <span className="text-red-500">{errors.quantity.message}</span>}
+            </div>
             <div className="w-full grid items-center justify-end mt-2">
               <Button
                 type="submit"
                 variant="contained"
                 className="w-max !font-semibold !bg-[#58b4ff] !shadow-none"
-                startIcon={form.method === "update" ? <BsPencilSquare className="w-4 h-4" /> : <BsPlusLg className="w-4 h-4" />}
+                startIcon={form.method === "update" ? <BsPencilSquare className="w-4 h-4" /> : <BsPlusLg className="w-5 h-5" />}
               >
                 {form.method === "update" ? "cập nhật" : "Thêm mới"}
               </Button>

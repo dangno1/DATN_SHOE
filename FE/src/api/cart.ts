@@ -30,7 +30,14 @@ const cartApi = createApi({
       }),
       invalidatesTags: ["Carts"],
     }),
-
+    createCart: builder.mutation<ICart, Partial<ICart>>({
+      query: (cart) => ({
+        url: "/cart/add",
+        method: "POST",
+        body: cart,
+      }),
+      invalidatesTags: ["Carts"],
+    }),
     deleteProductCart: builder.mutation<ICart, Partial<ICart>>({
       query: (_id) => ({
         url: `/cart/delete/${_id}`,
@@ -42,6 +49,10 @@ const cartApi = createApi({
   }),
 });
 
-export const { useDeleteProductCartMutation ,useGetAllProductCartsQuery, useQuantityPlusMutation, useQuantityMinusMutation } = cartApi;
+export const { useDeleteProductCartMutation ,
+  useGetAllProductCartsQuery,
+  useCreateCartMutation,
+   useQuantityPlusMutation, 
+   useQuantityMinusMutation } = cartApi;
 export const cartReducer = cartApi.reducer;
 export default cartApi;
