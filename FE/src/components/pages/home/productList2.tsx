@@ -36,19 +36,20 @@ const ProductList2 = () => {
     }
   }, []);
   const navigate = useNavigate();
-  const handleAddCar = async() => {
+  const handleAddCar = async () => {
     if (!userData.username || !userData.email || !userData.address) {
       message.
-error({
-  content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
-  duration: 5, 
-});
-setTimeout(() => {   
-  navigate("/signup");},3000);
+        error({
+          content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
+          duration: 5,
+        });
+      setTimeout(() => {
+        navigate("/signup");
+      }, 3000);
       return;
     }
     if (data && alex.length > 0) {
-      const productToAdd:ICart = {
+      const productToAdd: ICart = {
         userName: userData.fullname,
         userEmail: userData.email,
         userAddress: userData.address,
@@ -60,16 +61,17 @@ setTimeout(() => {
         category: alex[0].categoryId,
         image: String(alex[0].image),
         color: alex[0].variants[0].colorId,
-        status:String(alex[0].variants[0].status)
+        status: String(alex[0].variants[0].status)
       };
 
       const data = await addCart(productToAdd);
       message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
-      data && setTimeout(() => {   
-        navigate("/cart");},2000);
+      data && setTimeout(() => {
+        navigate("/cart");
+      }, 2000);
       console.log(data);
-      
-      
+
+
     } else {
       console.error("data is not defined.");
     }
@@ -101,14 +103,14 @@ setTimeout(() => {
                 </p>
                 <div className="flex items-center">
                   <p className="text-lg font-semibold text-black cursor-auto my-3">
-                  {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                    {product?.variants[0].price.toLocaleString('vi-VN')} VND
                   </p>
                   <del>
                     <p className="text-sm text-gray-600 cursor-auto ml-2">
-                    {product?.variants[0].discount} VND
+                      {product?.variants[0].discount} VND
                     </p>
                   </del>
-                  <div className="ml-auto font-bold text-2xl"  onClick={handleAddCar}>
+                  <div className="ml-auto font-bold text-2xl" onClick={handleAddCar}>
                     <BsBagPlus />
                   </div>
                 </div>

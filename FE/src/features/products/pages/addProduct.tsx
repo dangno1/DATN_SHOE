@@ -1,6 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable prefer-const */
+// /* eslint-disable react-hooks/exhaustive-deps */
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// /* eslint-disable prefer-const */
 import { useNavigate } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
@@ -19,17 +19,18 @@ import { BsArrowLeftShort, BsImage } from "react-icons/bs";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlineTrash, HiPlus } from "react-icons/hi2";
+import { joiResolver } from '@hookform/resolvers/joi'
 import '../index.css'
+import productSchema from "@/schemas/product";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
-type ImageType = { files: File[], url: string[] } | null
+export type ImageType = { files: File[], url: string[] } | null
 
 
 const AddProduct = () => {
-  const [thumbnail, setThumbnail] = useState<ImageType>(null)
-  const [image, setImage] = useState<ImageType>(null)
-
+  const [thumbnail, setThumbnail] = useState<ImageType>()
+  const [image, setImage] = useState<ImageType>()
   const navigate = useNavigate();
 
   const [api, contextHolder] = notification.useNotification();
@@ -50,7 +51,8 @@ const AddProduct = () => {
     register,
     handleSubmit,
     control,
-    reset
+    reset,
+    formState: { errors }
   } = useForm<IProduct>({
     defaultValues: {
       variants: [
@@ -62,9 +64,10 @@ const AddProduct = () => {
           discount: null,
           amountSold: 0,
           status: 1,
-        } as any,
+        } as never,
       ],
     },
+    resolver: joiResolver(productSchema)
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -96,17 +99,15 @@ const AddProduct = () => {
 
   }
 
-
   const handleInputImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files ? Array.from(event.target.files) : []
 
-    const imageUrls = image.map((file: any) => URL.createObjectURL(file))
+    const imageUrls = image.map((file: File) => URL.createObjectURL(file))
     setImage({
       files: image,
       url: imageUrls
     })
   }
-
 
   const handleRemoveImage = (objects: ImageType, index: number): ImageType | null => {
     const files = objects?.files.filter((_item: File, indexItem: number) => indexItem !== index) as File[]
@@ -117,11 +118,8 @@ const AddProduct = () => {
     })
   }
 
-
   const handleAddproduct = async (data: IProduct) => {
     try {
-      console.log(data);
-
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
       await AddProduct({ ...data, thumbnail: newThumbnail, image: newImage })
@@ -129,8 +127,8 @@ const AddProduct = () => {
       reset()
       setImage(null)
       setThumbnail(null)
-    } catch (error: any) {
-      return error.message
+    } catch (error: unknown) {
+      return error && error instanceof Error && error.message
     }
   };
 
@@ -143,45 +141,59 @@ const AddProduct = () => {
           <div className="col-span-2">
             <div className="h-max mb-[20px]">
               <label className="text-slate-600 font-semibold">Tên sản phẩm</label>
-              <input {...register("name")} type="text" minLength={3} required placeholder="giày af1..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
+              <input
+                {...register("name")} type="text" placeholder="giày af1..."
+                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500
+                  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]
+                 placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && 'border-red-500'}`} />
+              {errors.name && <span className="text-red-500">{errors.name.message}</span>}
             </div>
             <div className="h-max mb-[20px]">
               <label className="text-slate-600 font-semibold">Thương hiệu</label>
-              <input {...register("brand")} type="text" minLength={3} required placeholder="Thương hiệu*..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 font-môn focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
+              <input
+                {...register("brand")} type="text" placeholder="Thương hiệu*..."
+                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
+                focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+                focus:shadow-full ${errors.brand && 'border-red-500'}`} />
+              {errors.brand && <span className="text-red-500">{errors.brand.message}</span>}
             </div>
             <div className="h-max mb-[20px] col-span-2 space-y-[5px]">
               <label className="text-slate-600 font-semibold">Mô tả</label>
-              <Controller
-                name="desc"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={value || ''}
-                    onChange={(_event, editor) => {
-                      const data = editor.getData();
-                      onChange(data);
-                    }}
-                  />
-                )}
-              />
+              <div className={`border ${errors.desc && 'border-red-500'}`}>
+                <Controller
+                  name="desc"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={value || ''}
+                      onChange={(_event, editor) => {
+                        const data = editor.getData();
+                        onChange(data);
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              {errors.desc && <span className="text-red-500">{errors.desc.message}</span>}
             </div>
           </div>
           {/* right */}
           <div className="">
             <div className="mb-[20px]">
               <label className="text-slate-600 font-semibold">Danh mục sản phẩm*</label>
-              <select required {...register("categoryId")}
-                className="w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ">
+              <select {...register("categoryId")}
+                className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors.categoryId && 'border-red-500'}`}>
                 <option value="" >Category</option>
                 {
                   categoryData?.map((category: ICategory) => <option key={category._id} value={category._id}>{category.name}</option>)
                 }
               </select>
+              {errors.categoryId && <span className="text-red-500">{errors.categoryId.message}</span>}
             </div>
             <div className="mb-[20px]">
               <label className="text-slate-600 font-semibold block">Hình ảnh</label>
-              <div className="min-h-[110px] max-h-[150px] border border-slate-300 rounded-md mt-[5px] p-4">
+              <div className={`min-h-[110px] max-h-[150px] border border-slate-300 rounded-md mt-[5px] p-4 ${errors.image && !image?.files.length && '!border-red-500'}`}>
                 <label htmlFor="inputImage" className="h-[48px] grid items-center">
                   <div className="w-max h-full grid grid-cols-[max-content_max-content] gap-2 items-center">
                     <BsImage className="w-5 h-5" />
@@ -205,14 +217,15 @@ const AddProduct = () => {
                     </div>
                   </div>}
                 <input {...register("image")} type="file" id="inputImage"
-                  required onChange={handleInputImage}
+                  onChange={handleInputImage}
                   accept="image/jpeg, image/gif, image/png"
                   className="w-0 h-0 opacity-0" />
               </div>
+              {errors.image && !image?.files.length && <span className="text-red-500">Vui Lòng chọn 1 ảnh</span>}
             </div>
             <div className="mb-[20px]">
               <label className="text-slate-600 font-semibold block">Album ảnh</label>
-              <div className="min-h-[110px] h-max border border-slate-300 p-4 rounded-md mt-[5px]">
+              <div className={`min-h-[110px] h-max border border-slate-300 p-4 rounded-md mt-[5px] ${errors.thumbnail && !thumbnail?.files.length && '!border-red-500'}`}>
                 <label htmlFor="inputThumbnail" className="h-[48px] grid items-center">
                   <div className="w-max h-full grid grid-cols-[max-content_max-content] gap-2 items-center">
                     <BsImage className="w-5 h-5" />
@@ -234,7 +247,8 @@ const AddProduct = () => {
                   </div>))}
                 </div>
               </div>
-              <input {...register("thumbnail")} type="file" multiple id="inputThumbnail" required onChange={handleInputThambnail} accept="image/jpeg, image/gif, image/png" className="hidden" />
+              <input {...register("thumbnail")} type="file" multiple id="inputThumbnail" onChange={handleInputThambnail} accept="image/jpeg, image/gif, image/png" className="hidden" />
+              {errors.image && !thumbnail?.files.length && <span className="text-red-500">Vui Lòng tối thiểu 1 ảnh</span>}
             </div>
           </div>
           {/* biến thể */}
@@ -246,33 +260,38 @@ const AddProduct = () => {
                   <div className="w-full grid grid-cols-5 gap-4">
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Kích cỡ</label>
-                      <select required {...register(`variants.${index}.sizeId`)} className="w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ">
+                      <select {...register(`variants.${index}.sizeId`)} className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.sizeId?.message && "border-red-500"}`}>
                         <option value="" >Size</option>
                         {
                           sizeData?.map((size: ISize) => <option key={size._id} value={size._id}>{size.value}</option>)
                         }
                       </select>
+                      {errors?.variants?.[index]?.colorId && <span className="text-red-500 text-[13px] capitalize">{errors?.variants?.[index]?.colorId?.message}</span>}
                     </div>
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Màu sắc</label>
-                      <select required {...register(`variants.${index}.colorId`)} className="w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ">
+                      <select {...register(`variants.${index}.colorId`)} className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.colorId?.message && "border-red-500"}`}>
                         <option value="" >Color</option>
                         {
                           colorData?.map((color: IColor) => <option key={color._id} value={color._id}>{color.value}</option>)
                         }
                       </select>
+                      {errors?.variants?.[index]?.colorId && <span className="text-red-500 text-[13px] capitalize">{errors?.variants?.[index]?.colorId?.message}</span>}
                     </div>
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Giá gốc</label>
-                      <input {...register(`variants.${index}.price`)} type="number" required placeholder="500..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
+                      <input {...register(`variants.${index}.price`)} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.sizeId?.message && "border-red-500"}`} />
+                      {errors?.variants?.[index]?.price && <span className="text-red-500 text-[13px] capitalize">{errors?.variants?.[index]?.price?.message}</span>}
                     </div>
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Giá khuyến mãi</label>
-                      <input {...register(`variants.${index}.discount`)} type="number" required placeholder="500..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
+                      <input {...register(`variants.${index}.discount`)} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.sizeId?.message && "border-red-500"}`} />
+                      {errors?.variants?.[index]?.discount && <span className="text-red-500 text-[13px] capitalize">{errors?.variants?.[index]?.discount?.message}</span>}
                     </div>
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Số lượng</label>
-                      <input {...register(`variants.${index}.quantity`)} type="number" required placeholder="500..." className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full " />
+                      <input {...register(`variants.${index}.quantity`)} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.sizeId?.message && "border-red-500"}`} />
+                      {errors?.variants?.[index]?.quantity && <span className="text-red-500 text-[13px] capitalize">{errors?.variants?.[index]?.quantity?.message}</span>}
                     </div>
                     <div className="hidden">
                       <input
@@ -304,7 +323,7 @@ const AddProduct = () => {
                       </Popconfirm>
                     )}
                   </div>
-                </div>
+                </div >
               ))}
               <Tooltip title="Thêm biến thể" className="m-auto grid place-items-center mb-[18px]">
                 <div className="w-8 h-8 rounded-[50%] bg-gray-300">
@@ -318,16 +337,16 @@ const AddProduct = () => {
                         discount: null,
                         amountSold: 0,
                         status: 1,
-                      } as any)
+                      } as never)
                     }
                     className="w-4 h-4 cursor-pointer"
                   />
                 </div>
               </Tooltip>
-            </div>
-          </div>
+            </div >
+          </div >
           {/* button */}
-          <div className="w-max grid grid-cols-[max-content_max-content_max-content] gap-x-2 place-items-center col-span-2">
+          <div className="w-max grid grid-cols-[max-content_max-content_max-content] gap-x-2 place-items-center col-span-2" >
             <Button
               type="submit"
               variant="contained"
@@ -344,7 +363,7 @@ const AddProduct = () => {
             >
               Quay lại
             </Button>
-          </div>
+          </div >
         </form >
       </div >
       <>
