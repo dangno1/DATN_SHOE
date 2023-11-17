@@ -156,7 +156,7 @@ const ListProduct = () => {
                   <BsPencilSquare onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
                 </Tooltip>
                 <Tooltip placement="right" title="Chi tiết">
-                  <BsListUl onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
+                  <BsListUl onClick={() => navigate(`detail/${_id}`)} className="w-4 h-4" />
                 </Tooltip>
 
               </>
