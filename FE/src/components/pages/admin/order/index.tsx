@@ -9,33 +9,17 @@ const Index = () => {
     console.log(orders);
 
     const [selectedStatus, setSelectedStatus] = useState('');
-    const calculateTotalPrice = (order:IOrder) => {
-        if (!order || !order.products || !Array.isArray(order.products)) {
-          return 0; 
-        }
-      
-        return order.products.reduce((total, product) => {
-          const productPrice = parseFloat(product.productPrice);
-          const productQuantity = parseInt(product.productQuantity);
-      
-          if (!isNaN(productPrice) && !isNaN(productQuantity)) {
-            return total + productPrice * productQuantity;
-          }
-      
-          return total;
-        }, 0);
-      };
     const filteredOrders = orders
-    ? orders.filter((order:IOrder) => {
-        const searchTerm = searchCode.toLowerCase();
-        const codeMatch = order.orderCode.toLowerCase().includes(searchTerm);
-        const phoneMatch = String(order.userPhone).toLowerCase().includes(searchTerm);
-        const emailMatch = order.userEmail.toLowerCase().includes(searchTerm);
-        const statusMatch =
-            selectedStatus === '' || order.status.toLowerCase() === selectedStatus.toLowerCase();
-        return (codeMatch || phoneMatch || emailMatch) && statusMatch;
-    })
-    : [];
+        ? orders.filter((order: IOrder) => {
+            const searchTerm = searchCode.toLowerCase();
+            const codeMatch = order.orderCode.toLowerCase().includes(searchTerm);
+            const phoneMatch = String(order.userPhone).toLowerCase().includes(searchTerm);
+            const emailMatch = order.userEmail.toLowerCase().includes(searchTerm);
+            const statusMatch =
+                selectedStatus === '' || order.status.toLowerCase() === selectedStatus.toLowerCase();
+            return (codeMatch || phoneMatch || emailMatch) && statusMatch;
+        })
+        : [];
 
     return (
         <div>
@@ -52,23 +36,20 @@ const Index = () => {
                             Tất cả đơn hàng
                         </option>
                         <option className="text-sm text-indigo-800" value="chờ xác nhận">
-                           Chờ xác nhận
+                            Chờ xác nhận
                         </option>
-                        <option className="text-sm text-indigo-800" value=" Đang Chuẩn Bị Hàng">
-                        Đang Chuẩn Bị Hàng
-                        </option>
-                        <option className="text-sm text-indigo-800" value="Đơn Hàng Đang Đến Với Bạn">
-                        Đơn Hàng Đang Đến Với Bạn
+                        <option className="text-sm text-indigo-800" value="  Đã xác nhận">
+                            Đã xác nhận
                         </option>
                         <option className="text-sm text-indigo-800" value=" Giao hàng thành công">
-                       Giao hàng thành công
+                            Giao hàng thành công
                         </option>
                     </select>
                 </div>
 
                 <div>
 
-                </div>                
+                </div>
                 {/* tìm kiếm mã đơn hàng */}
                 <div className="flex py-3 px-40">
                     <div className="flex w-10 items-center justify-center rounded-tl-lg rounded-bl-lg border-r border-gray-200 bg-white p-5">
@@ -123,13 +104,13 @@ const Index = () => {
                                                 Thông tin khách hàng
                                             </th>
 
-                                         
+
 
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                 Trạng thái đơn hàng
                                             </th>
 
-                                            
+
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
@@ -152,7 +133,7 @@ const Index = () => {
                                                             <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                         </svg>
 
-                                                        <h2 className="text-sm font-normal">{calculateTotalPrice(order)}đ</h2>
+                                                        <h2 className="text-sm font-normal">{order.products[0].productPrice}đ</h2>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
@@ -171,6 +152,9 @@ const Index = () => {
                                                 <td className='px-4 py-4 text-sm whitespace-nowrap'>
                                                     < select id="cars" className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-300">
                                                         <option value="" className="py-2">{order.status}</option>
+                                                        <option value="" className="py-2">Chờ Xác Nhận</option>
+                                                        <option value="" className="py-2">Đã Xác Nhận</option>
+                                                        <option value="" className="py-2">Giao Thành Công</option>
                                                     </select>
                                                 </td>
 
