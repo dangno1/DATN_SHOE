@@ -20,12 +20,14 @@ const OderHistory = () => {
     const params = new URLSearchParams(window.location.search);
     const vnp_TransactionStatus = params.get("vnp_TransactionStatus");
     const currentURL = window.location.href;
-    if (currentURL !== "http://localhost:5173/oder&history") {
-      if (vnp_TransactionStatus == "00") {
-        console.log("Thanh Toán Thành Công");
-        openNotification("success", "Thanh Toán Thành Công");
-      } else {
-        openNotification("error", "Thanh Toán Không Thành Công");
+    if (currentURL !== "http://localhost:5174/oder&history") {
+      if(vnp_TransactionStatus) {
+        if (vnp_TransactionStatus == "00") {
+          console.log("Thanh Toán Thành Công");
+          openNotification("success", "Thanh Toán Thành Công");
+        } else if(vnp_TransactionStatus != "00") {
+          openNotification("error", "Bạn Đã Hủy Tanh Toán");
+        }
       }
     }
     const user = localStorage.getItem("user");
@@ -35,9 +37,7 @@ const OderHistory = () => {
     }
   }, []);
 
-  const orderCart = order?.filter(
-    (item) => item?.userEmail == userData.email
-  );
+  const orderCart = order?.filter((item) => item?.userEmail == userData.email);
 
   console.log(orderCart);
 
@@ -52,7 +52,7 @@ const OderHistory = () => {
         <div key={orderItem._id} className="pt-7 container mx-auto p-12">
           {orderItem?.products.map((product: any) => (
             <div key={product.productId}>
-              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[2fr,4fr,5fr,4fr]">
+              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[3fr,5fr,5fr,3fr,5fr]">
                 <img
                   className="border rounded-xl w-full h-full"
                   alt=""
@@ -91,8 +91,8 @@ const OderHistory = () => {
                     </span>
                   </div>
                 </div>
-                <div>
-                  <div className="flex justify-center pt-5 font-medium text-lg">
+                <div className="flex flex-col">
+                  <div className="pt-5  flex justify-center items-center font-medium text-lg">
                     Đánh giá sản phẩm
                   </div>
                   <div className="flex gap-5 justify-center pt-5">
@@ -103,7 +103,7 @@ const OderHistory = () => {
                           width="22"
                           height="22"
                           viewBox="0 0 22 22"
-                          fill="red"
+                          fill="yellow"
                         >
                           <path
                             d="M9.97183 1.70846C10.4382 0.933481 11.5618 0.933482 12.0282 1.70847L14.3586 5.58087C14.5262 5.85928 14.7995 6.05784 15.116 6.13116L19.5191 7.15091C20.4002 7.35499 20.7474 8.42356 20.1545 9.10661L17.1918 12.5196C16.9788 12.765 16.8744 13.0863 16.9025 13.41L17.2932 17.9127C17.3714 18.8138 16.4625 19.4742 15.6296 19.1214L11.4681 17.3583C11.1689 17.2316 10.8311 17.2316 10.5319 17.3583L6.37038 19.1214C5.53754 19.4742 4.62856 18.8138 4.70677 17.9127L5.09754 13.41C5.12563 13.0863 5.02124 12.765 4.80823 12.5196L1.8455 9.1066C1.25257 8.42356 1.59977 7.35499 2.48095 7.15091L6.88397 6.13116C7.20053 6.05784 7.47383 5.85928 7.64138 5.58087L9.97183 1.70846Z"
@@ -114,17 +114,27 @@ const OderHistory = () => {
                       </div>
                     ))}
                   </div>
-                  <button className="bg-blue-500 h-12 text-white p-2 rounded-xl hover:bg-blue-700">
+                  <button className="mt-10 bg-blue-500 h-12 text-white rounded-xl hover:bg-blue-700">
                     Lưu Đánh Giá
                   </button>
                 </div>
-                <div className="flex gap-10 justify-center items-center p-5">
-                  <button className="bg-blue-500 w-full h-12 text-white rounded-xl hover:bg-blue-700">
-                    Xem Sản Phẩm
-                  </button>
-                  <button className="bg-blue-500 w-full h-12 text-white rounded-xl hover:bg-blue-700">
-                    Mua Lại
-                  </button>
+                <div>
+                  <h3 className="flex justify-center pt-5 font-medium text-lg">
+                    Trạng Thái Đơn Hàng
+                  </h3>
+                  <div className="border w-full h-12 rounded-xl flex justify-center items-center mt-20">
+                    {orderItem.status}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="flex justify-center pt-5 font-medium text-lg">
+                    Thao Tác
+                  </h3>
+                  <div className="flex gap-10 justify-center">
+                    <button className="mt-20 bg-blue-500 w-6/12 h-12 text-white rounded-xl hover:bg-blue-700">
+                      Mua Lại
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
