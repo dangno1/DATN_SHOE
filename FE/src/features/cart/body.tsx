@@ -5,7 +5,7 @@ import {
   useQuantityMinusMutation,
   useQuantityPlusMutation,
 } from "../../api/cart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const BodyCart = () => {
@@ -16,7 +16,28 @@ const BodyCart = () => {
 
   const [checkedItems, setCheckedItems] = useState<ICart[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
-console.log(carts?.data);
+  console.log(carts?.data);
+
+  const [userData, setUserData] = useState(localStorage);
+  useEffect(() => {
+    //data cart
+    const user = localStorage.getItem("user");
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+
+  console.log(userData.email);
+  
+
+  const dataCart = carts?.data.filter(
+    (item) => item?.userEmail == userData.email
+  );
+
+  console.log(dataCart);
+  
+
 
   const handleCheckboxChange = (checked: boolean, item: ICart) => {
     let itemPrice;
@@ -64,14 +85,14 @@ console.log(carts?.data);
             </div>
           </div>
 
-          {carts?.data.map((item: ICart) => (
+          {dataCart?.map((item: ICart) => (
             <div className="pt-7" key={item._id}>
               <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[5fr,10fr,1fr]">
                 <img className="border rounded-xl" src={item?.image} alt="" width={"100%"} height={"240px"} />
                 <div className="p-5">
                   <div className="flex justify-between">
                     <p>{item?.productName}</p>
-                    <span className="text-red-500">{item?.price}₫</span>
+                    <span className="text-red-500">{item?.price.toLocaleString("vi-VN")}₫</span>
                   </div>
                   <div className="pt-2 uppercase">
                     SOLAR GOLD / CORE BLACK / {item?.color}
@@ -287,7 +308,7 @@ console.log(carts?.data);
               <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
                 Tổng Giá
               </p>
-              <span className="text-gray-900">{totalPrice}₫</span>
+              <span className="text-gray-900">{totalPrice.toLocaleString("vi-VN")}₫</span>
             </div>
             <div className="pt-10">
               <div className="font-semibold font-sans leading-10">
