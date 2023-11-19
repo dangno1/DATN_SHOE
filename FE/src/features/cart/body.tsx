@@ -92,7 +92,7 @@ const BodyCart = () => {
                 <div className="p-5">
                   <div className="flex justify-between">
                     <p>{item?.productName}</p>
-                    <span className="text-red-500">{item?.price}₫</span>
+                    <span className="text-red-500">{item?.price.toLocaleString("vi-VN")}₫</span>
                   </div>
                   <div className="pt-2 uppercase">
                     SOLAR GOLD / CORE BLACK / {item?.color}
@@ -308,7 +308,7 @@ const BodyCart = () => {
               <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
                 Tổng Giá
               </p>
-              <span className="text-gray-900">{totalPrice}₫</span>
+              <span className="text-gray-900">{totalPrice.toLocaleString("vi-VN")}₫</span>
             </div>
             <div className="pt-10">
               <div className="font-semibold font-sans leading-10">

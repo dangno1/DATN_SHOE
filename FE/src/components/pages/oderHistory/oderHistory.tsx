@@ -67,7 +67,7 @@ const OderHistory = () => {
                   <div className="font-medium text-lg">
                     Giá sản phẩm:{" "}
                     <span className="text-red-500">
-                      {product.productInitialPrice}VND
+                      {product.productInitialPrice.toLocaleString("vi-VN")}VND
                     </span>
                   </div>
                   <div className="font-medium text-lg">
@@ -87,7 +87,7 @@ const OderHistory = () => {
                   <div className="font-medium text-lg">
                     Tổng giá Sản Phẩm:{" "}
                     <span className="pt-5 text-red-500">
-                      {product.productPrice}VND
+                      {product.productPrice.toLocaleString("vi-VN")}VND
                     </span>
                   </div>
                 </div>
