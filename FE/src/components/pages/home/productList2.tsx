@@ -43,6 +43,7 @@ const ProductList2 = () => {
           "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
         duration: 5,
       });
+
       setTimeout(() => {
         navigate("/signup");
       }, 3000);
@@ -71,6 +72,7 @@ const ProductList2 = () => {
           navigate("/cart");
         }, 2000);
       console.log(data);
+
     } else {
       console.error("data is not defined.");
     }
@@ -106,16 +108,14 @@ const ProductList2 = () => {
                 <div className="flex items-center">
                   <p className="text-lg font-semibold text-black cursor-auto my-3">
                     {product?.variants[0].price.toLocaleString("vi-VN")} VND
+
                   </p>
                   <del>
                     <p className="text-sm text-gray-600 cursor-auto ml-2">
                       {product?.variants[0].discount} VND
                     </p>
                   </del>
-                  <div
-                    className="ml-auto font-bold text-2xl"
-                    onClick={handleAddCar}
-                  >
+                  <div className="ml-auto font-bold text-2xl" onClick={handleAddCar}>
                     <BsBagPlus />
                   </div>
                 </div>

@@ -33,8 +33,7 @@ const ListCoupons = () => {
   const { register, handleSubmit, reset, setFocus, formState: { errors } } = useForm<ICoupons>({
     resolver: joiResolver(couponsSchema)
   })
-  const { register: registerSearch, handleSubmit: handleSubmitSearch } = useForm<{ search: string }>({
-  })
+  const { register: registerSearch, handleSubmit: handleSubmitSearch } = useForm<{ search: string }>()
 
   useEffect(() => {
     reset()
@@ -114,6 +113,7 @@ const ListCoupons = () => {
       title: "Giá trị mã giảm giá(%)",
       dataIndex: "discountValue",
       key: "discountValue",
+      sorter: (a, b) => Number(a.discountValue) - Number(b.discountValue),
       className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[250px] lg:max-w-[250px]",
       render: (discountValue: string,) =>
         <div>
@@ -239,6 +239,7 @@ const ListCoupons = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Modal
+          title={<div className="text-[1.7rem] uppercase text-center font-semibold mb-5">Thêm mới mã giảm giá</div>}
           centered open={form.open}
           onCancel={() => setForm({ open: false, method: "" })}
           okButtonProps={{ style: { display: "none" } }}
@@ -262,7 +263,7 @@ const ListCoupons = () => {
               <input
                 {...register("discountValue")} type="number"
                 autoFocus placeholder="1-100%"
-                className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.code && 'border border-red-500'}`}
+                className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.discountValue && 'border border-red-500'}`}
               />
               {errors.discountValue && <span className="text-red-500">{errors.discountValue.message}</span>}
             </div>
@@ -271,7 +272,7 @@ const ListCoupons = () => {
               <input
                 {...register("quantity")} type="number"
                 autoFocus placeholder="Số lượng mã giảm giá"
-                className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.code && 'border border-red-500'}`}
+                className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.quantity && 'border border-red-500'}`}
               />
               {errors.quantity && <span className="text-red-500">{errors.quantity.message}</span>}
             </div>
