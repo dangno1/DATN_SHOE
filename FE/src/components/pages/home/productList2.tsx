@@ -29,7 +29,7 @@ const ProductList2 = () => {
   const [userData, setUserData] = useState(localStorage);
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (user) {
       const userData = JSON.parse(user);
       setUserData(userData);
@@ -38,11 +38,12 @@ const ProductList2 = () => {
   const navigate = useNavigate();
   const handleAddCar = async () => {
     if (!userData.username || !userData.email || !userData.address) {
-      message.
-        error({
-          content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
-          duration: 5,
-        });
+      message.error({
+        content:
+          "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
+        duration: 5,
+      });
+
       setTimeout(() => {
         navigate("/signup");
       }, 3000);
@@ -61,16 +62,16 @@ const ProductList2 = () => {
         category: alex[0].categoryId,
         image: String(alex[0].image),
         color: alex[0].variants[0].colorId,
-        status: String(alex[0].variants[0].status)
+        status: String(alex[0].variants[0].status),
       };
 
       const data = await addCart(productToAdd);
-      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
-      data && setTimeout(() => {
-        navigate("/cart");
-      }, 2000);
+      message.info("Đã thêm sản phẩm vào giỏ hàng thành công");
+      data &&
+        setTimeout(() => {
+          navigate("/cart");
+        }, 2000);
       console.log(data);
-
 
     } else {
       console.error("data is not defined.");
@@ -80,7 +81,10 @@ const ProductList2 = () => {
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4 uppercase"> các sản phẩm khác của Website</h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase">
+          {" "}
+          các sản phẩm khác của Website
+        </h1>
       </div>
       <section
         id="Projects"
@@ -103,7 +107,8 @@ const ProductList2 = () => {
                 </p>
                 <div className="flex items-center">
                   <p className="text-lg font-semibold text-black cursor-auto my-3">
-                    {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                    {product?.variants[0].price.toLocaleString("vi-VN")} VND
+
                   </p>
                   <del>
                     <p className="text-sm text-gray-600 cursor-auto ml-2">
