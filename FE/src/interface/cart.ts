@@ -8,6 +8,7 @@ export interface ICart {
   quantity: number,
   price: number,
   initialPrice: number,
+  size: number,
   totalPrice: number,
   category: string,
   image: string,
