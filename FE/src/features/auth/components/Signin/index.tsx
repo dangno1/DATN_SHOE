@@ -3,31 +3,38 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useSigninMutation } from "../../../../api/auth";
 import { ISignin } from "../../../../interface/signin";
+import { notification } from "antd";
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
 const Signin = () => {
   const { handleSubmit, register } = useForm<ISignin>();
   const [signin] = useSigninMutation();
   const navigate = useNavigate();
+  const openNotification = (type: NotificationType, message: string) => {
+    notification[type]({
+      message: "Thông báo",
+      description: message,
+    });
+  };
   const onSubmit = (data: ISignin) => {
     signin(data)
       .unwrap()
       .then((res) => {
         if (res && res.user && res.user.role) {
-          // Lưu thông tin đăng nhập vào localStorage sau khi đăng nhập thành công
           localStorage.setItem("user", JSON.stringify(res.user));
           if (res.user.role === "member") {
-            alert("Đăng nhập thành công");
+            openNotification("success", "Đăng nhập thành công");
             navigate("/");
             console.log(res.user);
             console.log(localStorage);
           } else if (res.user.role === "admin") {
-            alert("Đăng nhập thành công");
+            openNotification("success", "Đăng nhập thành công");
             navigate("/admin");
             console.log(res.user);
           } else {
-            alert("Bạn không có quyền truy cập trang này");
+            openNotification("warning", "Bạn không có quyền truy cập trang này");
           }
         } else {
-          alert("Đăng nhập không thành công");
+          openNotification("error", "Đăng nhập không thành công");
         }
       });
   };

@@ -87,16 +87,19 @@ const DetailProduct = () => {
             <thead>
               <tr>
                 <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Tên sản phẩm</div>
+                  <div className="p-2">Hình ảnh</div>
                 </th>
                 <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Thương hiệu</div>
+                  <div className="p-2">Tên sản phẩm</div>
                 </th>
                 <th className="w-auto border-b border-r border-gray-300">
                   <div className="p-2">Loại sản phẩm</div>
                 </th>
                 <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Ảnh</div>
+                  <div className="p-2">Thương hiệu</div>
+                </th>
+                <th className="w-auto border-b border-r border-gray-300">
+                  <div className="p-2">Mô tả</div>
                 </th>
                 <th className="w-auto border-b border-r border-gray-300">
                   <div className="p-2">Ngày cập nhật</div>
@@ -106,17 +109,6 @@ const DetailProduct = () => {
             <tbody>
               <tr className="text-center">
                 <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">{productData.name}</div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">{productData.brand}</div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">
-                    <div className="p-2">{categoryInfo?.name}</div>
-                  </div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
                   <div className="p-2 overflow-hidden">
                     <Image
                       className="rounded-[10px] bg-slate-300 w-full max-w-[68px] !h-[68px] max-h-[68px] object-cover"
@@ -124,6 +116,20 @@ const DetailProduct = () => {
                       alt="image"
                     />
                   </div>
+                </td>
+                <td className="w-auto border-b border-r border-gray-300">
+                  <div className="p-2">{productData.name}</div>
+                </td>
+                <td className="w-auto border-b border-r border-gray-300">
+                  <div className="p-2">
+                    <div className="p-2">{categoryInfo?.name}</div>
+                  </div>
+                </td>
+                <td className="w-auto border-b border-r border-gray-300">
+                  <div className="p-2">{productData.brand}</div>
+                </td>
+                <td className="w-auto border-b border-r border-gray-300">
+                  <div className="p-2 min-w-[100px] w-max max-w-[500px]">{productData.desc}</div>
                 </td>
                 <td className="w-auto border-b border-r border-gray-300">
                   <div className="p-2">
@@ -175,85 +181,90 @@ const DetailProduct = () => {
           </div>
         </div>
 
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden w-full">
           <h2 className="text-center text-2xl lg:text-3xl xl:text-2xl font-bold mb-4 mt-4">
             Biến thể
           </h2>
-          <div className="grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-            {productData.variants.map((variant, index) => (
-              <div key={index} className="bg-white rounded-lg">
-                <table className="w-full">
-                  <thead>
-                    <tr>
-                      <th className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">Màu</div>
-                      </th>
-                      <th className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">Kích cỡ</div>
-                      </th>
-                      <th className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">Giá gốc</div>
-                      </th>
-                      <th className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">Giá bán</div>
-                      </th>
-                      <th className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">Số lượng</div>
-                      </th>
-                      <th className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">Số lượng đã bán</div>
-                      </th>
-                      {/* <th className="w-auto border-b border-r border-gray-300">
+          <div className="bg-white rounded-lg w-full">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="w-auto border-b border-r border-gray-300">
+                    <div className="p-2">STT</div>
+                  </th>
+                  <th className="w-auto border-b border-r border-gray-300">
+                    <div className="p-2">Màu</div>
+                  </th>
+                  <th className="w-auto border-b border-r border-gray-300">
+                    <div className="p-2">Kích cỡ</div>
+                  </th>
+                  <th className="w-auto border-b border-r border-gray-300">
+                    <div className="p-2">Giá gốc</div>
+                  </th>
+                  <th className="w-auto border-b border-r border-gray-300">
+                    <div className="p-2">Giá bán</div>
+                  </th>
+                  <th className="w-auto border-b border-r border-gray-300">
+                    <div className="p-2">Số lượng</div>
+                  </th>
+                  <th className="w-auto border-b border-r border-gray-300">
+                    <div className="p-2">Số lượng đã bán</div>
+                  </th>
+                  <th className="w-auto border-b border-r border-gray-300">
                     <div className="p-2">Trạng thái</div>
-                  </th> */}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="text-center">
-                      <td className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">
-                          {
-                            colorData?.find((c) => c._id === variant.colorId)
-                              ?.value
-                          }
-                        </div>
-                      </td>
-                      <td className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">
-                          {
-                            sizeData?.find((s) => s._id === variant.sizeId)
-                              ?.value
-                          }
-                        </div>
-                      </td>
-                      <td className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">{variant.discount}</div>
-                      </td>
-                      <td className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">
-                          <div className="p-2">{variant.price}</div>
-                        </div>
-                      </td>
-                      <td className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">
-                          <div className="p-2">{variant.quantity}</div>
-                        </div>
-                      </td>
-                      <td className="w-auto border-b border-r border-gray-300">
-                        <div className="p-2">
-                          <div className="p-2">{variant.amountSold}</div>
-                        </div>
-                      </td>
-                      {/* <td className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">
-                      <div className="p-2">{variant.status}</div>
-                    </div>
-                  </td>  */}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            ))}
+                  </th>
+                </tr>
+              </thead>
+              {productData.variants.map((variant, index) => (
+                <tbody>
+                  <tr className="text-center">
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">{index + 1}</div>
+                    </td>
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">
+                        {
+                          colorData?.find((c) => c._id === variant.colorId)
+                            ?.value
+                        }
+                      </div>
+                    </td>
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">
+                        {sizeData?.find((s) => s._id === variant.sizeId)?.value}
+                      </div>
+                    </td>
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">{variant.discount}</div>
+                    </td>
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">
+                        <div className="p-2">{variant.price}</div>
+                      </div>
+                    </td>
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">
+                        <div className="p-2">{variant.quantity}</div>
+                      </div>
+                    </td>
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">
+                        <div className="p-2">{variant.amountSold}</div>
+                      </div>
+                    </td>
+                    <td className="w-auto border-b border-r border-gray-300">
+                      <div className="p-2">
+                        {variant.status === 0 ? (
+                          <div className="text-red-500">Hết hàng</div>
+                        ) : (
+                          <div className="text-green-500">Còn hàng</div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              ))}
+            </table>
           </div>
         </div>
 

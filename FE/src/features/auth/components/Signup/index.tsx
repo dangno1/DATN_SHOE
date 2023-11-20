@@ -2,22 +2,29 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { IUser } from "../../../../interface/auth";
 import { useSignupMutation } from "../../../../api/auth";
-
+import { notification } from "antd";
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
 const Signup = () => {
   const { handleSubmit, register } = useForm<IUser>();
   const navigate = useNavigate();
 
   const [signup] = useSignupMutation();
-
+  const openNotification = (type: NotificationType, message: string) => {
+    notification[type]({
+      message: "Thông báo",
+      description: message,
+    });
+  };
   const onSubmit = (data: IUser) => {
     signup(data)
       .unwrap()
       .then((res) => {
         if (res?.data) {
-            alert("Đăng ký thành công");
+            openNotification("success", "Đăng ký thành công");
             console.log("Đăng ký thành công");
             navigate("/signin");
           } else {
+            openNotification("warning", "Đăng ký không thành công");
             console.log("Đăng ký không thành công. Messages:", res.messages);
           }
       });
