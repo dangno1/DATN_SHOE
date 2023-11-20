@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useGetProductsQuery } from "@/api/product";
 import { useEffect, useState } from "react";
 import Slider from "./banner";
@@ -9,17 +7,14 @@ import { useGetColorQuery, useGetColorsQuery } from "@/api/color";
 import { useGetSizeQuery, useGetSizesQuery } from "@/api/size";
 import { BsBagPlus } from "react-icons/bs";
 import { useGetCategoryesQuery } from "@/api/category";
-
+import { Link } from "react-router-dom";
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
-  // console.log(data);
-  
   const { data: Color } = useGetColorsQuery();
   const { data: Size } = useGetSizesQuery();
   const [productData, setProductData] = useState<IProduct[]>(data); //dùng chung
   const [sortOrder, setSortOrder] = useState("asc");
   const { data: Cate } = useGetCategoryesQuery();
-  // console.log(Cate);
   
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const test = (event:any) => {
@@ -33,6 +28,7 @@ const Products = () => {
   useEffect(() => {
     data && setProductData(data);
   }, [data]);
+
 
   useEffect(() => {
     if (data && selectedSubcategory) {
@@ -208,7 +204,7 @@ const Products = () => {
         <div className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14">
           {productData?.map((product: IProduct) => (
             <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
+               <Link to={`/detail/${product._id}`}>
                 <img
                   src={product?.image}
                   alt="Product"
@@ -236,7 +232,7 @@ const Products = () => {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           ))}
         </div>

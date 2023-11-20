@@ -1,13 +1,12 @@
 import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
-import { useEffect } from "react";
-import { useState } from "react";
-import { BsBagPlus } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { BsBagPlus } from 'react-icons/bs';
+
 const ProductList2 = () => {
   const { data } = useGetProductsQuery(false);
-  console.log(data);
-  const [alex, setAlex] = useState([]);
+
+  const [alex, setAlex] = useState<IProduct[]>([]);
   useEffect(() => {
     if (data) {
       const productRandom = [];
@@ -20,19 +19,21 @@ const ProductList2 = () => {
       setAlex(productRandom);
     }
   }, [data]);
-  console.log(alex);
+
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4 uppercase"> các sản phẩm khác của Website</h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase">
+          Các sản phẩm khác của Website
+        </h1>
       </div>
       <section
         id="Projects"
         className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14"
       >
         {alex?.map((product: IProduct) => (
-          <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-            <Link to={`/detail/${product._id}`}>
+          <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl" key={product.id}>
+            <a href="#">
               <img
                 src={product?.image}
                 alt="Product"
@@ -59,7 +60,7 @@ const ProductList2 = () => {
                   </div>
                 </div>
               </div>
-            </Link>
+            </a>
           </div>
         ))}
       </section>

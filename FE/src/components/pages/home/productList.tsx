@@ -2,7 +2,6 @@ import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { BsBagPlus } from "react-icons/bs";
 import { Link } from "react-router-dom";
-// import { useState, useEffect } from "react";
 
 const ProductList = () => {
   const { data } = useGetProductsQuery(false);
@@ -69,13 +68,12 @@ const ProductList = () => {
                       {product?.variants[0].price.toLocaleString("vi-VN")} VND
                     </p>
                   </del>
-
                   <div className="ml-auto font-bold text-2xl">
                     <BsBagPlus />
                   </div>
                 </div>
               </div>
-            </Link>
+            </a>
           </div>
         ))}
 

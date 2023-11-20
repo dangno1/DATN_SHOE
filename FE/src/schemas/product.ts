@@ -1,3 +1,4 @@
+import { IProduct } from "@/interface/product";
 import joi from "@hapi/joi";
 
 const variantSchema = joi.object({
@@ -10,16 +11,16 @@ const variantSchema = joi.object({
     "any.required": "Màu sắc là trường bắt buộc",
   }),
   price: joi.number().integer().positive().required().messages({
-    "number.base": "Giá phải là một số",
-    "number.integer": "Giá phải là một số nguyên",
-    "number.positive": "Giá phải là một số lớn hơn 0",
-    "any.required": "Giá là trường bắt buộc",
+    "number.base": "Giá gốc phải là một số",
+    "number.integer": "Giá gốc phải là một số nguyên",
+    "number.positive": "Giá gốc phải là một số lớn hơn 0",
+    "any.required": "Giá gốc là trường bắt buộc",
   }),
   discount: joi.number().integer().positive().required().messages({
-    "number.base": "Giá phải là một số",
-    "number.integer": "Giá phải là một số nguyên",
-    "number.positive": "Giá phải là một số lớn hơn 0",
-    "any.required": "Giá là trường bắt buộc",
+    "number.base": "Giá khuyến mãi phải là một số",
+    "number.integer": "Giá khuyến mãi phải là một số nguyên",
+    "number.positive": "Giá khuyến mãi phải là một số lớn hơn 0",
+    "any.required": "Giá khuyến mãi là trường bắt buộc",
   }),
   quantity: joi.number().integer().positive().required().messages({
     "number.base": "Số lượng phải là một số",
@@ -27,24 +28,39 @@ const variantSchema = joi.object({
     "number.positive": "Số lượng phải là một số lớn hơn 0",
     "any.required": "Số lượng là trường bắt buộc",
   }),
+  amountSold: joi.number().integer().required().messages({
+    "number.base": "Số lượng đã bán phải là một số",
+    "number.integer": "Số lượng đã bán phải là một số nguyên",
+    "number.positive": "Số lượng đã bán phải là một số lớn hơn 0",
+    "any.required": "Số lượng đã bán là trường bắt buộc",
+  }),
   status: joi.number().required().messages({
     "number.base": "Trạng thái phải là một số",
     "any.required": "Trạng thái là trường bắt buộc",
   }),
 });
 
-const productSchema = joi.object({
+const productSchema = joi.object<IProduct>({
   name: joi.string().required().min(3).messages({
     "string.empty": "Tên sản phẩm không được để trống",
     "any.required": "Tên sản phẩm là trường bắt buộc",
     "string.min": "Tên sản phẩm phải có ít nhất 3 ký tự",
   }),
 
-  image: joi.any().meta({ swaggerType: "file" }),
+  image: joi.any().custom((value, helpers) => {
+    if (value.length === 0) {
+      return helpers.error("any.invalid");
+    }
+    return value;
+  }, "File validation"),
 
-  thumbnail: joi.array().items(joi.any().meta({ swaggerType: "file" })),
+  thumbnail: joi.any().custom((value, helpers) => {
+    if (value.length === 0) {
+      return helpers.error("any.invalid");
+    }
+  }, "File validation"),
 
-  desc: joi.string().messages({
+  desc: joi.string().required().messages({
     "string.empty": "Mô tả sản phẩm không được để trống",
     "any.required": "Mô tả sản phẩm là trường bắt buộc",
   }),
@@ -59,12 +75,6 @@ const productSchema = joi.object({
   categoryId: joi.string().required().messages({
     "string.empty": "Danh mục sản phẩm không được để trống",
     "any.required": "Danh mục sản phẩm là trường bắt buộc",
-  }),
-  amountSold: joi.number().integer().positive().required().messages({
-    "number.base": "Số lượng đã bán phải là một số",
-    "number.integer": "Số lượng đã bán phải là một số nguyên",
-    "number.positive": "Số lượng đã bán phải là một số lớn hơn 0",
-    "any.required": "Số lượng đã bán là trường bắt buộc",
   }),
 });
 

@@ -1,6 +1,7 @@
 import { ICart } from '@/interface/cart';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { UserResponse } from "../type/type";
+import { IOrder } from '@/interface/order';
 
 const orderedProductApi = createApi({
   reducerPath: 'orderedProduct',
@@ -17,7 +18,7 @@ const orderedProductApi = createApi({
       }),
       invalidatesTags: ["OrderedProduct"]
     }),
-    getOrders: builder.query<void, void>({
+    getOrders: builder.query<IOrder[], void>({
       query: () => `/orderProducts`,
       providesTags: ["OrderedProduct"],
     }),

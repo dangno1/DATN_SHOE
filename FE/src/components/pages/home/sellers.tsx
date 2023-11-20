@@ -9,10 +9,10 @@ const compareAmountSold = (a, b) => {
 };
 
 const Seller = () => {
+
   const { data } = useGetProductsQuery(false);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 4;
-
   useEffect(() => {
     // Scroll về trang đầu tiên khi dữ liệu thay đổi
     setCurrentPage(1);
@@ -49,8 +49,6 @@ const Seller = () => {
 
   const featuredProducts = getFeaturedProducts();
 
-
- 
   return (
     <div className=" 2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
       <div className="flex items-center justify-between r">
