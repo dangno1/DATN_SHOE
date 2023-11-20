@@ -197,7 +197,7 @@ const Products = () => {
                 </option>
               ))}
             </select>
-            {/* <button onClick={clearFilters} className="ml-2 border rounded-md p-2">Xóa bộ lọc</button> */}
+
           </div>
         </div>
 
@@ -218,12 +218,12 @@ const Products = () => {
                     {product?.name}
                   </p>
                   <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                    {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                    <p className="text-lg font-semibold text-black cursor-auto my-3 text-red-500">
+                    {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                     </p>
                     <del>
                       <p className="text-sm text-gray-600 cursor-auto ml-2">
-                      {product?.variants[0].discount} VND
+                      {product?.variants[0].price.toLocaleString('vi-VN')} VND
 
                       </p>
                     </del>
