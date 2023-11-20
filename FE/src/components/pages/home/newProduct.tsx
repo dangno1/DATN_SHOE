@@ -10,20 +10,6 @@ import { BsBagPlus } from "react-icons/bs";
 const SaleProduct = () => {
   const { data } = useGetProductsQuery(false);
   console.log(data);
-  // const [alex, setAlex] = useState([]);
-  // useEffect(() => {
-  //   if (data) {
-  //     const productRandom = [];
-  //     const dataCopy = [...data];
-  //     for (let index = 0; index < 4 && dataCopy.length > 0; index++) {
-  //       const indexRandom = Math.floor(Math.random() * dataCopy.length);
-  //       const randomProduct = dataCopy.splice(indexRandom, 1)[0];
-  //       productRandom.push(randomProduct);
-  //     }
-  //     setAlex(productRandom);
-  //   }
-  // }, [data]);
-  // console.log(alex);
   return (
     <>
       <Slider />

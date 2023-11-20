@@ -6,28 +6,23 @@ import { Link } from "react-router-dom";
 const ProductList = () => {
   const { data } = useGetProductsQuery(false);
 
-  // Kiểm tra xem có dữ liệu sản phẩm không
   if (!data) {
     return <div>Loading...</div>;
   }
 
-  // Số mili giây trong 1 ngày
   const oneDay = 24 * 60 * 60 * 1000;
 
-  // Thời điểm hiện tại
   const currentDate = new Date();
 
-  // Đặt thời điểm hiện tại về đầu ngày
+
   currentDate.setHours(0, 0, 0, 0);
   const startOfDay = currentDate.getTime();
 
-  // Thời điểm 4 trước đó
+
   const fourDaysLater = startOfDay - 4 * oneDay;
 
-  // Lọc danh sách sản phẩm từ ngày hôm nay đến 4 ngày sau
   const latestProducts = data.filter((product) => {
     const createdAt = new Date(product.createdAt).getTime();
-    // return createdAt >= startOfDay && createdAt <= fourDaysLater;
     return createdAt >= fourDaysLater && createdAt <= startOfDay;
 
   });
@@ -43,7 +38,6 @@ const ProductList = () => {
         id="Projects"
         className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14"
       >
-        {/* Hiển thị sản phẩm mới nhất nếu có */}
         {latestProducts?.map((product:IProduct) => (
           <div key={product._id} className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
             <Link to={`/detail/${product._id}`}>
@@ -68,17 +62,11 @@ const ProductList = () => {
                       {product?.variants[0].price.toLocaleString("vi-VN")} VND
                     </p>
                   </del>
-                  <div className="ml-auto font-bold text-2xl">
-                    <BsBagPlus />
-                  </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ))}
-
-        {/* Hiển thị thông báo nếu không có sản phẩm mới */}
-        
       </section>
       {latestProducts?.length === 0 && (
           <div className="text-center mt-[-2%] pb-2 text-gray-500 font-semibold">
