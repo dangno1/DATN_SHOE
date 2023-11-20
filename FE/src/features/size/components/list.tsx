@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useAddSizeMutation, useGetSizesQuery, useRemoveSizeMutation, useUpdateSizeMutation } from "@/api/size";
 import { ISize } from "@/interface/size";
 import { Modal, Popconfirm, Table, Tooltip, notification } from "antd";
@@ -6,10 +7,11 @@ import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { useState, useEffect, Key } from "react";
 import { useForm } from "react-hook-form";
 import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
+import { joiResolver } from "@hookform/resolvers/joi";
+import sizeSchema from "@/schemas/size";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
-export interface ISizeExtend extends ISize { search?: string }
 
 const ListSize = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
@@ -17,7 +19,7 @@ const ListSize = () => {
   const [sizeData, setSizeData] = useState<ISize[]>()
 
   const [deleteSize, { isLoading: loadDelete }] = useRemoveSizeMutation();
-  const [updateSize, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateSizeMutation();
+  const [updateSize, { isLoading: loadUpdate }] = useUpdateSizeMutation();
   const [addSize, { isLoading: loadAdd, isSuccess: successAdd }] = useAddSizeMutation();
   const { data: sizeDatas } = useGetSizesQuery<{ data: ISize[] }>();
 
@@ -29,45 +31,55 @@ const ListSize = () => {
     });
   };
 
-  const { register, handleSubmit, reset } = useForm<ISizeExtend>()
+  const { register, handleSubmit, reset, setValue, setFocus, setError, formState: { errors } } = useForm<ISize>({
+    resolver: joiResolver(sizeSchema)
+  })
+
+  const {
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch
+  } = useForm<{ search: string }>()
 
   useEffect(() => {
     reset()
-  }, [reset, successAdd, successUpdate])
+  }, [reset, successAdd])
 
   useEffect(() => {
-    form.method === "update"
-      ? reset({ _id: form._id, value: sizeDatas.find((item: ISize) => item._id == form._id)?.value })
-      : reset({ value: undefined })
-  }, [form, reset, sizeDatas])
+    form.method.length && setFocus("value");
+    const updateSize = sizeData?.find((item: ISize) => item._id == form._id)?.value
+    form.method === "update" && sizeData ? setValue("value", Number(updateSize)) : reset()
+  }, [form, reset, setFocus, setValue])
 
   useEffect(() => {
     sizeDatas && setSizeData(sizeDatas)
-    console.table(sizeDatas);
-
   }, [sizeDatas])
 
   const handleDeleteSize = (listId: string[]) => {
     listId.map(async (id: string) => {
       await deleteSize(id)
-    })
+    }
+    )
     openNotification('success', "Xóa kích cỡ thành công")
   };
 
-  const handleAddUpdateSize = async (data: ISizeExtend) => {
+  const handleAddUpdateSize = async (data: ISize) => {
     try {
-      const { open, method } = form
-      if (open && method === "add") {
-        await addSize({ ...data, search: undefined })
+      const existSize = sizeDatas.find(({ value }: ISize) => value === data.value)
+
+      const { method } = form
+      if (method === "add" && !existSize) {
+        await addSize(data)
         openNotification('success', "Thêm kích cỡ thành công")
         return
       }
-      if (open && method === "update" && form._id) {
-        await updateSize({ ...data, search: undefined })
+
+      if (method === "update" && !existSize || (existSize && existSize._id === form._id)) {
+        await updateSize({ ...data, _id: form._id })
         openNotification('success', "Cập nhật kích cỡ thành công")
         return
       }
-      reset()
+
+      setError("value", { type: "exist", message: "Kích cỡ đã tồn tại" })
     } catch (error) {
       return error
     }
@@ -79,7 +91,6 @@ const ListSize = () => {
   }
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
-    console.log(newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -97,7 +108,7 @@ const ListSize = () => {
       fixed: "left",
     },
     {
-      title: "Kích thước",
+      title: "Kích cỡ",
       dataIndex: "value",
       key: "value",
       sorter: (a, b) => a.value - b.value,
@@ -107,7 +118,10 @@ const ListSize = () => {
         <div className="flex items-center gap-2">
           <BsPencilSquare
             className="w-3 h-3 fill-orange-600 cursor-pointer"
-            onClick={() => setForm({ open: true, method: "update", _id: String(size._id) })} />
+            onClick={() => {
+              setFocus("value")
+              setForm({ open: true, method: "update", _id: String(size._id) })
+            }} />
           {value}
         </div>
     },
@@ -163,6 +177,7 @@ const ListSize = () => {
         ),
     },
   ];
+
   const sortSize = sizeData && [...sizeData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
 
   const dataSource = sortSize?.map((size: ISize, index: number) => ({
@@ -175,7 +190,7 @@ const ListSize = () => {
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
         <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">
-          Tất cả Kích thước
+          Tất cả Kích cỡ
         </div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
@@ -189,9 +204,9 @@ const ListSize = () => {
         </div>
       </div>
       <div className="h-[35px] w-full my-3 flex gap-2">
-        <form onSubmit={handleSubmit(handleSearch)} className="w-max h-full flex items-center relative">
+        <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="number" placeholder="tìm kiếm theo kích thước" {...register('search')}
+            type="number" placeholder="tìm kiếm theo kích thước" {...registerSearch('search')}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
@@ -223,6 +238,7 @@ const ListSize = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Modal
+          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">{form.method === "update" ? "Cập nhật kích cỡ" : "Thêm mới kích cỡ"}</div>}
           centered open={form.open}
           onCancel={() => setForm({ open: false, method: "" })}
           okButtonProps={{ style: { display: "none" } }}
@@ -230,14 +246,17 @@ const ListSize = () => {
         >
           <form
             onSubmit={handleSubmit(handleAddUpdateSize)}
-            className="w-full px-[20px] "
+            className="w-full px-[20px]"
+            noValidate
           >
-            <label className="text-slate-600 font-semibold block float-left">Tên Danh mục</label>
+            <label className="text-slate-600 font-semibold block float-left">Kích cỡ<span className="text-red-500">*</span></label>
             <input
               {...register("value")} type="number"
-              required autoFocus placeholder="40, 45..."
-              className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full "
+              placeholder="40, 45..."
+              className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 
+              focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.value && "border-red-500"}`}
             />
+            {errors.value && <span className="text-red-500">{errors.value.message}</span>}
             <div className="w-full grid items-center justify-end mt-2">
               <Button
                 type="submit"
