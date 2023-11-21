@@ -29,6 +29,7 @@ import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
 import SaleProduct from "./components/pages/home/newProduct";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
+import DetailProduct from "./features/products/pages/detailProduct";
 import Test001 from "./components/pages/admin/order/test001";
 
 
@@ -88,6 +89,7 @@ export const router = createBrowserRouter([
       },
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
+      { path: "product/detail/:id", element: <DetailProduct /> },
       {
         path: "product/trashCan",
         element: <ListProduct />,

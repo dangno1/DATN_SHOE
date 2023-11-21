@@ -179,20 +179,18 @@ const ListProduct = () => {
                 <BsTrash3 className="fill-red-600 w-4 h-4" />
               </Tooltip>
             </Popconfirm>
-            {
-              trashCanState
-                ? <Tooltip placement="top" title="Khôi phục">
-                  < BsArrowCounterclockwise onClick={() => handleRecovery([_id])} className="w-4 h-4" />
-                </Tooltip >
-                : <>
-                  <Tooltip placement="right" title="Sửa">
-                    <BsPencilSquare onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
-                  </Tooltip>
-                  <Tooltip placement="right" title="Chi tiết">
-                    <BsListUl onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
-                  </Tooltip>
-
-                </>
+            {trashCanState
+              ? <Tooltip placement="top" title="Khôi phục">
+                <BsArrowCounterclockwise onClick={() => handleTrushCan(_id, "recovery")} className="w-4 h-4" />
+              </Tooltip>
+              : <>
+                <Tooltip placement="right" title="Sửa">
+                  <BsPencilSquare onClick={() => navigate(`update/${_id}`)} className="w-4 h-4" />
+                </Tooltip>
+                <Tooltip placement="right" title="Chi tiết">
+                  <BsListUl onClick={() => navigate(`detail/${_id}`)} className="w-4 h-4" />
+                </Tooltip>
+              </>
             }
           </div >
         ),
