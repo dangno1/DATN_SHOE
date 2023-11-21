@@ -1,32 +1,45 @@
-import { useGetColorQuery } from "@/api/color";
+import { useGetColorsQuery } from "@/api/color";
 import { useGetProductQuery } from "@/api/product";
-import { useGetSizeQuery} from "@/api/size";
+import { useGetSizesQuery } from "@/api/size";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import {  AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useCreateCartMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
 import { message } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
-
-
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
+  const { data: sizeData } = useGetSizesQuery()
+  const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
-console.log(productData);
-  const sizeId = productData?.variants[0].sizeId
-  const { data: sizeData } = useGetSizeQuery(sizeId || '')
-  const colorId = productData?.variants[0].colorId
-  const { data: colorData } = useGetColorQuery(colorId || '')
+  // console.log(productData?.variants);
+  const variants = productData?.variants;
+
+  const size = variants?.map((item: unknown) => {
+    const sizeProduct = sizeData?.find(
+      (sizeItem: ISize) => item?.sizeId == sizeItem._id
+    );
+    return sizeProduct;
+  });
+
+  const color = variants?.map((item: unknown) => {
+    const colorProduct = colorData?.find(
+      (colorItem: IColor) => item?.colorId == colorItem._id
+    );
+    return colorProduct;
+  });
+  // console.log(size);
+  // console.log(color);
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
   const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
-  const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]); 
+  const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -51,14 +64,14 @@ console.log(productData);
     if (!selectedColor) {
       message.error({
         content: "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng.",
-duration: 3,
+        duration: 3,
       });
       return;
     }
     if (!selectedSize) {
       message.error({
         content: "Vui lòng chọn size trước khi thêm vào giỏ hàng.",
-duration: 3,
+        duration: 3,
       });
       return;
     }
@@ -156,7 +169,6 @@ duration: 3,
                     <div className="mb-8">
                       <span className="text-lg font-medium text-rose-500 dark:text-rose-200">{productData.brand}</span>
                       <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl">{productData.name}</h2>
-
                       <p className="max-w-md mb-8 text-gray-700 dark:text-gray-400">
                         {productData.desc}
                       </p>
@@ -168,30 +180,29 @@ duration: 3,
                     <div className="flex items-center mb-8">
                       <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Màu Sắc : </h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
-                        {colorData &&(
+                        {color?.map((item) => (
                           <button
-                            key={colorData._id}
-                            className={`p-1 mb-2 mr-2 border ${selectedColor === colorData ? 'border-blue-400' : 'border-transparent'} hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400`}
-                            onClick={() => setSelectedColor(colorData)}
+                            key={item?._id}
+                            className={`p-1 mb-2 mr-2 border ${selectedColor === item ? 'border-blue-400' : 'border-transparent'} hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400`}
+                            onClick={() => setSelectedColor(item)}
                           >
-                            <div>{colorData.value}</div>
+                            <div>{item?.value}</div>
                           </button>
-                        )}
+                        ))}
                       </div>
                     </div>
                     <div className="flex items-center mb-8">
                       <h2 className="w-20 text-lg font-bold dark:text-gray-400">Kích Cỡ:</h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
-                        {sizeData && (
+                        {size?.map((item) => (
                           <button
-                            key={sizeData._id}
-                            className={`py-1 mb-2 mr-1 border w-11 ${selectedSize === sizeData ? 'border-blue-400 text-blue-600' : 'hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400'}`}
-                            onClick={() => setSelectedSize(sizeData)}
+                            key={item?._id}
+                            className={`py-1 mb-2 mr-1 border w-11 ${selectedSize === item ? 'border-blue-400 text-blue-600' : 'hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400'}`}
+                            onClick={() => setSelectedSize(item)}
                           >
-                            {sizeData.value}
+                            {item?.value}
                           </button>
-                        )}
-
+                        ))}
                       </div>
                     </div>
                     <div className="w-32 mb-8">
