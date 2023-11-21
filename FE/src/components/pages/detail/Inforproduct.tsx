@@ -13,12 +13,14 @@ import { ICart } from "@/interface/cart";
 import { message } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
+import { date } from "@hapi/joi";
 
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
+console.log(productData);
 
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
@@ -81,8 +83,6 @@ duration: 3,
         navigate("/cart");
       }, 2000);
       console.log(data);
-
-
     } else {
       console.error("productData is not defined.");
     }
