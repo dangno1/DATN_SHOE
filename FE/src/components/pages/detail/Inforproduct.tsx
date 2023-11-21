@@ -13,7 +13,7 @@ import { ICart } from "@/interface/cart";
 import { message } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
-import { date } from "@hapi/joi";
+
 
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
