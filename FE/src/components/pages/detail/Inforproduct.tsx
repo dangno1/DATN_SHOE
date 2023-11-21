@@ -1,6 +1,6 @@
-import { useGetColorsQuery } from "@/api/color";
+import { useGetColorQuery } from "@/api/color";
 import { useGetProductQuery } from "@/api/product";
-import { useGetSizesQuery } from "@/api/size";
+import { useGetSizeQuery } from "@/api/size";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -8,25 +8,24 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import { AiFillHeart ,AiOutlineShoppingCart } from "react-icons/ai";
+import { AiFillHeart, AiOutlineShoppingCart } from "react-icons/ai";
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: sizeData } = useGetSizesQuery()
-  const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
+  console.log(productData);
   const { handleSubmit } = useForm();
   const onSubmit = (formData: any) => {
   };
-  console.log("productData: ", productData);
-  const [images ,setImage ]=useState<any>()
+  const sizeId = productData?.variants[0].sizeId
+  const { data: sizeData } = useGetSizeQuery(sizeId || '')
+  const colorId = productData?.variants[0].colorId
+  const { data: colorData } = useGetColorQuery(colorId || '')
+  const [images, setImage] = useState<any>()
   useEffect(() => {
-  const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
+    const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
     setImage(listImage)
   }, [productData])
-  console.log( images);
-  
   const [activeImgId, setActiveImageId] = useState(1); // Initialize active image ID to 1
-
   const handleImageClick = (id: number) => {
     setActiveImageId(id); // Update the active image ID when a thumbnail is clicked
   };
@@ -52,8 +51,8 @@ const Inforproduct = () => {
                   <div className="w-full px-4 md:w-1/2">
                     <div className="sticky top-0 z-50 overflow-hidden">
                       <div className="relative mb-6 lg:mb-10 lg:h-2/4">
-                        <Swiper  navigation={true} modules={[Navigation]} className="mySwiper">
-                          {images.map((item: any, index:number) => (
+                        <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+                          {images.map((item: any, index: number) => (
                             <SwiperSlide key={index}>
                               <img
                                 src={item}
@@ -66,12 +65,12 @@ const Inforproduct = () => {
                         </Swiper>
                       </div>
                       <div className="flex-wrap hidden md:flex">
-                         {images?.map((item: any,index : number) => (
+                        {images?.map((item: any, index: number) => (
                           <div key={item} className="w-1/2 p-2 sm:w-1/4">
                             <a
                               href="#"
                               className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
-                              onClick={() => handleImageClick(index   + 1)}
+                              onClick={() => handleImageClick(index + 1)}
                             >
                               <img src={item} alt="" className="object-cover w-full lg:h-20" />
                             </a>
@@ -109,29 +108,29 @@ const Inforproduct = () => {
                         </p>
                         <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
                           <span>{productData.variants[0].price}</span>
-                          <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price  + 10000 }$</span>
+                          <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price + 10000}$</span>
                         </p>
                         <p className="text-green-600 dark:text-green-300">7 in stock</p>
                       </div>
                       <div className="flex items-center mb-8">
                         <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Màu Sắc : </h2>
                         <div className="flex flex-wrap -mx-2 -mb-2">
-                          {colorData?.map((color) => (
-                            <button key={color._id} className="p-1 mb-2 mr-2 border border-transparent hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400">
-                              <div >{color.value}</div>
+                          {colorData && (
+                            <button key={colorData._id} className="p-1 mb-2 mr-2 border border-transparent hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400">
+                              <div >{colorData.value}</div>
                               {/* <div className={`w-6 h-6 bg-red-500`}></div> */}
                             </button>
-                          ))}
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center mb-8">
                         <h2 className="w-20 text-lg font-bold dark:text-gray-400">Kích Cỡ:</h2>
                         <div className="flex flex-wrap -mx-2 -mb-2">
-                          {sizeData?.map((size) => (
-                            <button key={size._id} className="py-1 mb-2 mr-1 border w-11 hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400">
-                              {size.value}
+                          {sizeData && (
+                            <button key={sizeData._id} className="py-1 mb-2 mr-1 border w-11 hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400">
+                              {sizeData.value}
                             </button>
-                          ))}
+                          )}
 
                         </div>
                       </div>
@@ -162,12 +161,12 @@ const Inforproduct = () => {
                       <div className="flex flex-wrap items-center -mx-4">
                         <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
                           <button type="submit" className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
-                            Thêm vào giỏ hàng <AiOutlineShoppingCart/>
+                            Thêm vào giỏ hàng <AiOutlineShoppingCart />
                           </button>
                         </div>
                         <div className="w-full px-4 mb-4 lg:mb-0 lg:w-1/2">
                           <button className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
-                            Thêm vào ưa thích <AiFillHeart/>
+                            Thêm vào ưa thích <AiFillHeart />
                           </button>
                         </div>
                       </div>
