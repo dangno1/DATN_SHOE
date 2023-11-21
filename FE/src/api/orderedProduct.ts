@@ -43,9 +43,20 @@ const orderedProductApi = createApi({
         return response.data
       },
     }),
+
+    updateOrderAdmin: builder.mutation<ICart, ICart>({
+      query: (orderProduct) => {
+        return {
+          url: `/orderProductUpdate/${orderProduct._id}`,
+          method: "PATCH",
+          body: { ...orderProduct, _id: undefined },
+        };
+      },
+      invalidatesTags: ["OrderedProduct"],
+    }),
   }),
 });
 
 export default orderedProductApi;
 export const orderedProductReducer = orderedProductApi.reducer;
-export const { useOrderedProductMutation, useGetOrdersQuery, useUpdateorderMutation, useCheckoutMutation } = orderedProductApi;
+export const { useOrderedProductMutation, useGetOrdersQuery, useUpdateorderMutation, useCheckoutMutation, useUpdateOrderAdminMutation } = orderedProductApi;
