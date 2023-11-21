@@ -3,29 +3,43 @@ import { useAddUserMutation } from "@/api/auth";
 import { IUser } from "@/interface/auth";
 import { Link } from "react-router-dom";
 import { notification } from "antd";
+import { userSchema } from "@/schemas/user";
 type NotificationType = "success" | "info" | "warning" | "error";
 const AddAdmin = () => {
-  const { register, handleSubmit } = useForm<IUser>();
+  const { register, handleSubmit, setError, formState } = useForm<IUser>();
   const [addUser, { isLoading }] = useAddUserMutation();
+
   const openNotification = (type: NotificationType, message: string) => {
     notification[type]({
       message: "Thông báo",
       description: message,
     });
   };
-  const onSubmit = (data: IUser) => {
-    addUser(data)
-      .unwrap()
-      .then((res) => {
-        if (res?.data) {
-          console.log("ok");
-          openNotification("success", "Đăng ký thành công");
-        } else {
-          console.log("Messages:", res.data);
-		openNotification("success", "Đăng ký thành công");
-          console.log(res);
-        }
-      });
+
+  const onSubmit = async (data: IUser) => {
+    try {
+      await userSchema.validateAsync(data, { abortEarly: false });
+
+      const res = await addUser(data).unwrap();
+
+      if (res?.data) {
+        console.log("ok");
+        openNotification("success", "Đăng ký thành công");
+      } else {
+        console.log("Messages:", res.data);
+        openNotification("success", "Đăng ký thành công");
+        console.log(res);
+      }
+    } catch (error) {
+      if (error.details) {
+        error.details.forEach((detail: any) => {
+          setError(detail.path[0], {
+            type: "manual",
+            message: detail.message,
+          });
+        });
+      }
+    }
   };
   return (
     <div className="flex justify-center items-center ">
@@ -39,7 +53,7 @@ const AddAdmin = () => {
               className="text-gray-800 font-semibold block my-2 text-md"
               htmlFor="username"
             >
-              Fullname
+              Họ và tên
             </label>
             <input
               {...register("fullname")}
@@ -47,15 +61,18 @@ const AddAdmin = () => {
               type="text"
               name="fullname"
               id="fullname"
-              placeholder="fullname"
+              placeholder="Nhập họ và tên"
             />
           </div>
+          {formState.errors.fullname && (
+            <p className="text-red-500">{formState.errors.fullname.message}</p>
+          )}
           <div>
             <label
               className="text-gray-800 font-semibold block my-2 text-md"
               htmlFor="username"
             >
-              Username
+              Tên tài khoản
             </label>
             <input
               {...register("username")}
@@ -63,9 +80,12 @@ const AddAdmin = () => {
               type="text"
               name="username"
               id="username"
-              placeholder="username"
+              placeholder="Nhập tên tài khoản"
             />
           </div>
+          {formState.errors.username && (
+            <p className="text-red-500">{formState.errors.username.message}</p>
+          )}
           <div>
             <label
               className="text-gray-800 font-semibold block my-2 text-md"
@@ -79,15 +99,18 @@ const AddAdmin = () => {
               type="text"
               name="email"
               id="email"
-              placeholder="email"
+              placeholder="Nhập email"
             />
           </div>
+          {formState.errors.email && (
+            <p className="text-red-500">{formState.errors.email.message}</p>
+          )}
           <div>
             <label
               className="text-gray-800 font-semibold block my-2 text-md"
               htmlFor="phone"
             >
-              Phone
+              Số điện thoại
             </label>
             <input
               {...register("phone")}
@@ -95,15 +118,18 @@ const AddAdmin = () => {
               type="text"
               name="phone"
               id="phone"
-              placeholder="phone"
+              placeholder="Nhập số điện thoại"
             />
           </div>
+          {formState.errors.phone && (
+            <p className="text-red-500">{formState.errors.phone.message}</p>
+          )}
           <div>
             <label
               className="text-gray-800 font-semibold block my-2 text-md"
               htmlFor="address"
             >
-              Address
+              Địa chỉ
             </label>
             <input
               {...register("address")}
@@ -111,15 +137,18 @@ const AddAdmin = () => {
               type="text"
               name="address"
               id="address"
-              placeholder="address"
+              placeholder="Nhập địa chỉ"
             />
           </div>
+          {formState.errors.address && (
+            <p className="text-red-500">{formState.errors.address.message}</p>
+          )}
           <div>
             <label
               className="text-gray-800 font-semibold block my-2 text-md"
               htmlFor="password"
             >
-              Password
+              Mật khẩu
             </label>
             <input
               {...register("password")}
@@ -127,15 +156,18 @@ const AddAdmin = () => {
               type="text"
               name="password"
               id="password"
-              placeholder="password"
+              placeholder="Nhập mật khẩu"
             />
           </div>
+          {formState.errors.password && (
+            <p className="text-red-500">{formState.errors.password.message}</p>
+          )}
           <div>
             <label
               className="text-gray-800 font-semibold block my-2 text-md"
               htmlFor="confirm"
             >
-              Confirm password
+              Nhập lại mật khẩu
             </label>
             <input
               {...register("confirmPassword")}
@@ -143,9 +175,14 @@ const AddAdmin = () => {
               type="text"
               name="confirmPassword"
               id="confirmPassword"
-              placeholder="confirm password"
+              placeholder="Xác thực lại mật khẩu"
             />
           </div>
+          {formState.errors.confirmPassword && (
+            <p className="text-red-500">
+              {formState.errors.confirmPassword.message}
+            </p>
+          )}
           <div className="buttons flex mt-6">
             <div className="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto rounded-2xl">
               <Link to="/admin/users">Quay Lại</Link>

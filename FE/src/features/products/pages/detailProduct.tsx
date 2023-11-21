@@ -4,7 +4,7 @@ import { useGetProductQuery, useRemoveProductMutation } from "@/api/product";
 import { useGetSizesQuery } from "@/api/size";
 import { Button, Image, Popconfirm, message } from "antd";
 import { useEffect, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 // type ImageType = { files: File[]; url: string[] } | null;
 
@@ -14,6 +14,7 @@ const DetailProduct = () => {
   const { data: sizeData } = useGetSizesQuery();
   const { data: colorData } = useGetColorsQuery();
   // const { data: categoryData } = useGetCategoryesQuery();
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   useEffect(() => {
     setCurrentImageIndex(0);
@@ -69,7 +70,7 @@ const DetailProduct = () => {
       // Gọi hàm xóa sản phẩm từ API
       await deleteProduct(String(id));
       message.success("Xóa sản phẩm thành công");
-      Navigate;
+      navigate("/admin/product");
     } catch (error) {
       console.error("Lỗi khi xóa sản phẩm", error);
       message.error("Đã xảy ra lỗi khi xóa sản phẩm");
