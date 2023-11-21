@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useGetOrdersQuery } from '@/api/orderedProduct'
-import { IOrder } from '@/interface/order';
-
+import { useState } from "react";
+import { useGetOrdersQuery } from "@/api/orderedProduct";
+import { IOrder } from "@/interface/order";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
     const [searchCode, setSearchCode] = useState('');
@@ -29,59 +29,54 @@ const Index = () => {
     ? orders.filter((order:IOrder) => {
         const searchTerm = searchCode.toLowerCase();
         const codeMatch = order.orderCode.toLowerCase().includes(searchTerm);
-        const phoneMatch = String(order.userPhone).toLowerCase().includes(searchTerm);
+        const phoneMatch = String(order.userPhone)
+          .toLowerCase()
+          .includes(searchTerm);
         const emailMatch = order.userEmail.toLowerCase().includes(searchTerm);
         const statusMatch =
-            selectedStatus === '' || order.status.toLowerCase() === selectedStatus.toLowerCase();
+          selectedStatus === "" ||
+          order.status.toLowerCase() === selectedStatus.toLowerCase();
         return (codeMatch || phoneMatch || emailMatch) && statusMatch;
-    })
+      })
     : [];
 
-    return (
-        <div>
-            <div className="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded" >
-                {/* navbar Lọc */}
-                <div className="flex items-center px-8">
-                    <p className="text-green-500">Trạng thái đơn hàng</p>
-                    <select
-                        aria-label="select"
-                        className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
-                        onChange={e => setSelectedStatus(e.target.value)}
-                    >
-                        <option className="text-sm text-indigo-800" value="">
-                            Tất cả đơn hàng
-                        </option>
-                        <option className="text-sm text-indigo-800" value="chờ xác nhận">
-                           Chờ xác nhận
-                        </option>
-                        <option className="text-sm text-indigo-800" value=" Đang Chuẩn Bị Hàng">
-                        Đang Chuẩn Bị Hàng
-                        </option>
-                        <option className="text-sm text-indigo-800" value="Đơn Hàng Đang Đến Với Bạn">
-                        Đơn Hàng Đang Đến Với Bạn
-                        </option>
-                        <option className="text-sm text-indigo-800" value=" Giao hàng thành công">
-                       Giao hàng thành công
-                        </option>
-                    </select>
-                </div>
-
-                <div>
-
-                </div>                
-                {/* tìm kiếm mã đơn hàng */}
-                <div className="flex py-3 px-40">
-                    <div className="flex w-10 items-center justify-center rounded-tl-lg rounded-bl-lg border-r border-gray-200 bg-white p-5">
-                        <svg viewBox="0 0 20 20" aria-hidden="true" className="pointer-events-none absolute w-5 fill-gray-500 transition">
-                            <path d="M16.72 17.78a.75.75 0 1 0 1.06-1.06l-1.06 1.06ZM9 14.5A5.5 5.5 0 0 1 3.5 9H2a7 7 0 0 0 7 7v-1.5ZM3.5 9A5.5 5.5 0 0 1 9 3.5V2a7 7 0 0 0-7 7h1.5ZM9 3.5A5.5 5.5 0 0 1 14.5 9H16a7 7 0 0 0-7-7v1.5Zm3.89 10.45 3.83 3.83 1.06-1.06-3.83-3.83-1.06 1.06ZM14.5 9a5.48 5.48 0 0 1-1.61 3.89l1.06 1.06A6.98 6.98 0 0 0 16 9h-1.5Zm-1.61 3.89A5.48 5.48 0 0 1 9 14.5V16a6.98 6.98 0 0 0 4.95-2.05l-1.06-1.06Z"></path>
-                        </svg>
-                    </div>
-                    <input type="text" className="w-full bg-white pl-2 text-base font-semibold outline-0" placeholder="tìm kiếm mã đơn hàng" id="searchInput"
-                        value={searchCode}
-                        onChange={(e) => setSearchCode(e.target.value)} />
-                </div>
-            </div>
-
+  return (
+    <div>
+      <div className="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded">
+        {/* navbar Lọc */}
+        <div className="flex items-center px-8">
+          <p className="text-green-500">Trạng thái đơn hàng</p>
+          <select
+            aria-label="select"
+            className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
+            onChange={(e) => setSelectedStatus(e.target.value)}
+          >
+            <option className="text-sm text-indigo-800" value="">
+              Tất cả đơn hàng
+            </option>
+            <option className="text-sm text-indigo-800" value="chờ xác nhận">
+              Chờ xác nhận
+            </option>
+            <option
+              className="text-sm text-indigo-800"
+              value=" Đang Chuẩn Bị Hàng"
+            >
+              Đang Chuẩn Bị Hàng
+            </option>
+            <option
+              className="text-sm text-indigo-800"
+              value="Đơn Hàng Đang Đến Với Bạn"
+            >
+              Đơn Hàng Đang Đến Với Bạn
+            </option>
+            <option
+              className="text-sm text-indigo-800"
+              value=" Giao hàng thành công"
+            >
+              Giao hàng thành công
+            </option>
+          </select>
+        </div>
             {/* hiển thị order */}
             <section className="container px-4 mx-auto">
                 <div className="flex flex-col">
@@ -180,45 +175,228 @@ const Index = () => {
                                 </table>
                             </div>
                         </div>
-                    </div>
-                </div>
+                      </th>
 
-                <div className="flex items-center justify-between mt-6">
-                    <a href="#" className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-                        </svg>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Mã đơn hàng
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Thời gian
+                      </th>
 
-                        <span>
-                            previous
-                        </span>
-                    </a>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Tổng phí dịch vụ
+                      </th>
 
-                    <div className="items-center hidden md:flex gap-x-3">
-                        <a href="#" className="px-2 py-1 text-sm text-blue-500 rounded-md dark:bg-gray-800 bg-blue-100/60">1</a>
-                        <a href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">2</a>
-                        <a href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">3</a>
-                        <a href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">...</a>
-                        <a href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">12</a>
-                        <a href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">13</a>
-                        <a href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">14</a>
-                    </div>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Thông tin khách hàng
+                      </th>
 
-                    <a href="#" className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800">
-                        <span>
-                            Next
-                        </span>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Trạng thái đơn hàng
+                      </th>
+                      <th scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            Chi Tiet
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                    {filteredOrders?.map((order, index) => (
+                      <tr key={order._id}>
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                          <div className="inline-flex items-center gap-x-3">
+                            <input
+                              type="checkbox"
+                              className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
+                            />
+                            <p className="leading-relaxed "> {index + 1}</p>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                          <p className="leading-relaxed text-red-500">
+                            {order.orderCode}
+                          </p>
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                          {new Date(order.timer).toLocaleString()}
+                        </td>
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                          <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10 3L4.5 8.5L2 6"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                        </svg>
-                    </a>
-                </div>
-            </section>
-        </div >
-    )
-}
-export default Index
+                            <h2 className="text-sm font-normal">
+                              {calculateTotalPrice(order)}đ
+                            </h2>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                          <div className="flex items-center gap-x-2">
+                            <img
+                              className="object-cover w-8 h-8 rounded-full"
+                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/OOjs_UI_icon_userAvatar-progressive.svg/1024px-OOjs_UI_icon_userAvatar-progressive.svg.png"
+                              alt={order.userEmail}
+                            />
 
+                            <div>
+                              <h2 className="text-sm font-medium text-gray-800 dark:text-white ">
+                                {" "}
+                                {order.userName}{" "}
+                              </h2>
+                              <p className="text-xs font-normal text-gray-600 dark:text-gray-400">
+                                {order.userPhone}
+                              </p>
+                              <p className="text-xs font-normal text-gray-600 dark:text-gray-400">
+                                {order.userEmail}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
 
+                        {/* <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.node}</td> */}
+                        <td className="px-4 py-4 text-sm whitespace-nowrap">
+                          <select
+                            id="cars"
+                            className="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-300"
+                          >
+                            <option value="" className="py-2">
+                              {order.status}
+                            </option>
+                          </select>
+                        </td>
+                        <td className="p-10 hover:cursor-pointer" onClick={() => navigate(`detail/${order._id}`)}>
+                            ...
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div className="flex items-center justify-between mt-6">
+          <a
+            href="#"
+            className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-5 h-5 rtl:-scale-x-100"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+              />
+            </svg>
+
+            <span>previous</span>
+          </a>
+
+          <div className="items-center hidden md:flex gap-x-3">
+            <a
+              href="#"
+              className="px-2 py-1 text-sm text-blue-500 rounded-md dark:bg-gray-800 bg-blue-100/60"
+            >
+              1
+            </a>
+            <a
+              href="#"
+              className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100"
+            >
+              2
+            </a>
+            <a
+              href="#"
+              className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100"
+            >
+              3
+            </a>
+            <a
+              href="#"
+              className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100"
+            >
+              ...
+            </a>
+            <a
+              href="#"
+              className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100"
+            >
+              12
+            </a>
+            <a
+              href="#"
+              className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100"
+            >
+              13
+            </a>
+            <a
+              href="#"
+              className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100"
+            >
+              14
+            </a>
+          </div>
+
+          <a
+            href="#"
+            className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            <span>Next</span>
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-5 h-5 rtl:-scale-x-100"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+              />
+            </svg>
+          </a>
+        </div>
+      </section>
+    </div>
+  );
+};
+export default Index;

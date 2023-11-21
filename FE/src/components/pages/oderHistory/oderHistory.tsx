@@ -21,11 +21,11 @@ const OderHistory = () => {
     const vnp_TransactionStatus = params.get("vnp_TransactionStatus");
     const currentURL = window.location.href;
     if (currentURL !== "http://localhost:5174/oder&history") {
-      if(vnp_TransactionStatus) {
+      if (vnp_TransactionStatus) {
         if (vnp_TransactionStatus == "00") {
           console.log("Thanh Toán Thành Công");
           openNotification("success", "Thanh Toán Thành Công");
-        } else if(vnp_TransactionStatus != "00") {
+        } else if (vnp_TransactionStatus != "00") {
           openNotification("error", "Bạn Đã Hủy Tanh Toán");
         }
       }
@@ -52,7 +52,7 @@ const OderHistory = () => {
         <div key={orderItem._id} className="pt-7 container mx-auto p-12">
           {orderItem?.products.map((product: any) => (
             <div key={product.productId}>
-              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[3fr,5fr,5fr,3fr,5fr]">
+              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[3fr,5fr,4fr,6fr,4fr]">
                 <img
                   className="border rounded-xl w-full h-full"
                   alt=""
@@ -122,8 +122,19 @@ const OderHistory = () => {
                   <h3 className="flex justify-center pt-5 font-medium text-lg">
                     Trạng Thái Đơn Hàng
                   </h3>
-                  <div className="border w-full h-12 rounded-xl flex justify-center items-center mt-20">
-                    {orderItem.status}
+                  <div className="flex gap-2">
+                    <div className="border p-2 w-full text-center h-12 rounded-xl flex justify-center items-center mt-20">
+                      {orderItem.status}
+                    </div>
+                    {orderItem.status === "Đơn Hàng Đã Giao Thành Công" && (
+                      <div
+                        className="border w-full text-center h-12 rounded-xl flex justify-center items-center mt-20"
+                        onClick={() => alert("Cảm ơn bạn đã mua hàng")}
+                        style={{ cursor: "pointer" }}
+                      >
+                        Đã Nhận Được Hàng
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div>
