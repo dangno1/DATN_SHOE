@@ -1,6 +1,6 @@
-import { useGetColorsQuery } from "@/api/color";
+import { useGetColorQuery } from "@/api/color";
 import { useGetProductQuery } from "@/api/product";
-import { useGetSizesQuery } from "@/api/size";
+import { useGetSizeQuery} from "@/api/size";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -17,11 +17,12 @@ import { ISize } from "@/interface/size";
 
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: sizeData } = useGetSizesQuery()
-  const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
 console.log(productData);
-
+  const sizeId = productData?.variants[0].sizeId
+  const { data: sizeData } = useGetSizeQuery(sizeId || '')
+  const colorId = productData?.variants[0].colorId
+  const { data: colorData } = useGetColorQuery(colorId || '')
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
   const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
@@ -167,29 +168,29 @@ duration: 3,
                     <div className="flex items-center mb-8">
                       <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Màu Sắc : </h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
-                        {colorData?.map((color: IColor) => (
+                        {colorData &&(
                           <button
-                            key={color._id}
-                            className={`p-1 mb-2 mr-2 border ${selectedColor === color ? 'border-blue-400' : 'border-transparent'} hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400`}
-                            onClick={() => setSelectedColor(color)}
+                            key={colorData._id}
+                            className={`p-1 mb-2 mr-2 border ${selectedColor === colorData ? 'border-blue-400' : 'border-transparent'} hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400`}
+                            onClick={() => setSelectedColor(colorData)}
                           >
-                            <div>{color.value}</div>
+                            <div>{colorData.value}</div>
                           </button>
-                        ))}
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center mb-8">
                       <h2 className="w-20 text-lg font-bold dark:text-gray-400">Kích Cỡ:</h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
-                        {sizeData?.map((size: ISize) => (
+                        {sizeData && (
                           <button
-                            key={size._id}
-                            className={`py-1 mb-2 mr-1 border w-11 ${selectedSize === size ? 'border-blue-400 text-blue-600' : 'hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400'}`}
-                            onClick={() => setSelectedSize(size)}
+                            key={sizeData._id}
+                            className={`py-1 mb-2 mr-1 border w-11 ${selectedSize === sizeData ? 'border-blue-400 text-blue-600' : 'hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400'}`}
+                            onClick={() => setSelectedSize(sizeData)}
                           >
-                            {size.value}
+                            {sizeData.value}
                           </button>
-                        ))}
+                        )}
 
                       </div>
                     </div>
