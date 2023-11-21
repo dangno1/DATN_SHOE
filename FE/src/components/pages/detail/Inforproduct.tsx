@@ -13,14 +13,14 @@ import { ICart } from "@/interface/cart";
 import { message } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
+import { IProduct } from "@/interface/product";
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
-  // console.log(productData?.variants);
+  console.log(productData);
   const variants = productData?.variants;
-
   const size = variants?.map((item: unknown) => {
     const sizeProduct = sizeData?.find(
       (sizeItem: ISize) => item?.sizeId == sizeItem._id
@@ -34,6 +34,25 @@ const Inforproduct = () => {
     );
     return colorProduct;
   });
+  console.log(color);
+  
+  // const priceproduct = variants?.map((item: unknown) => {
+  //   return item;
+  // });
+  // if (variants && priceproduct) {
+  //   const price = variants.map((item: unknown) => {
+  //     // Kiểm tra xem item và item?.price có tồn tại trước khi sử dụng
+  //     if (item && typeof item === 'object' && 'price' in item) {
+  //       const pricepro = priceproduct.find((priceItem: any) => {
+  //         return item['price'] === priceItem.price;
+  //       });
+  //       return pricepro;
+  //     }
+  //     return null; // Trả về giá trị mặc định nếu không tìm thấy giá trị hoặc có lỗi
+  //   });
+  
+  //   console.log(price); // In ra mảng kết quả sau khi xử lý
+  // }
   // console.log(size);
   // console.log(color);
   const [addCart] = useCreateCartMutation();
@@ -173,8 +192,8 @@ const Inforproduct = () => {
                         {productData.desc}
                       </p>
                       <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
-                        <span>{productData.variants[0].price}</span>
-                        <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price + 10000}$</span>
+                        <span>{productData.variants[0].discount.toLocaleString("vi-VN")}VND</span>
+                        <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
                       </p>
                     </div>
                     <div className="flex items-center mb-8">
