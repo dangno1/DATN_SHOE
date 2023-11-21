@@ -6,10 +6,11 @@ import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { useState, useEffect, Key } from "react";
 import { useForm } from "react-hook-form";
 import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
+import { joiResolver } from "@hookform/resolvers/joi";
+import categorySchema from "@/schemas/category";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
-export interface ICategoryExtend extends ICategory { search?: string }
 
 const ListCategory = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
@@ -29,7 +30,19 @@ const ListCategory = () => {
     });
   };
 
-  const { register, handleSubmit, reset } = useForm<ICategoryExtend>()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors }
+  } = useForm<ICategory>({
+    resolver: joiResolver(categorySchema)
+  })
+  const {
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch
+  } = useForm<{ search: string }>()
 
   useEffect(() => {
     reset()
@@ -37,8 +50,8 @@ const ListCategory = () => {
 
   useEffect(() => {
     form.method === "update"
-      ? reset({ _id: form._id, name: categoryDatas.find((item: ICategory) => item._id == form._id)?.name })
-      : reset({ name: "" })
+      ? reset({ name: categoryDatas.find((item: ICategory) => item._id == form._id)?.name })
+      : reset({ name: undefined })
   }, [categoryDatas, form, reset])
 
   useEffect(() => {
@@ -52,28 +65,30 @@ const ListCategory = () => {
     openNotification('success', "Xóa Danh mục thành công")
   };
 
-  const handleAddUpdateCategory = async (data: ICategoryExtend) => {
+  const handleAddUpdateCategory = async (data: ICategory) => {
     try {
-      const { open, method } = form
-      if (open && method === "add") {
-        const result = await addCategory({ ...data, search: undefined })
-        console.log(result);
+      const existCategory = categoryDatas.find((item: ICategory) => item.name.toLowerCase() === data.name.toLowerCase())
+      const { method } = form
 
+      if (method === "add" && !existCategory) {
+        await addCategory(data)
         openNotification('success', "Thêm danh mục thành công")
-        return
+        return;
       }
-      if (open && method === "update" && form._id) {
-        await updateCategory({ ...data, search: undefined })
+
+      if (method === "update" && !existCategory || (existCategory && existCategory._id === form._id)) {
+        await updateCategory({ ...data, _id: form._id })
         openNotification('success', "Cập nhật danh mục thành công")
-        return
+        return;
       }
-      reset()
+
+      setError("name", { type: "exist", message: "Danh mục đã tồn tại" })
     } catch (error) {
       return error
     }
   }
 
-  const handleSearch = (data: ICategoryExtend) => {
+  const handleSearch = (data: { search?: string }) => {
     const newData = categoryDatas && categoryDatas.filter((item: ICategory) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
     setCategoryData(newData)
   }
@@ -184,9 +199,9 @@ const ListCategory = () => {
         </div>
       </div>
       <div className="h-[35px] w-full my-3 flex gap-2">
-        <form onSubmit={handleSubmit(handleSearch)} className="w-max h-full flex items-center relative">
+        <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="text" placeholder="tìm kiếm danh mục" {...register('search')}
+            type="text" placeholder="tìm kiếm danh mục" {...registerSearch('search')}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
@@ -205,7 +220,7 @@ const ListCategory = () => {
                 <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa danh mục</span>
               </Tooltip>
             </Popconfirm>
-          </div >
+          </div>
         }
       </div>
       <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
@@ -218,6 +233,7 @@ const ListCategory = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Modal
+          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">{form.method === "update" ? "Cập nhật danh mục" : "Thêm mới danh mục"}</div>}
           centered open={form.open}
           onCancel={() => setForm({ open: false, method: "" })}
           okButtonProps={{ style: { display: "none" } }}
@@ -225,14 +241,15 @@ const ListCategory = () => {
         >
           <form
             onSubmit={handleSubmit(handleAddUpdateCategory)}
-            className="w-full px-[20px] "
+            className="w-full px-[20px]"
           >
-            <label className="text-slate-600 font-semibold block float-left">Tên Danh mục</label>
+            <label className="text-slate-600 font-semibold block float-left">Tên Danh mục<span className="text-red-500">*</span></label>
             <input
-              {...register("name")} type="text" minLength={3}
-              required autoFocus placeholder="Giày nam, Giày nữ..."
-              className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full "
+              {...register("name")} type="text"
+              autoFocus placeholder="Giày nam, Giày nữ..."
+              className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && "border-red-500"}`}
             />
+            {errors.name && <span className="text-red-500">{errors.name.message}</span>}
             <div className="w-full grid items-center justify-end mt-2">
               <Button
                 type="submit"

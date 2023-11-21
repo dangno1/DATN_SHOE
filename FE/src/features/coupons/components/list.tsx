@@ -184,6 +184,9 @@ const ListCoupons = () => {
     index: index + 1
   }))
 
+  console.log(errors);
+
+
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
@@ -248,6 +251,7 @@ const ListCoupons = () => {
           <form
             onSubmit={handleSubmit(handleAddUpdateCoupons)}
             className="w-full px-[20px] "
+            noValidate
           >
             <div className="mb-[20px]">
               <label className="text-slate-600 font-semibold block float-left">Tên mã giảm giá</label>

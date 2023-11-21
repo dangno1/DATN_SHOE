@@ -7,7 +7,7 @@ import { useGetColorQuery, useGetColorsQuery } from "@/api/color";
 import { useGetSizeQuery, useGetSizesQuery } from "@/api/size";
 import { BsBagPlus } from "react-icons/bs";
 import { useGetCategoryesQuery } from "@/api/category";
-
+import { Link } from "react-router-dom";
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
   const { data: Color } = useGetColorsQuery();
@@ -197,14 +197,14 @@ const Products = () => {
                 </option>
               ))}
             </select>
-            {/* <button onClick={clearFilters} className="ml-2 border rounded-md p-2">Xóa bộ lọc</button> */}
+
           </div>
         </div>
 
         <div className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14">
           {productData?.map((product: IProduct) => (
             <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <a href="#">
+               <Link to={`/detail/${product._id}`}>
                 <img
                   src={product?.image}
                   alt="Product"
@@ -218,12 +218,12 @@ const Products = () => {
                     {product?.name}
                   </p>
                   <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                    {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                    <p className="text-lg font-semibold text-black cursor-auto my-3 text-red-500">
+                    {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                     </p>
                     <del>
                       <p className="text-sm text-gray-600 cursor-auto ml-2">
-                      {product?.variants[0].discount} VND
+                      {product?.variants[0].price.toLocaleString('vi-VN')} VND
 
                       </p>
                     </del>
@@ -232,7 +232,7 @@ const Products = () => {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
