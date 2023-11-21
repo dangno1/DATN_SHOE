@@ -62,15 +62,14 @@ const Kidcontent = () => {
                  {product?.name}
                  </p>
                  <div className="flex items-center">
-                   <p className="text-lg font-semibold text-black cursor-auto my-3">
-                   {product?.variants[0].price.toLocaleString('vi-VN')} VND
-                   </p>
-                   <del>
-                     <p className="text-sm text-gray-600 cursor-auto ml-2">
-                     {product?.variants[0].discount} VND
-
-                     </p>
-                   </del>
+                 <p className="text-lg font-semibold cursor-auto my-3 text-red-500">
+                  {product?.variants[0].discount.toLocaleString('vi-VN')} VND
+                  </p>
+                  <del>
+                    <p className="text-sm text-gray-600 cursor-auto ml-2">
+                    {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                    </p>
+                  </del>
                    <div className="ml-auto font-bold text-2xl">
                      <BsBagPlus />
                    </div>

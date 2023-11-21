@@ -2,26 +2,53 @@ import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { CgChevronLeft, CgChevronRight } from "react-icons/cg";
+
+const compareAmountSold = (a, b) => {
+  return b.variants[0].amountSold - a.variants[0].amountSold;
+};
 
 const Seller = () => {
+
   const { data } = useGetProductsQuery(false);
-  console.log(data);
-  const [alex, setAlex] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 4;
   useEffect(() => {
-    if (data) {
-      const productRandom = [];
-      const dataCopy = [...data];
-      for (let index = 0; index < 4 && dataCopy.length > 0; index++) {
-        const indexRandom = Math.floor(Math.random() * dataCopy.length);
-        const randomProduct = dataCopy.splice(indexRandom, 1)[0];
-        productRandom.push(randomProduct);
-      }
-      setAlex(productRandom);
-    }
+    // Scroll về trang đầu tiên khi dữ liệu thay đổi
+    setCurrentPage(1);
   }, [data]);
-  console.log(alex);
-   
-  
+
+  const compareAmountSold = (a, b) => {
+    return b.variants[0].amountSold - a.variants[0].amountSold;
+  };
+
+  const getFeaturedProducts = () => {
+    if (!data) return [];
+
+    // Sắp xếp sản phẩm theo amountSold
+    const sortedProducts = [...data].sort(compareAmountSold);
+
+    // Lọc ra những sản phẩm có amountSold lớn hơn 1
+    const filteredProducts = sortedProducts.filter(
+      (product) => product.variants[0].amountSold > 1
+    );
+
+    const startIndex = (currentPage - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
+
+    return filteredProducts.slice(startIndex, endIndex);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+  const featuredProducts = getFeaturedProducts();
+
   return (
     <div className=" 2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
       <div className="flex items-center justify-between r">
@@ -37,7 +64,7 @@ const Seller = () => {
         </Link>
       </div>
       <div className=" grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 lg:grap-8 md:gap-6 gap-4 mt-10">
-        {alex?.map((product:IProduct)=>(
+        {featuredProducts?.map((product:IProduct)=>(
             <div className="relative group">
             <img
               src={product.image}
@@ -51,16 +78,34 @@ const Seller = () => {
                {product.name}
               </p>
               <div className="flex items-center">
-                <p className="text-lg font-semibold text-black cursor-auto my-3">
-                {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                <p className="text-lg font-semibold text-black cursor-auto my-3 text-red-500">
+                {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                 </p>
                 <del>
-                  <p className="text-sm text-gray-600 cursor-auto ml-2">199 VND</p>
+                  <p className="text-sm text-gray-600 cursor-auto ml-2">
+                  {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                  </p>
                 </del>
               </div>
             </div>
           </div>
         ))}
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="mr-2 px-4 py-2 bg-gray-300 text-gray-600 rounded-md cursor-pointer"
+        >
+          <CgChevronLeft />
+        </button>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage * productsPerPage >= data?.length}
+          className="ml-2 px-4 py-2 bg-gray-300 text-gray-600 rounded-md cursor-pointer"
+        >
+          <CgChevronRight />
+        </button>
       </div>
     </div>
   );

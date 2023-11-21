@@ -12,28 +12,18 @@ const CartDetail = () => {
   const { data: getOrders } = useGetOrdersQuery();
   const [updateOrder] = useUpdateorderMutation();
   const [checkOut] = useCheckoutMutation();
-  // const { data: checkOut } = useCheckoutMutation();
   const [errors, setErrors] = useState({});
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [otpValue, setOtpValue] = useState("");
-  const [imageError, setImageError] = useState("");
   const checkedItems = location.state.checkedItems;
-  
-
-  const phuonThuThanhToan = [
-    "https://www.ncb-bank.vn/news/logoslogan_page_4.png",
-    "https://usa.visa.com/dam/VCOM/regional/ve/romania/blogs/hero-image/visa-logo-800x450.jpg",
-    "https://cdn.vox-cdn.com/thumbor/VKD3KfczL8xi89_n32rmbjTpdlg=/1400x1050/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/13674554/Mastercard_logo.jpg",
-    "https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-cash-on-delivery.svg",
-  ];
 
   // user
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  // const [paymentMethod, setPaymentMethod] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
 
   useEffect(() => {
     if (checkedItems && checkedItems.length > 0) {
@@ -51,42 +41,44 @@ const CartDetail = () => {
 
   const handleOrder = async () => {
     setErrors({});
-    setImageError("");
     setIsModalOpen(false);
     if (!name || !email || !phoneNumber || !address) {
       const newErrors = {
-        name: !name ? "Name is required" : null,
-        email: !email ? "Email is required" : null,
-        phoneNumber: !phoneNumber ? "Phone Number is required" : null,
-        address: !address ? "Address is required" : null,
+        name: !name ? "Tên không được bỏ trống" : null,
+        email: !email ? "Email không được bỏ trống" : null,
+        phoneNumber: !phoneNumber ? "Số điện thoại không được bỏ trống" : null,
+        address: !address ? "Địa chỉ không được bỏ trống" : null,
       };
 
       if (name) {
         if (/\d/.test(name)) {
-          newErrors.name = "Name cannot contain numbers";
+          newErrors.name = "Tên Không Được Chứa Số";
         }
         if (!name.replace(/\s/g, "").length) {
-          newErrors.name = "Name cannot be all whitespace";
+          newErrors.name = "Tên không được toàn khoảng trắng";
         }
         if (name.length < 6) {
-          newErrors.name = "Name must be at least 6 characters long";
+          newErrors.name = "Tên phải dài ít nhất 6 ký tự";
         }
       }
 
       if (email) {
         const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
         if (!emailPattern.test(email)) {
-          newErrors.email = "Email is not in a valid format";
+          newErrors.email = "Email không có định dạng hợp lệ";
         }
       }
 
       if (phoneNumber) {
         const phoneNumberPattern = /^\d{10}$/;
+        if (phoneNumber.length < 10) {
+          newErrors.phoneNumber = "Số điện thoại Phải đúng 10 số";
+        }
         if (
           !phoneNumberPattern.test(phoneNumber) ||
           phoneNumber.includes(" ")
         ) {
-          newErrors.phoneNumber = "Phone Number is not in a valid format";
+          newErrors.phoneNumber = "Số điện thoại không ở định dạng hợp lệ";
         }
       }
 
@@ -122,30 +114,38 @@ const CartDetail = () => {
       userPhone: phoneNumber,
       userAddress: address,
       products: productsArray,
-      // paymentMethod: paymentMethod,
+      paymentMethod: selectedPaymentMethod,
       status: "Chờ Xác Nhận",
     };
 
-        
-    orderedProduct(orderData);
-    openModal();
-    checkOut(orderData)
-    .then((orderData) => {
-      window.location.href = orderData.data;
-    })
-    .catch((error) => {
-      console.error("Checkout failed:", error);
-    });
-      
+    console.log(orderData.paymentMethod);
+    // return
+    
 
+    if (orderData.paymentMethod == "Paymentondelivery") {
+      orderedProduct(orderData);
+      openModal();
+      return;
+    } else {
+      orderedProduct(orderData);
+      checkOut(orderData)
+        .then((orderData) => {
+          window.location.href = orderData.data;
+        })
+        .catch((error) => {
+          console.error("Checkout failed:", error);
+        });
+    }
   };
 
   const checOTP = () => {
-    const orders = getOrders?.data || [];
+    const orders = getOrders || [];
     const lastOrder = orders[orders.length - 1];
+    console.log(lastOrder);
+
     if (lastOrder && lastOrder.otp === otpValue) {
       updateOrder(lastOrder);
-      alert("Hợp Lệ");
+      window.location.href = "http://localhost:5173/oder&history?vnp_TransactionStatus=00"
     } else {
       alert("Mã OTP Không Hợp Lệ");
     }
@@ -157,6 +157,7 @@ const CartDetail = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    window.location.href = "http://localhost:5173/oder&history?vnp_TransactionStatus=01"
   };
   return (
     <>
@@ -205,9 +206,25 @@ const CartDetail = () => {
             />
           </div>
           <div className="text-red-500 pl-1">{errors?.address}</div>
+          <div className="pt-5">
+            <select
+              className="border w-full p-4"
+              name="paymentMethod"
+              id="paymentMethod"
+              onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+            >
+               <option value={""}>-Chọn một phương thức thanh toán-</option>
+              <option value={"Paymentondelivery"}>Thanh Toán Khi Nhận Hàng</option>
+              <option value={"NCB"}>NCB</option>
+              <option value={"VISA"}>VISA</option>
+              <option value={"MasterCard"}>MasterCard</option>
+              <option value={"JCB"}>JCB</option>
+            </select>
+          </div>
           <div className="text-3xl font-semibold font-sans leading-10 pt-20">
             LỰA CHỌN HÀNG ĐẦU DÀNH CHO BẠN
           </div>
+
           <div className="flex gap-2">
             <div className="pt-10">
               <div className="relative shadow-slate-800 border rounded-x">
@@ -366,19 +383,6 @@ const CartDetail = () => {
             <div className="font-semibold font-sans leading-10">
               PHƯƠNG THỨC THANH TOÁN ĐƯỢC CHẤP NHẬN
             </div>
-            <div className="flex pt-2 gap-10">
-              {phuonThuThanhToan.map((phuongThu, index) => (
-                <div key={index}>
-                  <img
-                    className="w-15 h-12"
-                    src={phuongThu}
-                    alt={`Payment Method ${index}`}
-                  />
-                  <input type="radio" name="paymentMethod" value={index} />
-                </div>
-              ))}
-            </div>
-            <div className="text-red-500 pl-1">{imageError}</div>
           </div>
           <button
             onClick={() => {

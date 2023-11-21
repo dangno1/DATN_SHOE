@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useGetProductsQuery } from "@/api/product";
 import { useEffect, useState } from "react";
 import Slider from "./banner";
@@ -12,14 +10,11 @@ import { useGetCategoryesQuery } from "@/api/category";
 import { Link } from "react-router-dom";
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
-  // console.log(data);
-  
   const { data: Color } = useGetColorsQuery();
   const { data: Size } = useGetSizesQuery();
   const [productData, setProductData] = useState<IProduct[]>(data); //dùng chung
   const [sortOrder, setSortOrder] = useState("asc");
   const { data: Cate } = useGetCategoryesQuery();
-  // console.log(Cate);
   
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const test = (event:any) => {
@@ -33,6 +28,7 @@ const Products = () => {
   useEffect(() => {
     data && setProductData(data);
   }, [data]);
+
 
   useEffect(() => {
     if (data && selectedSubcategory) {
@@ -201,7 +197,7 @@ const Products = () => {
                 </option>
               ))}
             </select>
-            {/* <button onClick={clearFilters} className="ml-2 border rounded-md p-2">Xóa bộ lọc</button> */}
+
           </div>
         </div>
 
@@ -222,12 +218,12 @@ const Products = () => {
                     {product?.name}
                   </p>
                   <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3">
-                    {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                    <p className="text-lg font-semibold text-black cursor-auto my-3 text-red-500">
+                    {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                     </p>
                     <del>
                       <p className="text-sm text-gray-600 cursor-auto ml-2">
-                      {product?.variants[0].discount} VND
+                      {product?.variants[0].price.toLocaleString('vi-VN')} VND
 
                       </p>
                     </del>

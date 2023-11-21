@@ -2,13 +2,18 @@ import { useGetColorQuery } from "@/api/color";
 import { useGetProductQuery } from "@/api/product";
 import { useGetSizeQuery } from "@/api/size";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { AiFillHeart, AiOutlineShoppingCart } from "react-icons/ai";
+import {  AiOutlineShoppingCart } from "react-icons/ai";
+import { useCreateCartMutation } from "@/api/cart";
+import { ICart } from "@/interface/cart";
+import { message } from "antd";
+import { IColor } from "@/interface/color";
+import { ISize } from "@/interface/size";
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: productData, isLoading } = useGetProductQuery(id || '');
@@ -21,6 +26,77 @@ const Inforproduct = () => {
   const colorId = productData?.variants[0].colorId
   const { data: colorData } = useGetColorQuery(colorId || '')
   const [images, setImage] = useState<any>()
+    
+  const [addCart] = useCreateCartMutation();
+  const [userData, setUserData] = useState(localStorage);
+  const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
+  const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]); 
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
+  const navigate = useNavigate();
+  const handleAddCar = async () => {
+    if (!userData.username || !userData.email || !userData.address) {
+      message.
+        error({
+          content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
+          duration: 5,
+        });
+      setTimeout(() => {
+        navigate("/signup");
+      }, 2000);
+      return;
+    }
+    if (!selectedColor) {
+      message.error({
+        content: "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng.",
+duration: 3,
+      });
+      return;
+    }
+    if (!selectedSize) {
+      message.error({
+        content: "Vui lòng chọn size trước khi thêm vào giỏ hàng.",
+duration: 3,
+      });
+      return;
+    }
+    if (productData && selectedColor && selectedSize) {
+      const productToAdd: ICart = {
+        userName: userData.fullname,
+        userEmail: userData.email,
+        userAddress: userData.address,
+        productName: productData.name,
+        quantity: amount,
+        price: productData.variants[0].price,
+        initialPrice: productData.variants[0].price,
+        size: selectedSize.value,
+        totalPrice: 300000,
+        category: productData.categoryId,
+        image: String(productData.image),
+        color: selectedColor.value,
+        status: String(productData.variants[0].status)
+      };
+      const data = await addCart(productToAdd);
+      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
+      data && setTimeout(() => {
+        navigate("/cart");
+      }, 2000);
+      console.log(data);
+
+
+    } else {
+      console.error("productData is not defined.");
+    }
+  };
+
+  const [images, setImage] = useState<(File | File[] | undefined)[]>()
+
   useEffect(() => {
     const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
     setImage(listImage)
@@ -75,8 +151,6 @@ const Inforproduct = () => {
                               <img src={item} alt="" className="object-cover w-full lg:h-20" />
                             </a>
                           </div>
-                        ))}
-                      </div>
                     </div>
                   </div>
                   <div className="w-full px-4 md:w-1/2">
@@ -131,50 +205,47 @@ const Inforproduct = () => {
                               {sizeData.value}
                             </button>
                           )}
+                        </div>
+                    </div>
+                    <div className="w-32 mb-8">
+                      <label htmlFor="" className="w-full text-xl font-semibold text-gray-700 dark:text-gray-400">Số Lượng</label>
+                      <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
+                        <button
+                          className="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover-bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400"
+                          onClick={decreaseAmount}
+                        >
+                          <span className="m-auto text-2xl font-thin">-</span>
+                        </button>
+                        <input
+                          type="number"
+                          className="flex items-center w-full font-semibold text-center text-gray-700 placeholder-gray-700 bg-gray-300 outline-none dark:text-gray-400 dark:placeholder-gray-400 dark:bg-gray-900 focus:outline-none text-md hover:text-black"
+                          placeholder="1"
+                          value={amount}
+                          readOnly
+                        />
+                        <button
+                          className="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover-bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400"
+                          onClick={increaseAmount}
+                        >
+                          <span className="m-auto text-2xl font-thin">+</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center -mx-4">
+                      <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
+                        <button
+                          className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300"
+                          onClick={() => handleAddCar()}
+                        >
+                          Thêm vào giỏ hàng<AiOutlineShoppingCart />
+                        </button>
 
-                        </div>
-                      </div>
-                      <div className="w-32 mb-8">
-                        <label htmlFor="" className="w-full text-xl font-semibold text-gray-700 dark:text-gray-400">Số Lượng</label>
-                        <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
-                          <button
-                            className="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover-bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400"
-                            onClick={decreaseAmount}
-                          >
-                            <span className="m-auto text-2xl font-thin">-</span>
-                          </button>
-                          <input
-                            type="number"
-                            className="flex items-center w-full font-semibold text-center text-gray-700 placeholder-gray-700 bg-gray-300 outline-none dark:text-gray-400 dark:placeholder-gray-400 dark:bg-gray-900 focus:outline-none text-md hover:text-black"
-                            placeholder="1"
-                            value={amount}
-                            readOnly
-                          />
-                          <button
-                            className="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover-bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400"
-                            onClick={increaseAmount}
-                          >
-                            <span className="m-auto text-2xl font-thin">+</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap items-center -mx-4">
-                        <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
-                          <button type="submit" className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
-                            Thêm vào giỏ hàng <AiOutlineShoppingCart />
-                          </button>
-                        </div>
-                        <div className="w-full px-4 mb-4 lg:mb-0 lg:w-1/2">
-                          <button className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300">
-                            Thêm vào ưa thích <AiFillHeart />
-                          </button>
-                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           )
         )}
       </section>
@@ -184,19 +255,5 @@ const Inforproduct = () => {
 
 export default Inforproduct;
 
-// import { useGetProductQuery } from "@/api/product"
-// import { useEffect, useState } from "react"
-// import { useParams } from "react-router-dom"
-// const Inforproduct=()=> {
-//   const {id} = useParams<{id:string}>()
-// const {data } = useGetProductQuery(id || '')
 
-// const [images ,setImage ]=useState<any>()
-// useEffect(() => {
-// const listImage = [data?.image, ...(data?.thumbnail ? data.thumbnail : [])]
-//   setImage(listImage)
-// }, [data])
-// console.log( images);
-
-// }
 

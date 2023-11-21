@@ -96,13 +96,11 @@ const ListProduct = () => {
   const columns: ColumnsType<IProduct> = [
     {
       title: "STT",
-      dataIndex: "_id",
-      key: "_id",
+      dataIndex: "index",
+      key: "index",
       className: "w-[60px] max-w-[100px]",
       fixed: "left",
-      align: "center",
-      render: (_, product: IProduct, index: number) =>
-        <div key={product._id} className="truncate">{index + 1}</div>
+      align: "center"
     },
     {
       title: "Hình ảnh",
@@ -204,7 +202,7 @@ const ListProduct = () => {
   const dataSource = productData?.map((product: IProduct, index: number) => ({
     ...product,
     key: product._id,
-    index,
+    index: index + 1,
   }))
 
   return (
