@@ -8,23 +8,34 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { ITrashCan, showTrashCan } from "@/app/trashcan.slice";
-import { BsPencilSquare, BsTrash3, BsListUl, BsPlus, BsArrowCounterclockwise } from "react-icons/bs";
+import { BsPencilSquare, BsTrash3, BsListUl, BsPlus, BsArrowCounterclockwise, BsSearch } from "react-icons/bs";
 import '../index.css'
-import { useEffect } from "react";
+import { Key, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 const ListProduct = () => {
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+  const [productData, setProductData] = useState<IProduct[]>()
+
+
   const dispatch = useDispatch()
   const trashCanState = useSelector((state: { trashCan: ITrashCan }) => state.trashCan?.value)
 
-  const { data: dataProduct } = useGetProductsQuery(trashCanState);
+  const { data: productDataApi } = useGetProductsQuery(trashCanState);
   const { data: dataCategory } = useGetCategoryesQuery();
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
   const [deleteProdcut, { isLoading: isLoadingDelete }] = useRemoveProductMutation();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { handleSubmit, register } = useForm<{ search?: string }>()
+
+  useEffect(() => {
+    productDataApi && setProductData(productDataApi)
+    setSelectedRowKeys([])
+  }, [productDataApi])
 
   useEffect(() => {
     pathname === '/admin/product/trashCan'
@@ -40,35 +51,56 @@ const ListProduct = () => {
     });
   };
 
-  const handleTrushCan = async (id: string, action?: string) => {
-    const product = dataProduct?.find((product: IProduct) => product._id === id)
-    const oldImage = [...product?.image as File[]]
-    if (product?.isDelete === true && action === undefined) {
-      await deleteProdcut(String(id))
-      openNotification('success', 'Xóa thành công')
+  const handleTrushCan = async (listId: string[]) => {
+    listId.map(async (id: string) => {
+      const product = productDataApi?.find((product: IProduct) => product._id === id)
+      const oldImage = [...product?.image as File[]]
+      await updateProduct({ ...product, image: oldImage, isDelete: true, _id: id } as IProduct)
       return
-    }
-
-    if (action === 'recovery') {
-      await updateProduct({ ...product, image: oldImage, isDelete: false, _id: id } as IProduct)
-      openNotification('success', 'Khôi phục thành công')
-      return
-    }
-
-    await updateProduct({ ...product, image: oldImage, isDelete: true, _id: id } as IProduct)
+    })
     openNotification('success', 'Đã di chuyển sản phẩm đến thùng rác')
+  };
+
+  const handleDelete = (listId: string[]) => {
+    listId.map(async (id: string) => {
+      await deleteProdcut(String(id));
+    })
+    openNotification('success', 'Xóa thành công')
+  }
+
+  const handleRecovery = (listId: string[]) => {
+    listId.map(async (id: string) => {
+      const product = productDataApi?.find((product: IProduct) => product._id === id)
+      const oldImage = [...product?.image as File[]]
+      await updateProduct({ ...product, image: oldImage, isDelete: false, _id: id } as IProduct)
+    })
+    openNotification('success', 'Khôi phục thành công')
+  }
+
+  const handleSearch = (data: { search?: string }) => {
+    const newProduct = productDataApi?.filter(({ name, brand }: IProduct) => {
+      return name.toLowerCase().includes(String(data.search).toLowerCase()) || brand.toLowerCase().includes(String(data.search).toLowerCase())
+    })
+    setProductData(newProduct)
+  }
+
+  const onSelectChange = (newSelectedRowKeys: Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
   };
 
   const columns: ColumnsType<IProduct> = [
     {
       title: "STT",
-      dataIndex: "_id",
-      key: "_id",
+      dataIndex: "index",
+      key: "index",
       className: "w-[60px] max-w-[100px]",
       fixed: "left",
-      align: "center",
-      render: (_, product: IProduct, index: number) =>
-        <div key={product._id} className="truncate">{index + 1}</div>
+      align: "center"
     },
     {
       title: "Hình ảnh",
@@ -141,7 +173,7 @@ const ListProduct = () => {
               cancelText="No"
               okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
               cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleTrushCan(_id)}
+              onConfirm={() => trashCanState ? handleDelete([_id]) : handleTrushCan([_id])}
             >
               <Tooltip placement="right" title="Xóa">
                 <BsTrash3 className="fill-red-600 w-4 h-4" />
@@ -158,7 +190,6 @@ const ListProduct = () => {
                 <Tooltip placement="right" title="Chi tiết">
                   <BsListUl onClick={() => navigate(`detail/${_id}`)} className="w-4 h-4" />
                 </Tooltip>
-
               </>
             }
           </div >
@@ -166,10 +197,10 @@ const ListProduct = () => {
     },
   ];
 
-  const dataSource = dataProduct?.map((product: IProduct, index: number) => ({
+  const dataSource = productData?.map((product: IProduct, index: number) => ({
     ...product,
     key: product._id,
-    index,
+    index: index + 1,
   }))
 
   return (
@@ -189,7 +220,40 @@ const ListProduct = () => {
           </Button>}
         </div>
       </div >
-      <Table columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
+      <div className="h-[35px] w-full my-3 flex gap-2">
+        <form onSubmit={handleSubmit(handleSearch)} className="w-max h-full flex items-center relative">
+          <input
+            type="text" placeholder="Tìm kiếm sản phẩm" {...register('search')}
+            className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
+          <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
+        </form>
+        {
+          selectedRowKeys.length > 0
+          && <div className="w-full flex items-center  cursor-pointer">
+            <Popconfirm
+              title
+              description="Xóa sản phẩm?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+              cancelButtonProps={{ className: "border-slate-400" }}
+              onConfirm={() => trashCanState ? handleDelete(selectedRowKeys as string[]) : handleTrushCan(selectedRowKeys as string[])}
+              className="flex place-items-center gap-1 pr-2"
+            >
+              <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa sản phẩm</span>
+            </Popconfirm>
+            {
+              trashCanState
+              && <div
+                onClick={() => handleRecovery(selectedRowKeys as string[])}
+                className="flex place-items-center gap-1 pr-2 before:w-[1px] before:h-[15px] before:bg-gray-500">
+                <BsArrowCounterclockwise className="fill-blue-500 w-4 h-4" /><span className="font-semibold hover:text-blue-500">Khôi phục</span>
+              </div>
+            }
+          </div >
+        }
+      </div >
+      <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
       <>
         {contextHolder}
         <Backdrop

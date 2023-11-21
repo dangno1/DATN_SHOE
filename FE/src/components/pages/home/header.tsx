@@ -12,10 +12,8 @@ const Header = () => {
   const [userData, setUserData] = useState(localStorage);
   const navigate = useNavigate();
   useEffect(() => {
-    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
     const user = localStorage.getItem("user");
     if (user) {
-      // Dữ liệu đã được lưu trong localStorage
       const userData = JSON.parse(user);
       setUserData(userData);
     }

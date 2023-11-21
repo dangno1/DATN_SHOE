@@ -6,10 +6,11 @@ import { Backdrop, Button, CircularProgress } from "@mui/material";
 import { useState, useEffect, Key } from "react";
 import { useForm } from "react-hook-form";
 import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
+import { joiResolver } from "@hookform/resolvers/joi";
+import colorSchema from "@/schemas/color";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
-export interface IColorExtend extends IColor { search?: string }
 
 const ListColor = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
@@ -29,7 +30,14 @@ const ListColor = () => {
     });
   };
 
-  const { register, handleSubmit, reset } = useForm<IColorExtend>()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<IColor>({
+    resolver: joiResolver(colorSchema)
+  })
+
+  const {
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch
+  } = useForm<{ search: string }>()
 
   useEffect(() => {
     reset()
@@ -37,14 +45,12 @@ const ListColor = () => {
 
   useEffect(() => {
     form.method === "update"
-      ? reset({ _id: form._id, value: colorDatas.find((item: IColor) => item._id == form._id)?.value })
+      ? reset({ value: colorDatas.find((item: IColor) => item._id == form._id)?.value })
       : reset({ value: undefined })
   }, [form, reset, colorDatas])
 
   useEffect(() => {
     colorDatas && setColorData(colorDatas)
-    console.table(colorDatas);
-
   }, [colorDatas])
 
   const handleDeleteColor = (listId: string[]) => {
@@ -54,16 +60,16 @@ const ListColor = () => {
     openNotification('success', "Xóa màu sắc thành công")
   };
 
-  const handleAddUpdateColor = async (data: IColorExtend) => {
+  const handleAddUpdateColor = async (data: IColor) => {
     try {
       const { open, method } = form
       if (open && method === "add") {
-        await addColor({ ...data, search: undefined })
+        await addColor(data)
         openNotification('success', "Thêm màu sắc thành công")
         return
       }
       if (open && method === "update" && form._id) {
-        await updateColor({ ...data, search: undefined })
+        await updateColor({ ...data, _id: form._id })
         openNotification('success', "Cập nhật màu sắc thành công")
         return
       }
@@ -187,9 +193,9 @@ const ListColor = () => {
         </div>
       </div>
       <div className="h-[35px] w-full my-3 flex gap-2">
-        <form onSubmit={handleSubmit(handleSearch)} className="w-max h-full flex items-center relative">
+        <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="text" placeholder="tìm kiếm theo màu sắc" {...register('search')}
+            type="text" placeholder="tìm kiếm theo màu sắc" {...registerSearch("search")}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
@@ -233,9 +239,10 @@ const ListColor = () => {
             <label className="text-slate-600 font-semibold block float-left">Thêm mới màu sắc</label>
             <input
               {...register("value")} type="text"
-              required autoFocus placeholder="Trắng, Đen..."
+              placeholder="Trắng, Đen..."
               className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full "
             />
+            {errors.value && <span className="text-red-500">{errors.value.message}</span>}
             <div className="w-full grid items-center justify-end mt-2">
               <Button
                 type="submit"

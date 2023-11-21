@@ -4,10 +4,8 @@ const Banner = () => {
   const [userData, setUserData] = useState(localStorage);
 
   useEffect(() => {
-    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
     const user = localStorage.getItem('user');
     if (user) {
-      // Dữ liệu đã được lưu trong localStorage, bạn có thể sử dụng nó
       const userData = JSON.parse(user);
       setUserData(userData);
     }
@@ -27,7 +25,7 @@ return (
             <li className="dropdown inline-block relative">
               <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
                 <span className="mr-1">
-                  <Link to="/user">Account</Link>
+                  <Link to="/user">Tài Khoản</Link>
                 </span>
               </button>
             </li>
@@ -36,7 +34,7 @@ return (
               <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
                 <span className="mr-1">
                   {" "}
-                  <Link to="/oder&history">Order</Link>
+                  <Link to="/oder&history">Đơn hàng Đã Đặt</Link>
                 </span>
               </button>
             </li>

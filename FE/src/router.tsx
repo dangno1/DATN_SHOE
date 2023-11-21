@@ -30,7 +30,7 @@ import ListProduct from "./features/products/components/list";
 import SaleProduct from "./components/pages/home/newProduct";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
 import DetailProduct from "./features/products/pages/detailProduct";
-
+import Test001 from "./components/pages/admin/order/test001";
 
 
 
@@ -121,6 +121,10 @@ export const router = createBrowserRouter([
       {
         path: "orders",
         element: <AdminOrder />,
+      },
+      {
+        path: "orders/detail/:id",
+        element: <Test001 />,
       },
       {
         path: "users",

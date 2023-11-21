@@ -53,8 +53,6 @@ const productApi = createApi({
 
     updateProduct: builder.mutation<IProduct, IProduct>({
       query: (product) => {
-        console.log(product);
-
         const data = new FormData();
         data.append("name", product.name);
         data.append("desc", product.desc);
@@ -84,7 +82,10 @@ const productApi = createApi({
     }),
     removeThumbnail: builder.mutation<
       void,
-      { id: number | string; publicId: number | string }
+      {
+        id: number | string;
+        publicId: number | string;
+      }
     >({
       query: (params) => ({
         url: `/products/thumbnail/${params.id}/${params.publicId}`,
