@@ -2,6 +2,7 @@ import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { useEffect, useState } from "react";
 import { BsBagPlus } from 'react-icons/bs';
+import { Link } from "react-router-dom";
 
 const ProductList2 = () => {
   const { data } = useGetProductsQuery(false);
@@ -11,7 +12,7 @@ const ProductList2 = () => {
     if (data) {
       const productRandom = [];
       const dataCopy = [...data];
-      for (let index = 0; index < 4 && dataCopy.length > 0; index++) {
+      for (let index = 0; index < 8 && dataCopy.length > 0; index++) {
         const indexRandom = Math.floor(Math.random() * dataCopy.length);
         const randomProduct = dataCopy.splice(indexRandom, 1)[0];
         productRandom.push(randomProduct);
@@ -33,7 +34,7 @@ const ProductList2 = () => {
       >
         {alex?.map((product: IProduct) => (
           <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl" key={product.id}>
-            <a href="#">
+            <Link to={`/detail/${product._id}`}>
               <img
                 src={product?.image}
                 alt="Product"
@@ -47,20 +48,17 @@ const ProductList2 = () => {
                   {product?.name}
                 </p>
                 <div className="flex items-center">
-                  <p className="text-lg font-semibold text-black cursor-auto my-3">
-                    {product?.variants[0].price.toLocaleString("vi-VN")} VND
+                  <p className="text-lg font-semibold text-black cursor-auto my-3 text-red-500">
+                  {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                   </p>
                   <del>
                     <p className="text-sm text-gray-600 cursor-auto ml-2">
-                      {product?.variants[0].discount} VND
+                    {product?.variants[0].price.toLocaleString('vi-VN')} VND
                     </p>
                   </del>
-                  <div className="ml-auto font-bold text-2xl">
-                    <BsBagPlus />
-                  </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ))}
       </section>
