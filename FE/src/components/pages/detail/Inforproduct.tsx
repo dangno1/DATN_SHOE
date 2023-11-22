@@ -35,7 +35,7 @@ const Inforproduct = () => {
     return colorProduct;
   });
   console.log(color);
-  
+
   // const priceproduct = variants?.map((item: unknown) => {
   //   return item;
   // });
@@ -50,7 +50,7 @@ const Inforproduct = () => {
   //     }
   //     return null; // Trả về giá trị mặc định nếu không tìm thấy giá trị hoặc có lỗi
   //   });
-  
+
   //   console.log(price); // In ra mảng kết quả sau khi xử lý
   // }
   // console.log(size);
@@ -186,9 +186,9 @@ const Inforproduct = () => {
                 <div className="w-full px-4 md:w-1/2">
                   <div className="lg:pl-20">
                     <div className="mb-8">
-                      <span className="text-lg font-medium text-rose-500 dark:text-rose-200">{productData.brand}</span>
-                      <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl">{productData.name}</h2>
-                      <p className="max-w-md mb-8 text-gray-700 dark:text-gray-400">
+                      <span className="text-lg font-medium text-rose-500 dark:text-rose-200 uppercase">{productData.brand}</span>
+                      <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl uppercase">{productData.name}</h2>
+                      <p className="max-w-md mb-8 text-gray-700 dark:text-gray-400 capitalize">
                         {productData.desc}
                       </p>
                       <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
