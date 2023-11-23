@@ -31,6 +31,8 @@ import SaleProduct from "./components/pages/home/newProduct";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
 import DetailProduct from "./features/products/pages/detailProduct";
 import Test001 from "./components/pages/admin/order/test001";
+import Statistical from "./features/statistical/statistical";
+import Test002 from "./features/statistical/statisticalDetail";
 
 
 
@@ -129,6 +131,14 @@ export const router = createBrowserRouter([
       {
         path: "users",
         element: <AdminUser />,
+      },
+      {
+        path: "statistical",
+        element: <Statistical />,
+      },
+      {
+        path: "statistical/detail/:id",
+        element: <Test002 />,
       },
       {
         path: "add",
