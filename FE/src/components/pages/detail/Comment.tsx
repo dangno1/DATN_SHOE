@@ -4,13 +4,14 @@ import { useGetCommentsQuery } from "@/api/comment";
 import { useCreateCommentMutation } from "@/api/comment";
 import "./comment.css";
 import { useDeleteCommentMutation } from "@/api/comment";
+import { IComment } from "@/interface/comment";
 const Comment = () => {
   const { id } = useParams<{ id: string }>()
   const userData = localStorage.getItem('user');
-  console.log('userData', userData);
+  // console.log('userData', userData);
   const { data: allComments } = useGetCommentsQuery();
   if (allComments) {
-    console.log(allComments);
+    // console.log(allComments);
     if (allComments.length > 0) {
       // console.log(allComments[0].ProductID._id);
       // console.log(allComments[0].UserID._id);
@@ -22,7 +23,7 @@ const Comment = () => {
   }
   // Lọc ra các bình luận có productId khớp với id sản phẩm từ URL
   const [comments, setComments] = useState([]);
-  console.log(comments);
+  // console.log(comments);
   useEffect(() => {
     if (allComments) {
       const filteredComments = allComments.filter((comment) => comment.ProductID?._id == id);
@@ -33,7 +34,7 @@ const Comment = () => {
   }, [allComments, id]);
   const [valuecmt, setValuecmt] = useState('');
   const [addComment, { isLoading, isError }] = useCreateCommentMutation();
-  const handleCommentSubmit = async (e:any) => {
+  const handleCommentSubmit = async (e: any) => {
     e.preventDefault();
 
     if (!userData) {
@@ -65,7 +66,34 @@ const Comment = () => {
       alert("Comment content cannot be empty.");
     }
   };
-  
+  // ------------------------
+  const [deleteComment] = useDeleteCommentMutation();
+  const handleDeleteComment = async (commentId: any) => {
+    const shouldDelete = window.confirm('Are you sure you want to delete this comment?');
+    if (!shouldDelete) {
+      return; // Không xóa nếu người dùng không xác nhận
+    }
+
+    try {
+      const response = await deleteComment(commentId); // Gọi mutation để xóa comment
+
+      if ((response as any).error) {
+        console.error('Error deleting comment:', (response as any).error);
+        alert('An error occurred while deleting the comment. Please try again.');
+      } else {
+        setTimeout(() => {
+          const updatedComments = comments.filter(comment => comment._id !== commentId);
+          setComments(updatedComments);
+          console.log(`Comment with ID ${commentId} has been deleted.`);
+        }, 3000); // Đợi 3 giây trước khi xóa
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      alert('An error occurred while deleting the comment. Please try again.');
+    }
+  };
+
+
   return (
     <div>
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
@@ -115,7 +143,7 @@ const Comment = () => {
                         {/* <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg> */}
                       </button>
                       <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
-                        <li className=""><a className="rounded-t  py-2 px-4 block whitespace-no-wrap" href="#"><button>xóa</button></a></li>
+                        <li key={comment._id} className=""><a className="rounded-t  py-2 px-4 block whitespace-no-wrap" href="#"><button onClick={() => handleDeleteComment(comment._id)}>xóa</button></a></li>
                         {/* <li className=""><a className=" py-2 px-4 block whitespace-no-wrap" href="#"></a></li> */}
 
                       </ul>
@@ -180,7 +208,7 @@ const Comment = () => {
                 <input
                   id="comment"
                   className=" text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-                  placeholder={userData ?  "Write a comment..." : "Please log in to post a comment."}
+                  placeholder={userData ? "Write a comment..." : "Please log in to post a comment."}
                   required
                   type="text"
                   value={valuecmt}

@@ -7,23 +7,58 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
-import {  AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useCreateCartMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
 import { message } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
-
+import { IProduct } from "@/interface/product";
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
+  console.log(productData);
+  const variants = productData?.variants;
+  const size = variants?.map((item: unknown) => {
+    const sizeProduct = sizeData?.find(
+      (sizeItem: ISize) => item?.sizeId == sizeItem._id
+    );
+    return sizeProduct;
+  });
 
+  const color = variants?.map((item: unknown) => {
+    const colorProduct = colorData?.find(
+      (colorItem: IColor) => item?.colorId == colorItem._id
+    );
+    return colorProduct;
+  });
+  console.log(color);
+
+  // const priceproduct = variants?.map((item: unknown) => {
+  //   return item;
+  // });
+  // if (variants && priceproduct) {
+  //   const price = variants.map((item: unknown) => {
+  //     // Kiểm tra xem item và item?.price có tồn tại trước khi sử dụng
+  //     if (item && typeof item === 'object' && 'price' in item) {
+  //       const pricepro = priceproduct.find((priceItem: any) => {
+  //         return item['price'] === priceItem.price;
+  //       });
+  //       return pricepro;
+  //     }
+  //     return null; // Trả về giá trị mặc định nếu không tìm thấy giá trị hoặc có lỗi
+  //   });
+
+  //   console.log(price); // In ra mảng kết quả sau khi xử lý
+  // }
+  // console.log(size);
+  // console.log(color);
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
   const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
-  const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]); 
+  const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -48,14 +83,14 @@ const Inforproduct = () => {
     if (!selectedColor) {
       message.error({
         content: "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng.",
-duration: 3,
+        duration: 3,
       });
       return;
     }
     if (!selectedSize) {
       message.error({
         content: "Vui lòng chọn size trước khi thêm vào giỏ hàng.",
-duration: 3,
+        duration: 3,
       });
       return;
     }
@@ -81,8 +116,6 @@ duration: 3,
         navigate("/cart");
       }, 2000);
       console.log(data);
-
-
     } else {
       console.error("productData is not defined.");
     }
@@ -153,27 +186,26 @@ duration: 3,
                 <div className="w-full px-4 md:w-1/2">
                   <div className="lg:pl-20">
                     <div className="mb-8">
-                      <span className="text-lg font-medium text-rose-500 dark:text-rose-200">{productData.brand}</span>
-                      <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl">{productData.name}</h2>
-
-                      <p className="max-w-md mb-8 text-gray-700 dark:text-gray-400">
+                      <span className="text-lg font-medium text-rose-500 dark:text-rose-200 uppercase">{productData.brand}</span>
+                      <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl uppercase">{productData.name}</h2>
+                      <p className="max-w-md mb-8 text-gray-700 dark:text-gray-400 capitalize">
                         {productData.desc}
                       </p>
                       <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
-                        <span>{productData.variants[0].price}</span>
-                        <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price + 10000}$</span>
+                        <span>{productData.variants[0].discount.toLocaleString("vi-VN")}VND</span>
+                        <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
                       </p>
                     </div>
                     <div className="flex items-center mb-8">
                       <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Màu Sắc : </h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
-                        {colorData?.map((color: IColor) => (
+                        {color?.map((item) => (
                           <button
-                            key={color._id}
-                            className={`p-1 mb-2 mr-2 border ${selectedColor === color ? 'border-blue-400' : 'border-transparent'} hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400`}
-                            onClick={() => setSelectedColor(color)}
+                            key={item?._id}
+                            className={`p-1 mb-2 mr-2 border ${selectedColor === item ? 'border-blue-400' : 'border-transparent'} hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400`}
+                            onClick={() => setSelectedColor(item)}
                           >
-                            <div>{color.value}</div>
+                            <div>{item?.value}</div>
                           </button>
                         ))}
                       </div>
@@ -181,16 +213,15 @@ duration: 3,
                     <div className="flex items-center mb-8">
                       <h2 className="w-20 text-lg font-bold dark:text-gray-400">Kích Cỡ:</h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
-                        {sizeData?.map((size: ISize) => (
+                        {size?.map((item) => (
                           <button
-                            key={size._id}
-                            className={`py-1 mb-2 mr-1 border w-11 ${selectedSize === size ? 'border-blue-400 text-blue-600' : 'hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400'}`}
-                            onClick={() => setSelectedSize(size)}
+                            key={item?._id}
+                            className={`py-1 mb-2 mr-1 border w-11 ${selectedSize === item ? 'border-blue-400 text-blue-600' : 'hover:border-blue-400 dark:border-gray-400 hover:text-blue-600 dark:hover:border-gray-300 dark:text-gray-400'}`}
+                            onClick={() => setSelectedSize(item)}
                           >
-                            {size.value}
+                            {item?.value}
                           </button>
                         ))}
-
                       </div>
                     </div>
                     <div className="w-32 mb-8">
