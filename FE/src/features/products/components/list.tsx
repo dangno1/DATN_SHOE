@@ -78,8 +78,10 @@ const ListProduct = () => {
   }
 
   const handleSearch = (data: { search?: string }) => {
-    const newProduct = productDataApi?.filter(({ name, brand }: IProduct) => {
-      return name.toLowerCase().includes(String(data.search).toLowerCase()) || brand.toLowerCase().includes(String(data.search).toLowerCase())
+    const dataSearch = String(data.search).toLowerCase()
+    const categorys = dataCategory?.find((item: ICategory) => item.name.toLowerCase().includes(dataSearch))
+    const newProduct = productDataApi?.filter(({ name, brand, categoryId }: IProduct) => {
+      return name.toLowerCase().includes(dataSearch) || brand.toLowerCase().includes(dataSearch) || (categorys && categoryId == String(categorys._id))
     })
     setProductData(newProduct)
   }
@@ -208,18 +210,21 @@ const ListProduct = () => {
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center'>
-        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">{trashCanState ? "Thùng Rác" : "Tất cả sản phẩm"}</div>
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700 select-none">
+          {trashCanState ? "Thùng Rác" : "Tất cả sản phẩm"}
+        </div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
-          {!trashCanState && <Button
-            onClick={() => {
-              trashCanState ? dispatch(showTrashCan(!trashCanState)) && navigate('/admin/product') : navigate("add")
-            }}
-            variant="contained"
-            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
-            startIcon={<BsPlus className="w-6 h-6" />}
-          >
-            Thêm Mới
-          </Button>}
+          {!trashCanState
+            && <Button
+              onClick={() => {
+                trashCanState ? dispatch(showTrashCan(!trashCanState)) && navigate('/admin/product') : navigate("add")
+              }}
+              variant="contained"
+              className="float-right !font-semibold !bg-[#58b4ff] !shadow-none select-none"
+              startIcon={<BsPlus className="w-6 h-6" />}
+            >
+              Thêm Mới
+            </Button>}
         </div>
       </div >
       <div className="h-[35px] w-full my-3 flex gap-2">
@@ -242,14 +247,14 @@ const ListProduct = () => {
               onConfirm={() => trashCanState ? handleDelete(selectedRowKeys as string[]) : handleTrushCan(selectedRowKeys as string[])}
               className="flex place-items-center gap-1 pr-2"
             >
-              <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa sản phẩm</span>
+              <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa {selectedRowKeys.length} sản phẩm</span>
             </Popconfirm>
             {
               trashCanState
               && <div
                 onClick={() => handleRecovery(selectedRowKeys as string[])}
                 className="flex place-items-center gap-1 pr-2 before:w-[1px] before:h-[15px] before:bg-gray-500">
-                <BsArrowCounterclockwise className="fill-blue-500 w-4 h-4" /><span className="font-semibold hover:text-blue-500">Khôi phục</span>
+                <BsArrowCounterclockwise className="fill-blue-500 w-4 h-4" /><span className="font-semibold hover:text-blue-500 select-none">Khôi phục {selectedRowKeys.length} </span>
               </div>
             }
           </div >

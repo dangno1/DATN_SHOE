@@ -35,6 +35,8 @@ const ListCategory = () => {
     handleSubmit,
     reset,
     setError,
+    setValue,
+    setFocus,
     formState: { errors }
   } = useForm<ICategory>({
     resolver: joiResolver(categorySchema)
@@ -49,10 +51,10 @@ const ListCategory = () => {
   }, [reset, successAdd, successUpdate])
 
   useEffect(() => {
-    form.method === "update"
-      ? reset({ name: categoryDatas.find((item: ICategory) => item._id == form._id)?.name })
-      : reset({ name: undefined })
-  }, [categoryDatas, form, reset])
+    form.method.length && setFocus("name");
+    const updateCate = categoryData?.find((item: ICategory) => item._id == form._id)?.name
+    form.method === "update" && categoryData ? setValue("name", String(updateCate)) : reset()
+  }, [categoryData, form, reset, setFocus, setValue])
 
   useEffect(() => {
     categoryDatas && setCategoryData(categoryDatas)
@@ -100,6 +102,9 @@ const ListCategory = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    getCheckboxProps: (category: ICategory) => ({
+      disabled: category.products?.length as number > 0 || category.name.toLowerCase() == "chưa phân loại",
+    }),
   };
 
   const columns: ColumnsType<ICategory> = [
@@ -117,7 +122,7 @@ const ListCategory = () => {
       className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
       render: (name: string, category: ICategory) =>
         <div className="flex items-center gap-2">
-          <BsPencilSquare className="w-3 h-3 fill-orange-600 cursor-pointer" onClick={() => setForm({ open: true, method: "update", _id: String(category._id) })} />
+          {category.name.toLowerCase() !== "chưa phân loại" && < BsPencilSquare className="w-3 h-3 fill-orange-600 cursor-pointer" onClick={() => setForm({ open: true, method: "update", _id: String(category._id) })} />}
           {name}
         </div>
     },
@@ -141,7 +146,7 @@ const ListCategory = () => {
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
       className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
       render: (updatedAt: string) =>
-        <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
+        <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
         </div>
     },
@@ -152,8 +157,8 @@ const ListCategory = () => {
       align: "center",
       className: "w-auto",
       fixed: "right",
-      render: (_id: string) =>
-        _id && (
+      render: (_id: string, category: ICategory) =>
+        (_id && category.name.toLowerCase() !== "chưa phân loại" && !category.products?.length) ? (
           <div className="w-max m-auto flex gap-3 cursor-pointer">
             <Popconfirm
               title
@@ -169,7 +174,7 @@ const ListCategory = () => {
               </Tooltip>
             </Popconfirm>
           </div >
-        ),
+        ) : <div className="w-max h-max p-1 bg-red-500 text-white rounded-lg">Không thể xóa</div>,
     },
   ];
 
@@ -184,14 +189,14 @@ const ListCategory = () => {
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
-        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700 select-none">
           Tất cả danh mục sản phẩm
         </div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
             onClick={() => setForm({ open: true, method: "add" })}
             variant="contained"
-            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none select-none"
             startIcon={<BsPlus className="w-6 h-6" />}
           >
             Thêm Mới
@@ -217,7 +222,7 @@ const ListCategory = () => {
               onConfirm={() => handleDeleteCategory(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa danh mục</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa {selectedRowKeys.length} danh mục</span>
               </Tooltip>
             </Popconfirm>
           </div>

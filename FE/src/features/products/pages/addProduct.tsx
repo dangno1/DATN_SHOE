@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
-import { useAddProductMutation } from "@/api/product";
+import { useAddProductMutation, useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
@@ -22,7 +22,6 @@ type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 export type ImageType = { files: File[], url: string[] } | null
 
-
 const AddProduct = () => {
   const [thumbnail, setThumbnail] = useState<ImageType>()
   const [image, setImage] = useState<ImageType>()
@@ -38,6 +37,7 @@ const AddProduct = () => {
 
   const [AddProduct, { isLoading }] = useAddProductMutation();
   const { data: categoryData } = useGetCategoryesQuery();
+  const { data: productData } = useGetProductsQuery(false);
   const { data: sizeData } = useGetSizesQuery();
   const { data: colorData } = useGetColorsQuery();
 
@@ -117,7 +117,7 @@ const AddProduct = () => {
     try {
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
-      const result = await AddProduct({ ...data, thumbnail: newThumbnail, image: newImage });
+      const result = await AddProduct({ ...data, thumbnail: newThumbnail, image: newImage, desc: data.desc ?? "Đang cập nhật" });
       "data" in result && "success" in result.data && result.data.success ? openNotification("success", "Thêm sản phẩm thành công")
         : openNotification("success", "Thêm sản phẩm thành công")
       reset()
@@ -127,7 +127,6 @@ const AddProduct = () => {
       return error && error instanceof Error && error.message
     }
   };
-  console.log(errors);
 
   return (
     <>
@@ -139,7 +138,7 @@ const AddProduct = () => {
             <div className="h-max mb-[20px]">
               <label className="text-slate-600 font-semibold">Tên sản phẩm<span className="text-red-500">*</span></label>
               <input
-                {...register("name", productSchema.name)} type="text" placeholder="giày af1..."
+                {...register("name", productSchema.name(productData))} type="text" placeholder="giày af1..."
                 className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500
                   focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]
                  placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && 'border-red-500'}`} />
@@ -156,7 +155,7 @@ const AddProduct = () => {
             </div>
             <div className="h-max mb-[20px] col-span-2 space-y-[5px]">
               <label className="text-slate-600 font-semibold">Mô tả<span className="text-red-500">*</span></label>
-              <div className={`border ${errors.desc && 'border-red-500'}`}>
+              <div className={`border border-[#d0dbf0] rounded-[5px] min-h-[172px] ${errors.desc && 'border-red-500'}`}>
                 <Controller
                   name="desc"
                   control={control}
@@ -304,7 +303,7 @@ const AddProduct = () => {
                       />
                     </div>
                   </div>
-                  <div className="w-max min-h-full max-h-full grid place-items-center mt-[23px]">
+                  <div className={`w-max min-h-full max-h-full grid place-items-center mt-[23px] ${errors?.variants?.[index] && "mt-0 mb-4"}`}>
                     {fields.length > 1 && (
                       <Popconfirm
                         title

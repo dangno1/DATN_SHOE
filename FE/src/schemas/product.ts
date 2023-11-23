@@ -2,9 +2,23 @@ import { IProduct } from "@/interface/product";
 import { UseFormGetValues } from "react-hook-form";
 
 const productSchema = {
-  name: {
-    required: "Tên sản phẩm không được để trống",
-    minLength: { value: 3, message: "Vui lòng nhập tối thiểu 3 kí tự" },
+  name: (product?: IProduct[], id?: string) => {
+    return {
+      required: "Tên sản phẩm không được để trống",
+      minLength: { value: 3, message: "Vui lòng nhập tối thiểu 3 kí tự" },
+      validate: (value: string) => {
+        const productExist = product?.find(
+          (item: IProduct) =>
+            item.name.toLowerCase() == value.toLowerCase().trim()
+        );
+
+        return (
+          !productExist ||
+          (id && productExist && productExist._id == id) ||
+          "Tên sản phẩm đã tồn tại"
+        );
+      },
+    };
   },
 
   image: (value: boolean) => ({
