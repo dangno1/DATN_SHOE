@@ -18,6 +18,9 @@ const CartDetail = () => {
   const [otpValue, setOtpValue] = useState("");
   const checkedItems = location.state.checkedItems;
 
+  console.log(getOrders);
+  
+
   // user
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

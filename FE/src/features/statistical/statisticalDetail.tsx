@@ -1,63 +1,15 @@
-import {
-  useGetOrdersQuery,
-  useUpdateOrderAdminMutation,
-} from "@/api/orderedProduct";
-import { SetStateAction, useState } from "react";
+import { useGetOrdersQuery } from "@/api/orderedProduct";
 import { useParams } from "react-router-dom";
-import { notification } from "antd";
-type NotificationType = "success" | "info" | "warning" | "error";
 
-const Test001 = () => {
+const Test002 = () => {
   const { data: orders } = useGetOrdersQuery();
   const { id } = useParams();
-  const [updateOrder] = useUpdateOrderAdminMutation();
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [api, contextHolder] = notification.useNotification();
 
   const data = orders?.filter((item) => item?._id == id);
   const product = data?.[0]?.products;
 
-  const handleStatusChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setSelectedStatus(e.target.value);
-  };
-
-  const handleUpdate = () => {
-
-    const openNotification = (type: NotificationType, message: string) => {
-      api[type]({
-        message: "Thông báo",
-        description: message,
-      });
-    };
-
-    if (selectedStatus == data?.[0]?.status) {
-      openNotification("error", "Bạn Chưa Thay Đổi Trạng Thái");
-    } else {
-      updateOrder({
-        _id: id,
-        status: selectedStatus,
-        userName: data?.[0]?.userName,
-        userEmail: data?.[0]?.userEmail,
-        userAddress: data?.[0]?.userAddress,
-        productName: "",
-        quantity: 0,
-        price: 0,
-        initialPrice: 0,
-        totalPrice: 0,
-        category: "",
-        image: "",
-        color: "",
-      });
-      openNotification("success", "Thanh Đổi Trạng Thái Thành Công");
-    }
-
-  };
-
   return (
     <>
-    {contextHolder}
       <div className="p-5">
         <h3 className="mb-8 font-bold text-3xl uppercase text-slate-700">
           Chi Tiết Đơn Hàng
@@ -251,37 +203,9 @@ const Test001 = () => {
               />
             </div>
           </div>
-          <div>
-            <h3 className="mb-8 font-bold text-3xl uppercase text-slate-700">
-              Thay Đổi Trạng Thái
-            </h3>
-            <select
-              onChange={handleStatusChange}
-              className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
-            >
-              <option value="Chưa Xác Nhận">Chưa Xác Nhận</option>
-              <option value="Đã Xác Nhận">Đã Xác Nhận</option>
-              <option value="Đơn Hàng Đang Được Chuẩn Bị">
-                Đơn Hàng Đang Được Chuẩn Bị
-              </option>
-              <option value="Đơn Hàng Đang Giao Đến Bạn">
-                Đơn Hàng Đang Giao Đến Bạn
-              </option>
-              <option value="Đơn Hàng Đã Giao Thành Công">
-                Đơn Hàng Đã Giao Thành Công
-              </option>
-            </select>
-            <button
-              onClick={handleUpdate}
-              type="submit"
-              className="mt-5 !bg-[#58b4ff] !shadow-none p-4 pl-10 pr-10 text-white hover:bg-blue-700 rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
-            >
-              Cập Nhật
-            </button>
-          </div>
         </div>
       </div>
     </>
   );
 };
-export default Test001;
+export default Test002;

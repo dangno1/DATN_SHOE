@@ -8,7 +8,7 @@ const OderHistory = () => {
   const { data: order } = useGetOrdersQuery();
   console.log(order);
   const [userData, setUserData] = useState(localStorage);
-
+  const [received, setReceived] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   useEffect(() => {
     const openNotification = (type: NotificationType, message: string) => {
@@ -42,6 +42,20 @@ const OderHistory = () => {
   console.log(orderCart);
 
   const reversedOrderCart = orderCart?.slice().reverse();
+
+  const handleReceive = (orderId) => {
+    // Perform any necessary actions here, such as updating the order status
+    // ...
+
+    // Set the received state to true
+    setReceived(true);
+
+    // Show a notification or perform any other necessary actions
+    api.success({
+      message: "Thông báo",
+      description: "Bạn đã xác nhận đã nhận được hàng.",
+    });
+  };
 
   return (
     <>
@@ -126,15 +140,16 @@ const OderHistory = () => {
                     <div className="border p-2 w-full text-center h-12 rounded-xl flex justify-center items-center mt-20">
                       {orderItem.status}
                     </div>
-                    {orderItem.status === "Đơn Hàng Đã Giao Thành Công" && (
-                      <div
-                        className="border w-full text-center h-12 rounded-xl flex justify-center items-center mt-20"
-                        onClick={() => alert("Cảm ơn bạn đã mua hàng")}
-                        style={{ cursor: "pointer" }}
-                      >
-                        Đã Nhận Được Hàng
-                      </div>
-                    )}
+                    {orderItem.status === "Đơn Hàng Đã Giao Thành Công" &&
+                      !received && (
+                        <div
+                          className="border w-full text-center h-12 rounded-xl flex justify-center items-center mt-20"
+                          onClick={() => handleReceive(orderItem._id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          Đã Nhận Được Hàng
+                        </div>
+                      )}
                   </div>
                 </div>
                 <div>

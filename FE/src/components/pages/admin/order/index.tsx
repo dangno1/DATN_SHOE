@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useGetOrdersQuery } from "@/api/orderedProduct";
 import { IOrder } from "@/interface/order";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [searchCode, setSearchCode] = useState("");
   const { data: orders } = useGetOrdersQuery();
+  const navigate = useNavigate();
   console.log(orders);
 
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -182,6 +184,12 @@ const Index = () => {
                       >
                         Trạng thái đơn hàng
                       </th>
+                      <th
+                        scope="col"
+                        className="flex justify-center px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Chi tiết đơn hàng
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
@@ -249,8 +257,6 @@ const Index = () => {
                             </div>
                           </div>
                         </td>
-
-                        {/* <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.node}</td> */}
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
                           <select
                             id="cars"
@@ -260,6 +266,9 @@ const Index = () => {
                               {order.status}
                             </option>
                           </select>
+                        </td>
+                        <td className="flex justify-center items-center pt-7" onClick={() => navigate(`detail/${order._id}`)}>
+                          ...
                         </td>
                       </tr>
                     ))}
