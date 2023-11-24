@@ -4,9 +4,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CgChevronLeft, CgChevronRight } from "react-icons/cg";
 
-const compareAmountSold = (a, b) => {
-  return b.variants[0].amountSold - a.variants[0].amountSold;
-};
 
 const Seller = () => {
 
@@ -14,7 +11,6 @@ const Seller = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 4;
   useEffect(() => {
-    // Scroll về trang đầu tiên khi dữ liệu thay đổi
     setCurrentPage(1);
   }, [data]);
 
@@ -78,7 +74,7 @@ const Seller = () => {
                {product.name}
               </p>
               <div className="flex items-center">
-                <p className="text-lg font-semibold text-black cursor-auto my-3 text-red-500">
+                <p className="text-lg font-semibold cursor-auto my-3 text-red-500">
                 {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                 </p>
                 <del>

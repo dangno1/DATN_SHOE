@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { BsBagPlus } from "react-icons/bs";
@@ -5,41 +6,39 @@ import { Link } from "react-router-dom";
 
 const ProductList = () => {
   const { data } = useGetProductsQuery(false);
+  console.log(data);
 
   if (!data) {
     return <div>Loading...</div>;
   }
+// Calculate the date four days ago
+const currentDate = new Date();
+currentDate.setHours(0, 0, 0, 0);
+const startOfDay = currentDate.getTime();
+const fourDaysAgo = startOfDay - 4 * 24 * 60 * 60 * 1000;
 
-  const oneDay = 24 * 60 * 60 * 1000;
+  // Sắp xếp danh sách sản phẩm theo thời gian tạo giảm dần
+  const sortedProducts = data  ? [...data].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())  : [];
 
-  const currentDate = new Date();
-
-
-  currentDate.setHours(0, 0, 0, 0);
-  const startOfDay = currentDate.getTime();
-
-
-  const fourDaysLater = startOfDay - 4 * oneDay;
-
-  const latestProducts = data.filter((product) => {
-    const createdAt = new Date(product.createdAt).getTime();
-    return createdAt >= fourDaysLater && createdAt <= startOfDay;
-
-  });
-  
-
+  // Lọc ra 4 sản phẩm đầu tiên trong danh sách
+  const latestProducts = sortedProducts.slice(0, 4);
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4 uppercase">Sản phẩm mới nhất </h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase">
+          Sản phẩm mới nhất
+        </h1>
       </div>
 
       <section
         id="Projects"
         className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14"
       >
-        {latestProducts?.map((product:IProduct) => (
-          <div key={product._id} className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+        {latestProducts?.map((product: IProduct) => (
+          <div
+            key={product._id}
+            className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl"
+          >
             <Link to={`/detail/${product._id}`}>
               <img
                 src={product?.image}
@@ -69,10 +68,10 @@ const ProductList = () => {
         ))}
       </section>
       {latestProducts?.length === 0 && (
-          <div className="text-center mt-[-2%] pb-2 text-gray-500 font-semibold">
+        <div className="text-center mt-[-2%] pb-2 text-gray-500 font-semibold">
           Không có sản phẩm mới nào trong khoảng thời gian này.
-          </div>
-        )}
+        </div>
+      )}
     </>
   );
 };
