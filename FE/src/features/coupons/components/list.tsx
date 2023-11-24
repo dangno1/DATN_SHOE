@@ -30,7 +30,13 @@ const ListCoupons = () => {
     });
   };
 
-  const { register, handleSubmit, reset, setFocus, formState: { errors } } = useForm<ICoupons>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setFocus,
+    formState: { errors }
+  } = useForm<ICoupons>({
     resolver: joiResolver(couponsSchema)
   })
   const { register: registerSearch, handleSubmit: handleSubmitSearch } = useForm<{ search: string }>()

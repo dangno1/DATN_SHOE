@@ -183,7 +183,7 @@ const ListProduct = () => {
             </Popconfirm>
             {trashCanState
               ? <Tooltip placement="top" title="Khôi phục">
-                <BsArrowCounterclockwise onClick={() => handleTrushCan(_id, "recovery")} className="w-4 h-4" />
+                <BsArrowCounterclockwise onClick={() => handleRecovery([_id])} className="w-4 h-4" />
               </Tooltip>
               : <>
                 <Tooltip placement="right" title="Sửa">
