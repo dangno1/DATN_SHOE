@@ -1,5 +1,6 @@
 import { RiCoupon2Line } from "react-icons/ri";
 import { BiCategory } from "react-icons/bi";
+import { MdQueryStats } from "react-icons/md";
 import { Button, Layout, Menu } from "antd";
 import { useEffect, useState, } from "react";
 import {
@@ -48,8 +49,8 @@ const LayoutAdmin = () => {
             [
               {
                 key: 1,
-                label: <NavLink to="/admin">Thống kê</NavLink>,
-                icon: <TfiDashboard />
+                label: <NavLink to="/admin/statistical">Thống Kê</NavLink>,
+                icon: <MdQueryStats />
               },
               {
                 key: 3,
@@ -94,7 +95,7 @@ const LayoutAdmin = () => {
               },
               {
                 key: 10,
-                label: <NavLink to="/admin/users">Users</NavLink>,
+                label: <NavLink to="/admin/users">Khách Hàng</NavLink>,
                 icon: <AiOutlineUser />
               },
               {
@@ -104,12 +105,12 @@ const LayoutAdmin = () => {
               },
               {
                 key: 15,
-                label: <NavLink to="/admin/orders">Orders</NavLink>,
+                label: <NavLink to="/admin/orders">Đơn Hàng</NavLink>,
                 icon: <AiOutlineShopping />
               },
               {
                 key: 12,
-                label: <NavLink to="/admin/settings">Settings</NavLink>,
+                label: <NavLink to="/admin/settings">Cài Đặt</NavLink>,
                 icon: <AiOutlineSetting />
               },
             ]
