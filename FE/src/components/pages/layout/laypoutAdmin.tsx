@@ -1,19 +1,20 @@
 import { RiCoupon2Line } from "react-icons/ri";
 import { BiCategory } from "react-icons/bi";
 import { Button, Layout, Menu } from "antd";
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 import {
   AiOutlineMenuFold,
   AiOutlineMenuUnfold,
   AiOutlineUser,
   AiOutlineShopping,
-  AiOutlineSetting,
   AiOutlineFontSize,
   AiOutlineFontColors,
   AiOutlineOrderedList,
+  AiOutlineComment,
+  AiOutlineLogout,
 } from "react-icons/ai";
 
-import { TfiDashboard } from 'react-icons/tfi'
+import { TfiDashboard } from "react-icons/tfi";
 
 import { NavLink, Outlet } from "react-router-dom";
 import { HiOutlineTrash } from "react-icons/hi2";
@@ -25,96 +26,98 @@ const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    window.addEventListener('resize', function () {
-      this.innerWidth <= 640 ? setCollapsed(true) : setCollapsed(false)
-    })
-  }, [])
-
+    window.addEventListener("resize", function () {
+      this.innerWidth <= 640 ? setCollapsed(true) : setCollapsed(false);
+    });
+  }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.href = "/";
+  };
   return (
     <Layout className="min-h-[100vh] w-full max-w-[100vw] ">
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        width={250}
-      >
+      <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
         <Menu
           theme="light"
           mode="inline"
           defaultSelectedKeys={["1"]}
           defaultOpenKeys={["3"]}
           className="h-full font-semibold"
-          items={
-            [
-              {
-                key: 1,
-                label: <NavLink to="/admin">Thống kê</NavLink>,
-                icon: <TfiDashboard />
-              },
-              {
-                key: 3,
-                label: <div>Sản phẩm</div>,
-                icon: <BsBoxSeam />,
-                children: [
-                  {
-                    key: 4,
-                    label: <NavLink to="/admin/product">Tất cả Sản phẩm</NavLink>,
-                    icon: <AiOutlineOrderedList />
-                  },
-                  {
-                    key: 5,
-                    label: <NavLink to="/admin/product/add">Thêm mới sản phẩm</NavLink>,
-                    icon: <BsPlusLg />
-                  },
+          items={[
+            {
+              key: 1,
+              label: <NavLink to="/admin">Thống kê</NavLink>,
+              icon: <TfiDashboard />,
+            },
+            {
+              key: 3,
+              label: <div>Sản phẩm</div>,
+              icon: <BsBoxSeam />,
+              children: [
+                {
+                  key: 4,
+                  label: <NavLink to="/admin/product">Tất cả Sản phẩm</NavLink>,
+                  icon: <AiOutlineOrderedList />,
+                },
+                {
+                  key: 5,
+                  label: (
+                    <NavLink to="/admin/product/add">Thêm mới sản phẩm</NavLink>
+                  ),
+                  icon: <BsPlusLg />,
+                },
 
-
-
-                  {
-                    key: 6,
-                    label: <NavLink to="/admin/product/trashCan">Thùng rác</NavLink>,
-                    icon: <HiOutlineTrash />
-                  },
-
-                ]
-              },
-              {
-                key: 7,
-                label: <NavLink to="/admin/categoryes">Danh mục sản phẩm</NavLink>,
-                icon: <BiCategory />,
-              },
-              {
-                key: 8,
-                label: <NavLink to="/admin/size">Kích cỡ</NavLink>,
-                icon: <AiOutlineFontSize />
-              },
-              {
-                key: 9,
-                label: <NavLink to="/admin/color">Màu sắc</NavLink>,
-                icon: <AiOutlineFontColors />
-              },
-              {
-                key: 10,
-                label: <NavLink to="/admin/users">Users</NavLink>,
-                icon: <AiOutlineUser />
-              },
-              {
-                key: 11,
-                label: <NavLink to="/admin/coupons">Mã giảm giá</NavLink>,
-                icon: <RiCoupon2Line />
-              },
-              {
-                key: 15,
-                label: <NavLink to="/admin/orders">Orders</NavLink>,
-                icon: <AiOutlineShopping />
-              },
-              {
-                key: 12,
-                label: <NavLink to="/admin/settings">Settings</NavLink>,
-                icon: <AiOutlineSetting />
-              },
-            ]
-          }
+                {
+                  key: 6,
+                  label: (
+                    <NavLink to="/admin/product/trashCan">Thùng rác</NavLink>
+                  ),
+                  icon: <HiOutlineTrash />,
+                },
+              ],
+            },
+            {
+              key: 7,
+              label: (
+                <NavLink to="/admin/categoryes">Danh mục sản phẩm</NavLink>
+              ),
+              icon: <BiCategory />,
+            },
+            {
+              key: 8,
+              label: <NavLink to="/admin/size">Kích cỡ</NavLink>,
+              icon: <AiOutlineFontSize />,
+            },
+            {
+              key: 9,
+              label: <NavLink to="/admin/color">Màu sắc</NavLink>,
+              icon: <AiOutlineFontColors />,
+            },
+            {
+              key: 10,
+              label: <NavLink to="/admin/users">Users</NavLink>,
+              icon: <AiOutlineUser />,
+            },
+            {
+              key: 11,
+              label: <NavLink to="/admin/coupons">Mã giảm giá</NavLink>,
+              icon: <RiCoupon2Line />,
+            },
+            {
+              key: 15,
+              label: <NavLink to="/admin/orders">Orders</NavLink>,
+              icon: <AiOutlineShopping />,
+            },
+            {
+              key: 12,
+              label: <NavLink to="/admin/comment">Comment</NavLink>,
+              icon: <AiOutlineComment />,
+            },
+          ]}
         />
+        <Button className="text-center mb-10" type="link" onClick={handleLogout}>
+          <NavLink to="/">Đăng xuất</NavLink>
+        </Button>
       </Sider>
       <Layout className="w-full bg-white p-1">
         <Header className="bg-white">
