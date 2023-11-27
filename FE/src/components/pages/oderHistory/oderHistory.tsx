@@ -39,9 +39,13 @@ const OderHistory = () => {
 
   const orderCart = order?.filter((item) => item?.userEmail == userData.email);
 
-  console.log(orderCart);
+  
+  
+  
 
   const reversedOrderCart = orderCart?.slice().reverse();
+  console.log(reversedOrderCart);
+  
 
   const handleReceive = (orderId) => {
     // Perform any necessary actions here, such as updating the order status
@@ -101,7 +105,7 @@ const OderHistory = () => {
                   <div className="font-medium text-lg">
                     Tổng giá Sản Phẩm:{" "}
                     <span className="pt-5 text-red-500">
-                      {product.productPrice.toLocaleString("vi-VN")}VND
+                      {orderItem?.totalPrice}VND
                     </span>
                   </div>
                 </div>
