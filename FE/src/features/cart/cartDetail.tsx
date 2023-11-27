@@ -6,20 +6,29 @@ import {
 } from "@/api/orderedProduct";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useGetAllCouponsQuery } from "@/api/coupons";
+
 
 const CartDetail = () => {
+
+// coupons
+
+const [discountCode, setDiscountCode] = useState<string>("");
+const { data: coupons =[]} = useGetAllCouponsQuery();
+const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
+
   const [orderedProduct] = useOrderedProductMutation();
   const { data: getOrders } = useGetOrdersQuery();
   const [updateOrder] = useUpdateorderMutation();
   const [checkOut] = useCheckoutMutation();
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [otpValue, setOtpValue] = useState("");
   const checkedItems = location.state.checkedItems;
 
   console.log(getOrders);
-  
+
 
   // user
   const [name, setName] = useState("");
@@ -38,9 +47,22 @@ const CartDetail = () => {
     }
   }, [checkedItems]);
   let totalPrice = 0;
-  checkedItems.forEach((element: { price: number }) => {
-    totalPrice += element.price;
-  });
+  let discountedAmount = 0;
+  
+checkedItems.forEach((element: { price: number }) => {
+  totalPrice += element.price;
+  if (validCoupon) {
+  
+  discountedAmount = totalPrice * (validCoupon.discountValue / 100);
+   totalPrice = totalPrice - discountedAmount;
+}
+});
+
+
+
+
+ 
+
 
   const handleOrder = async () => {
     setErrors({});
@@ -119,11 +141,12 @@ const CartDetail = () => {
       products: productsArray,
       paymentMethod: selectedPaymentMethod,
       status: "Chờ Xác Nhận",
+      totalPrice: totalPrice,
     };
 
     console.log(orderData.paymentMethod);
     // return
-    
+
 
     if (orderData.paymentMethod == "Paymentondelivery") {
       orderedProduct(orderData);
@@ -162,6 +185,9 @@ const CartDetail = () => {
     setIsModalOpen(false);
     window.location.href = "http://localhost:5173/oder&history?vnp_TransactionStatus=01"
   };
+
+  
+
   return (
     <>
       <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr]  lg:gap-20 pb-32">
@@ -216,7 +242,7 @@ const CartDetail = () => {
               id="paymentMethod"
               onChange={(e) => setSelectedPaymentMethod(e.target.value)}
             >
-               <option value={""}>-Chọn một phương thức thanh toán-</option>
+              <option value={""}>-Chọn một phương thức thanh toán-</option>
               <option value={"Paymentondelivery"}>Thanh Toán Khi Nhận Hàng</option>
               <option value={"NCB"}>NCB</option>
               <option value={"VISA"}>VISA</option>
@@ -367,19 +393,46 @@ const CartDetail = () => {
             TÓM TẮT THEO THỨ TỰ
           </div>
           <div className="flex justify-between items-center pt-5">
-            <p className="text-gray-800">2 Sản phẩm</p>
-            <span className="text-gray-900">${totalPrice}</span>
+            <p className="text-gray-800"> Sản phẩm</p>
+            <span className="text-gray-900">{totalPrice}VND</span>
           </div>
           <div className="flex justify-between items-center pt-5 border-b pb-2">
             <p className="text-gray-800">Vận chuyển</p>
             <p className="text-gray-900">Miễn Phí</p>
           </div>
 
+          <div className="pt-5">
+        <input
+          className={`border w-full p-4 ${validCoupon ? "" : "border-red-500"}`}
+          type="text"
+          placeholder="Mã giảm giá"
+          value={discountCode}
+          onChange={(e) => {
+            const enteredCode = e.target.value;
+            const isValidCoupon = coupons.find(
+              (coupon) => coupon.code === enteredCode
+            );
+
+            setDiscountCode(enteredCode);
+
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              discountCode: isValidCoupon
+                ? ""
+                : "Mã giảm giá không hợp lệ",
+            }));
+          }}
+        />
+        {errors?.discountCode && (
+          <div className="text-red-500 pl-1">{errors?.discountCode}</div>
+        )}
+      </div>
+
           <div className="flex justify-between items-center pt-5">
             <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
               Tổng Giá
             </p>
-            <span className="text-gray-900">${totalPrice}</span>
+            <span className="text-gray-900">  {totalPrice} VND</span>
           </div>
 
           <div className="mt-10">
