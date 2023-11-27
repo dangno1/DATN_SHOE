@@ -232,7 +232,7 @@ const ListSize = () => {
               onConfirm={() => handleDeleteSize(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa kích cỡ</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa {selectedRowKeys.length} kích cỡ</span>
               </Tooltip>
             </Popconfirm>
           </div >

@@ -238,7 +238,9 @@ const ListCategory = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Modal
-          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">{form.method === "update" ? "Cập nhật danh mục" : "Thêm mới danh mục"}</div>}
+          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">
+            {form.method === "update" ? "Cập nhật danh mục" : "Thêm mới danh mục"}
+          </div>}
           centered open={form.open}
           onCancel={() => setForm({ open: false, method: "" })}
           okButtonProps={{ style: { display: "none" } }}

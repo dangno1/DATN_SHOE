@@ -203,7 +203,7 @@ const ListCoupons = () => {
           <Button
             onClick={() => { setForm({ open: true, method: "add" }) }}
             variant="contained"
-            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none"
             startIcon={<BsPlus className="w-6 h-6" />}
           >
             Thêm Mới
@@ -218,7 +218,7 @@ const ListCoupons = () => {
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
         {
-          selectedRowKeys.length > 0 && <div className="w-full flex items-center  cursor-pointer">
+          selectedRowKeys.length > 0 && <div className="w-full flex items-center cursor-pointer">
             <Popconfirm
               title
               description="Xóa mã giảm giá?"
@@ -229,7 +229,7 @@ const ListCoupons = () => {
               onConfirm={() => handleDeleteCoupons(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa mã giảm giá</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa {selectedRowKeys.length} mã giảm giá</span>
               </Tooltip>
             </Popconfirm>
           </div >
