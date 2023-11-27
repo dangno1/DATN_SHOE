@@ -7,7 +7,8 @@ export interface IProduct {
   brand: string;
   categoryId: string;
   isDelete: boolean;
-  updatedAt: string;
+  updatedAt?: string;
+  createdAt?: string;
   variants: {
     sizeId: string;
     colorId: string;

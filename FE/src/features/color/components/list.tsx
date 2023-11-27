@@ -1,240 +1,261 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable prefer-const */
-import { useNavigate } from "react-router-dom";
-import * as muiIcons from "./mui.icon";
-import * as muiComponent from "./mui.component";
-import {
-  Card,
-  CardHeader,
-  Typography,
-  Button,
-  CardBody,
-  CardFooter,
-  IconButton,
-  Input,
-} from "@material-tailwind/react";
-import { Alert, Stack } from "@mui/material";
-
-import { useEffect, useState } from "react";
-import { useGetColorsQuery, useRemoveColorMutation } from "@/api/color";
+import { useAddColorMutation, useGetColorsQuery, useRemoveColorMutation, useUpdateColorMutation } from "@/api/color";
 import { IColor } from "@/interface/color";
+import { Modal, Popconfirm, Table, Tooltip, notification } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
+import { useState, useEffect, Key } from "react";
+import { useForm } from "react-hook-form";
+import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
+import { joiResolver } from "@hookform/resolvers/joi";
+import colorSchema from "@/schemas/color";
+
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
+type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
 
 const ListColor = () => {
-  const [deleteColor, { isSuccess }] = useRemoveColorMutation();
-  const navigate = useNavigate()
+  const [form, setForm] = useState<FormType>({ open: false, method: "" })
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+  const [colorData, setColorData] = useState<IColor[]>()
 
-  const [openAlert, setOpenAlert] = useState(false);
-  const [openDialog, setOpenDialog] = useState<string>("close");
-  const [idColor, setIdColor] = useState<string>("")
-  const { data: colorDatas } = useGetColorsQuery();
-  const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
-  const TABLE_ROWS = colorDatas?.map(
-    ({ _id, value, createdAt, updatedAt }: IColor) =>
-      colorDatas && {
-        _id,
-        value,
-        createdAt,
-        updatedAt,
+  const [deleteColor, { isLoading: loadDelete }] = useRemoveColorMutation();
+  const [updateColor, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateColorMutation();
+  const [addColor, { isLoading: loadAdd, isSuccess: successAdd }] = useAddColorMutation();
+  const { data: colorDatas } = useGetColorsQuery<{ data: IColor[] }>();
+
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (type: NotificationType, message: string) => {
+    api[type]({
+      message: 'Thông báo',
+      description: message
+    });
+  };
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<IColor>({
+    resolver: joiResolver(colorSchema)
+  })
+
+  const {
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch
+  } = useForm<{ search: string }>()
+
+  useEffect(() => {
+    reset()
+  }, [reset, successAdd, successUpdate])
+
+  useEffect(() => {
+    form.method === "update"
+      ? reset({ value: colorDatas.find((item: IColor) => item._id == form._id)?.value })
+      : reset({ value: undefined })
+  }, [form, reset, colorDatas])
+
+  useEffect(() => {
+    colorDatas && setColorData(colorDatas)
+  }, [colorDatas])
+
+  const handleDeleteColor = (listId: string[]) => {
+    listId.map(async (id: string) => {
+      await deleteColor(id)
+    })
+    openNotification('success', "Xóa màu sắc thành công")
+  };
+
+  const handleAddUpdateColor = async (data: IColor) => {
+    try {
+      const { open, method } = form
+      if (open && method === "add") {
+        await addColor(data)
+        openNotification('success', "Thêm màu sắc thành công")
+        return
       }
-  );
+      if (open && method === "update" && form._id) {
+        await updateColor({ ...data, _id: form._id })
+        openNotification('success', "Cập nhật màu sắc thành công")
+        return
+      }
+      reset()
+    } catch (error) {
+      return error
+    }
+  }
 
-  let closeAlertTimeout: ReturnType<typeof setTimeout>;
-  useEffect(() => {
-    isSuccess && setOpenAlert(isSuccess);
-    closeAlertTimeout = setTimeout(() => {
-      setOpenAlert(false);
-    }, 3000);
-    return () => clearTimeout(closeAlertTimeout);
-  }, [isSuccess]);
+  const handleSearch = (data: { search?: string }) => {
+    const newData = colorDatas && colorDatas.filter((item: IColor) => String(item.value).toLowerCase().includes(String(data.search).toLowerCase()))
+    setColorData(newData)
+  }
 
-  useEffect(() => {
-    const handleDeleteColor = (id: string) => {
-      openDialog === "delete" && deleteColor(id)
-    };
-    handleDeleteColor(idColor)
-  }, [deleteColor, idColor, openDialog])
+  const onSelectChange = (newSelectedRowKeys: Key[]) => {
+    console.log(newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
 
+  const columns: ColumnsType<IColor> = [
+    {
+      title: "STT",
+      dataIndex: "index",
+      key: "index",
+      className: "w-[70px] max-w-[100px] !pl-8",
+      fixed: "left",
+    },
+    {
+      title: "màu sắc",
+      dataIndex: "value",
+      key: "value",
+      className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
+      render: (value: string, color: IColor) =>
+        <div className="flex items-center gap-2">
+          <BsPencilSquare
+            className="w-3 h-3 fill-orange-600 cursor-pointer"
+            onClick={() => setForm({ open: true, method: "update", _id: String(color._id) })} />
+          {value}
+        </div>
+    },
+    {
+      title: "Số lượng sản phẩm",
+      dataIndex: "_id",
+      key: "_id",
+      sorter: (a, b) => Number(a.products?.length) - Number(b.products?.length),
+      showSorterTooltip: { title: "click để sắp xếp theo số lượng sản phẩm" },
 
+      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[500px]",
+      render: (_, size: IColor) =>
+        <div className="max-h-[45px]">
+          {size.products?.length}
+        </div>
+    },
+    {
+      title: "Thời gian cập nhật",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
+      showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
+      render: (updatedAt: string) =>
+        <div className="max-h-[45px]">
+          {new Date(updatedAt).toLocaleString()}
+        </div>,
+      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
+    },
+    {
+      title: "Hành động",
+      dataIndex: "_id",
+      key: "_id",
+      align: "center",
+      className: "w-auto",
+      fixed: "right",
+      render: (_id: string) =>
+        _id && (
+          <div className="w-max m-auto flex gap-3 cursor-pointer">
+            <Popconfirm
+              title
+              description="Xóa kích thước?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+              cancelButtonProps={{ className: "border-slate-400" }}
+              onConfirm={() => handleDeleteColor([_id])}
+            >
+              <Tooltip placement="right" title="Xóa">
+                <BsTrash3 className="fill-red-600 w-4 h-4" />
+              </Tooltip>
+            </Popconfirm>
+          </div >
+        ),
+    },
+  ];
+  const sortColor = colorData && [...colorData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
+
+  const dataSource = sortColor?.map((color: IColor, index: number) => ({
+    ...color,
+    key: color._id,
+    index: index + 1
+  }))
 
   return (
     <>
-      {openDialog === "open" && <muiComponent.Dialog
-        open={true}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description">
-        <muiComponent.DialogTitle id="alert-dialog-title">
-          {"Thông báo quan trọng."}
-        </muiComponent.DialogTitle>
-        <muiComponent.DialogContent>
-          <muiComponent.DialogContentText id="alert-dialog-description">
-            Xác nhận xóa color.
-          </muiComponent.DialogContentText>
-        </muiComponent.DialogContent>
-        <muiComponent.DialogActions>
+      <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">
+          Tất cả màu sắc
+        </div>
+        <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
-            justify-start="true"
-            onClick={() => setOpenDialog("close")}
-            className="bg-green-600">
-            Thoát
+            onClick={() => setForm({ open: true, method: "add" })}
+            variant="contained"
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            startIcon={<BsPlus className="w-6 h-6" />}
+          >
+            Thêm Mới
           </Button>
-          <Button
-            justify-start="true"
-            onClick={() => setOpenDialog("delete")}
-            className="bg-pink-600">
-            Xoá!
-          </Button>
-        </muiComponent.DialogActions>
-      </muiComponent.Dialog>}
-      <Card className="h-full w-full shadow-lg px-[20px] ">
-        <CardHeader
-          floated={false}
-          shadow={false}
-          className="rounded-none space-y-[20px] ">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
-            <div>
-              <Typography
-                variant="h5"
-                color="blue-gray"
-                className="text-[30px] font-[600]">
-                Danh sách color
-              </Typography>
-            </div>
-            <div className="flex w-full shrink-0 gap-2 md:w-max ">
-              <div className="w-full md:w-72 relative h-full">
-                <Input
-                  placeholder="Search..."
-                  className="border outline-transparent focus:border-gray-500 border-gray-400 rounded-lg"
-                />
-                <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-50%] " />
-              </div>
+        </div>
+      </div>
+      <div className="h-[35px] w-full my-3 flex gap-2">
+        <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
+          <input
+            type="text" placeholder="tìm kiếm theo màu sắc" {...registerSearch("search")}
+            className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
+          <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
+        </form>
+        {
+          selectedRowKeys.length > 0 && <div className="w-full flex items-center  cursor-pointer">
+            <Popconfirm
+              title
+              description="Xóa màu sắc?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+              cancelButtonProps={{ className: "border-slate-400" }}
+              onConfirm={() => handleDeleteColor(selectedRowKeys as string[])}
+            >
+              <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa màu sắc</span>
+              </Tooltip>
+            </Popconfirm>
+          </div >
+        }
+      </div>
+      <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
+      <>
+        {contextHolder}
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loadAdd || loadDelete || loadUpdate}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <Modal
+          centered open={form.open}
+          onCancel={() => setForm({ open: false, method: "" })}
+          okButtonProps={{ style: { display: "none" } }}
+          cancelButtonProps={{ style: { display: "none" } }}
+        >
+          <form
+            onSubmit={handleSubmit(handleAddUpdateColor)}
+            className="w-full px-[20px] "
+          >
+            <label className="text-slate-600 font-semibold block float-left">Thêm mới màu sắc</label>
+            <input
+              {...register("value")} type="text"
+              placeholder="Trắng, Đen..."
+              className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full "
+            />
+            {errors.value && <span className="text-red-500">{errors.value.message}</span>}
+            <div className="w-full grid items-center justify-end mt-2">
               <Button
-                onClick={() => navigate("add")}
-                className="flex items-center gap-3 bg-black relative pl-[40px]">
-                <muiIcons.AddIcon className="absolute top-[50%] left-[10px] translate-y-[-50%] " />
-                Thêm mới
+                type="submit"
+                variant="contained"
+                className="w-max !font-semibold !bg-[#58b4ff] !shadow-none"
+                startIcon={form.method === "update" ? <BsPencilSquare className="w-4 h-4" /> : <BsPlusLg className="w-4 h-4" />}
+              >
+                {form.method === "update" ? "cập nhật" : "Thêm mới"}
               </Button>
             </div>
-          </div>
-          {openAlert && (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="success">Xóa Color thành công</Alert>
-            </Stack>
-          )}
-        </CardHeader>
-        <CardBody className="px-0">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 uppercase">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal leading-none opacity-70">
-                      {head}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {TABLE_ROWS?.map((row: IColor, index: number) => {
-                const isLast = index === TABLE_ROWS.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
-                return (
-                  <tr key={row._id}>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3 min-w-[100px] ">
-                        <Typography>{index + 1}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3 min-w-[200px] ">
-                        <Typography>{row.value}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Typography>{row.createdAt}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Typography>{row.updatedAt}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="grid grid-cols-2 justify-start">
-                        <div className="grid grid-cols-2 gap-x-[20px] items-center cursor-pointer">
-                          <muiComponent.Tooltip
-                            title="Delete color"
-                            placement="top">
-                            <muiIcons.DeleteSweepOutlinedIcon
-                              onClick={() => {
-                                setIdColor(String(row._id))
-                                setOpenDialog("open")
-                              }}
-                              className="h-5 w-5 text-pink-600 "
-                            />
-                          </muiComponent.Tooltip>
-                          <muiComponent.Tooltip
-                            title="Edit color"
-                            placement="top">
-                            <muiIcons.ModeEditIcon
-                              onClick={() => navigate(`update/${row._id}`)}
-                              className="h-5 w-5 text-orange-400 "
-                            />
-                          </muiComponent.Tooltip>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </CardBody>
-        <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          <Button variant="outlined" size="sm">
-            Previous
-          </Button>
-          <div className="flex items-center gap-2">
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              1
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              2
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              3
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              4
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              5
-            </IconButton>
-          </div>
-          <Button variant="outlined" size="sm">
-            Next
-          </Button>
-        </CardFooter>
-      </Card>
+          </form>
+        </Modal>
+      </>
     </>
   );
 };

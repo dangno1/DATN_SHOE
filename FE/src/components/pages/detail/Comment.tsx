@@ -1,150 +1,232 @@
+import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useGetCommentsQuery } from "@/api/comment";
+import { useCreateCommentMutation } from "@/api/comment";
+import "./comment.css";
+import { useDeleteCommentMutation } from "@/api/comment";
+import { IComment } from "@/interface/comment";
 const Comment = () => {
+  const { id } = useParams<{ id: string }>()
+  const userData = localStorage.getItem('user');
+  // console.log('userData', userData);
+  const { data: allComments } = useGetCommentsQuery();
+  if (allComments) {
+    // console.log(allComments);
+    if (allComments.length > 0) {
+      // console.log(allComments[0].ProductID._id);
+      // console.log(allComments[0].UserID._id);
+    } else {
+      console.log("No comments available.");
+    }
+  } else {
+    console.log("Loading comments..."); // or handle error condition
+  }
+  // Lọc ra các bình luận có productId khớp với id sản phẩm từ URL
+  const [comments, setComments] = useState([]);
+  // console.log(comments);
+  useEffect(() => {
+    if (allComments) {
+      const filteredComments = allComments.filter((comment) => comment.ProductID?._id == id);
+      console.log(filteredComments);
+
+      setComments(filteredComments); // Bật chế độ bình luận
+    }
+  }, [allComments, id]);
+  const [valuecmt, setValuecmt] = useState('');
+  const [addComment, { isLoading, isError }] = useCreateCommentMutation();
+  const handleCommentSubmit = async (e: any) => {
+    e.preventDefault();
+
+    if (!userData) {
+      alert("Please log in to post a comment.");
+      return;
+    }
+
+    if (valuecmt) {
+      const userId = JSON.parse(userData)._id;
+
+      // Add the user's comment to the local state immediately
+      const newComment = {
+        CommentContent: valuecmt,
+        UserID: userId,
+        ProductID: id,
+        DatePosted: new Date().toISOString(),
+        // You may need to include other properties like DatePosted
+      };
+
+      // Update the state to include the new comment
+      setComments([...comments, newComment]);
+
+      // Send the user's comment to the server and add it to the database
+      await addComment({ CommentContent: valuecmt, ProductID: id, UserID: userId });
+
+      // Clear the comment input
+      setValuecmt("");
+    } else {
+      alert("Comment content cannot be empty.");
+    }
+  };
+  // ------------------------
+  const [deleteComment] = useDeleteCommentMutation();
+  const handleDeleteComment = async (commentId: any) => {
+    const shouldDelete = window.confirm('Are you sure you want to delete this comment?');
+    if (!shouldDelete) {
+      return; // Không xóa nếu người dùng không xác nhận
+    }
+
+    try {
+      const response = await deleteComment(commentId); // Gọi mutation để xóa comment
+
+      if ((response as any).error) {
+        console.error('Error deleting comment:', (response as any).error);
+        alert('An error occurred while deleting the comment. Please try again.');
+      } else {
+        setTimeout(() => {
+          const updatedComments = comments.filter(comment => comment._id !== commentId);
+          setComments(updatedComments);
+          console.log(`Comment with ID ${commentId} has been deleted.`);
+        }, 3000); // Đợi 3 giây trước khi xóa
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      alert('An error occurred while deleting the comment. Please try again.');
+    }
+  };
+
+
   return (
     <div>
-      <div className="  mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="font-bold text-3xl mb-4 text-center"> REVIEW </h1>
-        <div className="min-h-screen  mt-10">
-          <div className="px-10">
-            <div className="bg-white max-w-7xl rounded-2xl px-10 py-8 shadow-lg hover:shadow-2xl transition duration-500">
-              <div className="w-14 h-14 bg-yellow-500 rounded-full flex items-center justify-center font-bold text-white">
-                LOGO
-              </div>
-              <div className="mt-4">
-                <h1 className="text-lg text-gray-700 font-semibold hover:underline cursor-pointer">
-                  Product Review
-                </h1>
-                <div className="flex mt-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                </div>
-                <p className="mt-4 text-md text-gray-600">
-                  But I must explain to you how all this mistaken idea of
-                  denouncing pleasure and praising pain was born and I will give
-                  you a complete account of the system, and expound the actual
-                  teachings of the great explorer of the truth, the
-                  master-builder of human happines.
-                </p>
-                <div className="flex justify-between items-center">
-                  <div className="mt-4 flex items-center space-x-4 py-6">
-                    <div className="">
+      <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+        <h1 className="text-center font-bold text-4xl">Đánh Gía Về Sản Phẩm</h1>
+        <div className="2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
+          <div className="mt-5 py-2 px-4 mb-4  bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-md ">
+            {comments?.map((comment: any) => (
+              <article key={comment.id} className="p-2 text-base bg-white   rounded-lg dark:bg-gray-900">
+                <footer className="flex justify-between items-center mb-2">
+                  <div className="flex items-center">
+                    <p className="inline-flex items-center mr-3 text-lg text-gray-900 dark:text-white font-semibold">
                       <img
-                        className="w-12 h-12 rounded-full"
-                        src="https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1036&q=80"
-                        alt=""
+                        className="mr-2 w-6 h-6 rounded-full"
+                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                        alt="Michael Gough"
                       />
-                    </div>
-                    <div className="text-sm font-semibold">
-                      John Lucas •{" "}
-                      <span className="font-normal"> 5 minutes ago</span>
-                    </div>
+                      {comment?.UserID?.fullname}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 ">
+                      <time title="">
+                        {comment?.DatePosted}
+                      </time>
+                    </p>
                   </div>
-                  <div className="p-6 bg-yellow-400 rounded-full h-4 w-4 flex items-center justify-center text-2xl text-white mt-4 shadow-lg cursor-pointer">
-                    +
+                  {/* <button
+                    id="dropdownComment1Button"
+                    data-dropdown-toggle="dropdownComment1"
+                    className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    type="button"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 3"
+                    >
+                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                    </svg>
+                    <span className="sr-only">Comment settings</span>
+                  </button> */}
+                  <div className="p-6">
+
+                    <div className="dropdown inline-block relative">
+                      <button className=" text-gray-700 bg-gray-200 font-semibold py-2 px-4 rounded inline-flex items-center">
+                        <span className="mr-1">...</span>
+                        {/* <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg> */}
+                      </button>
+                      <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
+                        <li key={comment._id} className=""><a className="rounded-t  py-2 px-4 block whitespace-no-wrap" href="#"><button onClick={() => handleDeleteComment(comment._id)}>xóa</button></a></li>
+                        {/* <li className=""><a className=" py-2 px-4 block whitespace-no-wrap" href="#"></a></li> */}
+
+                      </ul>
+                    </div>
+
                   </div>
-                </div>
-              </div>
-              {/* cmt2 */}
-              <div className="w-14 h-14 mt-5 bg-yellow-500 rounded-full flex items-center justify-center font-bold text-white">
-                LOGO
-              </div>
-              <div className="mt-4">
-                <h1 className="text-lg text-gray-700 font-semibold hover:underline cursor-pointer">
-                  Product Review
-                </h1>
-                <div className="flex mt-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                  {/* Dropdown menu */}
+                  {/* <div
+                    id="dropdownComment1"
+                    className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
                   >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                </div>
-                <p className="mt-4 text-md text-gray-600">
-                  But I must explain to you how all this mistaken idea of
-                  denouncing pleasure and praising pain was born and I will give
-                  you a complete account of the system, and expound the actual
-                  teachings of the great explorer of the truth, the
-                  master-builder of human happines.
+                    <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
+                      <li>
+                        <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          Edit
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          Remove
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          Report
+                        </a>
+                      </li>
+                    </ul>
+                  </div> */}
+                </footer>
+                <p className="text-gray-500 dark:text-gray-400">
+                  {comment?.CommentContent}
                 </p>
-                <div className="flex justify-between items-center">
-                  <div className="mt-4 flex items-center space-x-4 py-6">
-                    <div className="">
-                      <img
-                        className="w-12 h-12 rounded-full"
-                        src="https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1036&q=80"
-                        alt=""
+                {/* <div className="flex items-center mt-4 space-x-4">
+                  <button
+                    type="button"
+                    className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
+                  >
+                    <svg
+                      className="mr-1.5 w-3.5 h-3.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 18"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"
                       />
-                    </div>
-                    <div className="text-sm font-semibold">
-                      John Lucas •{" "}
-                      <span className="font-normal"> 5 minutes ago</span>
-                    </div>
-                  </div>
-                  <div className="p-6 bg-yellow-400 rounded-full h-4 w-4 flex items-center justify-center text-2xl text-white mt-4 shadow-lg cursor-pointer">
-                    +
-                  </div>
-                </div>
+                    </svg>
+                    Reply
+                  </button>
+                </div> */}
+              </article>
+            ))}
+            <form className="mb-16">
+              <div className="py-8 px-2 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                <label htmlFor="comment" className="sr-only">Your comment</label>
+                <input
+                  id="comment"
+                  className=" text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                  placeholder={userData ? "Write a comment..." : "Please log in to post a comment."}
+                  required
+                  type="text"
+                  value={valuecmt}
+                  onChange={(e) => setValuecmt(e.target.value)}
+                ></input>
               </div>
-            </div>
+              <button
+                type="submit"
+                className="inline-flex items-center py-4 px-4 bg-blue-700 float-left text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 transform hover:scale-105 transition-transform"
+                onClick={handleCommentSubmit} disabled={isLoading}
+              >
+                Post comment
+              </button>
+              {isError && <div>không thể comment</div>}
+            </form>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

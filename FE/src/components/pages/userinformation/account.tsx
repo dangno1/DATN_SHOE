@@ -5,6 +5,9 @@ import { Button } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useChangePasswordMutation, useUpdateUserMutation } from '@/api/auth';
 import { IUser } from '@/interface/auth';
+import { updateUserSchema } from '@/schemas/user';
+import { notification } from "antd";
+type NotificationType = "success" | "info" | "warning" | "error";
 const Account = () => {
   const [updateUser,] = useUpdateUserMutation()
   const [changePassword] = useChangePasswordMutation()
@@ -13,18 +16,21 @@ const Account = () => {
   const [openDialogs, setOpenDialogs] = useState<boolean>(false);
   const [openForm , setOpenForm ] = useState<string>('');
   const [openForms , setOpenForms ] = useState<string>('');
+  const openNotification = (type: NotificationType, message: string) => {
+    notification[type]({
+      message: "Thông báo",
+      description: message,
+    });
+  };
   useEffect(() => {
-    // Kiểm tra xem có dữ liệu người dùng đã lưu trong localStorage hay không
     const user = localStorage.getItem('user');
     if (user) {
-      // Dữ liệu đã được lưu trong localStorage
       const userData = JSON.parse(user);
       setUserData(userData);
     }
   }, []);
 
   const handleLogout = () => {
-    // Xóa thông tin người dùng khỏi localStorage
     localStorage.removeItem('user');
     window.location.href = '/';
   }
@@ -32,7 +38,9 @@ const Account = () => {
   const {
     register,
     handleSubmit,
-    reset
+    reset,
+    setError,
+    formState
   } = useForm<
   {fullname:string,
     email?: string,
@@ -54,16 +62,31 @@ const Account = () => {
   })
   }, [reset, userData]);
 
-  const onSubmit = async (data : {
-    _id:string,
-    email?: string,
-    fullname:string,
-    username:string,
-    phone:string,
-    address:string,
-  })=>{ 
-    await updateUser({...data, _id: String(userData?._id)})
-  }
+  // const onSubmit = async (data : {
+  //   _id:string,
+  //   email?: string,
+  //   fullname:string,
+  //   username:string,
+  //   phone:string,
+  //   address:string,
+  // })=>{ 
+  //   await updateUser({...data, _id: String(userData?._id)})
+  // }
+  const onSubmit = async (data: IUser) => {
+    try {
+      await updateUserSchema.validateAsync(data, { abortEarly: false });
+      // Thực hiện cập nhật thông tin người dùng
+      await updateUser({ ...data, _id: String(userData?._id) });
+      openNotification("success", "Cập nhật thành công");
+    } catch (validationError) {
+      validationError.details.forEach((detail) => {
+        setError(detail.context.key, {
+          type: "manual",
+          message: detail.message,
+        });
+      });
+    }
+  };
 
   const onSubmits =async(data:{
     _id:string,
@@ -191,6 +214,9 @@ const Account = () => {
           variant="standard"
           {...register('fullname')}
         />
+         {formState.errors.fullname && (
+          <p className="text-red-500">{formState.errors.fullname.message}</p>
+        )}
         <label className="text-lg font-medium">Tên tài khoản</label>
         <TextField
           autoFocus
@@ -201,6 +227,9 @@ const Account = () => {
           variant="standard"
            {...register('username')}
         />
+         {formState.errors.username && (
+          <p className="text-red-500">{formState.errors.username.message}</p>
+        )}
          <label className="text-lg font-medium">Số điện thoại</label>
         <TextField
           autoFocus
@@ -211,6 +240,9 @@ const Account = () => {
           variant="standard"
            {...register('phone')}
         />
+         {formState.errors.phone && (
+          <p className="text-red-500">{formState.errors.phone.message}</p>
+        )}
          <label className="text-lg font-medium">Địa chỉ</label>
         <TextField
           autoFocus
@@ -221,6 +253,9 @@ const Account = () => {
           variant="standard"
            {...register('address')}
         />
+         {formState.errors.address && (
+          <p className="text-red-500">{formState.errors.address.message}</p>
+        )}
         </div> :  openForm === 'email' ? 
         <div>
           <label>Email</label>
@@ -233,12 +268,15 @@ const Account = () => {
           variant="standard"
           {...register('email')}
         />
+         {formState.errors.email && (
+          <p className="text-red-500">{formState.errors.email.message}</p>
+        )}
         </div>: <div></div>
       }
     </DialogContent>
     <DialogActions>
-      <Button onClick={()=> setOpenDialog(false)} className="capitalize bg-gradient-to-r from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Cancel</Button>
-      <Button type='submit' className="capitalize bg-gradient-to-r bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Subscribe</Button>
+      <Button onClick={()=> setOpenDialog(false)} className="capitalize  from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Thoát</Button>
+      <Button type='submit' className="capitalize  bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Lưu</Button>
     </DialogActions>
     </form>
   </Dialog>
@@ -284,8 +322,8 @@ const Account = () => {
       }
     </DialogContent>
     <DialogActions>
-      <Button onClick={()=> setOpenDialog(false)} className="capitalize bg-gradient-to-r from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Cancel</Button>
-      <Button type='submit' className="capitalize bg-gradient-to-r bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Subscribe</Button>
+      <Button onClick={()=> setOpenDialog(false)} className="capitalize  from-[black] to-[black] w-max px-3 py-2 font-medium text-white rounded-lg" >Thoát</Button>
+      <Button type='submit' className="capitalize  bg-black from-[black] to-[#black] w-max px-3 py-2 font-medium text-white rounded-lg">Lưu</Button>
     </DialogActions>
     </form>
   </Dialog>

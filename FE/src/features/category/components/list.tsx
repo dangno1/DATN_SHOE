@@ -1,230 +1,268 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable prefer-const */
-import { useNavigate } from "react-router-dom";
-import * as muiIcons from "./mui.icon";
-import * as muiComponent from "./mui.component";
-import {
-  Card,
-  CardHeader,
-  Typography,
-  Button,
-  CardBody,
-  CardFooter,
-  IconButton,
-  Input,
-} from "@material-tailwind/react";
-
-import { useGetCategoryesQuery, useRemoveCategoryMutation } from "@/api/category";
+import { useAddCategoryMutation, useGetCategoryesQuery, useRemoveCategoryMutation, useUpdateCategoryMutation } from "@/api/category";
 import { ICategory } from "@/interface/category";
-import { Modal, Popconfirm, notification } from "antd";
-import { Backdrop, CircularProgress } from "@mui/material";
-import { useState } from "react";
+import { Modal, Popconfirm, Table, Tooltip, notification } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
+import { useState, useEffect, Key } from "react";
+import { useForm } from "react-hook-form";
+import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
+import { joiResolver } from "@hookform/resolvers/joi";
+import categorySchema from "@/schemas/category";
+
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
+type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
 
 const ListCategory = () => {
-  const [formAdd, setFormAdd] = useState<boolean>(false)
-  const [deleteCategory, { isLoading }] = useRemoveCategoryMutation();
-  const navigate = useNavigate();
+  const [form, setForm] = useState<FormType>({ open: false, method: "" })
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+  const [categoryData, setCategoryData] = useState<ICategory[]>()
 
-  const { data: categoryDatas } = useGetCategoryesQuery();
-  const TABLE_HEAD = ["Stt", "Value", "CreatedAt", "UpdatedAt", "Action"];
-  const TABLE_ROWS = categoryDatas?.map(
-    ({ _id, name, createdAt, updatedAt }: ICategory) =>
-      categoryDatas && {
-        _id,
-        name,
-        createdAt,
-        updatedAt,
-      }
-  );
+  const [deleteCategory, { isLoading: loadDelete }] = useRemoveCategoryMutation();
+  const [updateCategory, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateCategoryMutation();
+  const [addCategory, { isLoading: loadAdd, isSuccess: successAdd }] = useAddCategoryMutation();
+  const { data: categoryDatas } = useGetCategoryesQuery<{ data: ICategory[] }>();
 
-
-  const handleDeleteCategory = async (id: string) => {
-    await deleteCategory(id)
-    notification.success({
-      message: "Xóa category thành công",
-      placement: "topRight",
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (type: NotificationType, message: string) => {
+    api[type]({
+      message: 'Thông báo',
+      description: message
     });
   };
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors }
+  } = useForm<ICategory>({
+    resolver: joiResolver(categorySchema)
+  })
+  const {
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch
+  } = useForm<{ search: string }>()
+
+  useEffect(() => {
+    reset()
+  }, [reset, successAdd, successUpdate])
+
+  useEffect(() => {
+    form.method === "update"
+      ? reset({ name: categoryDatas.find((item: ICategory) => item._id == form._id)?.name })
+      : reset({ name: undefined })
+  }, [categoryDatas, form, reset])
+
+  useEffect(() => {
+    categoryDatas && setCategoryData(categoryDatas)
+  }, [categoryDatas])
+
+  const handleDeleteCategory = (listId: string[]) => {
+    listId.map(async (id: string) => {
+      await deleteCategory(id)
+    })
+    openNotification('success', "Xóa Danh mục thành công")
+  };
+
+  const handleAddUpdateCategory = async (data: ICategory) => {
+    try {
+      const existCategory = categoryDatas.find((item: ICategory) => item.name.toLowerCase() === data.name.toLowerCase())
+      const { method } = form
+
+      if (method === "add" && !existCategory) {
+        await addCategory(data)
+        openNotification('success', "Thêm danh mục thành công")
+        return;
+      }
+
+      if (method === "update" && !existCategory || (existCategory && existCategory._id === form._id)) {
+        await updateCategory({ ...data, _id: form._id })
+        openNotification('success', "Cập nhật danh mục thành công")
+        return;
+      }
+
+      setError("name", { type: "exist", message: "Danh mục đã tồn tại" })
+    } catch (error) {
+      return error
+    }
+  }
+
+  const handleSearch = (data: { search?: string }) => {
+    const newData = categoryDatas && categoryDatas.filter((item: ICategory) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
+    setCategoryData(newData)
+  }
+
+  const onSelectChange = (newSelectedRowKeys: Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const columns: ColumnsType<ICategory> = [
+    {
+      title: "STT",
+      dataIndex: "index",
+      key: "index",
+      className: "w-[70px] max-w-[100px]",
+      fixed: "left",
+    },
+    {
+      title: "Tên Danh mục",
+      dataIndex: "name",
+      key: "name",
+      className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
+      render: (name: string, category: ICategory) =>
+        <div className="flex items-center gap-2">
+          <BsPencilSquare className="w-3 h-3 fill-orange-600 cursor-pointer" onClick={() => setForm({ open: true, method: "update", _id: String(category._id) })} />
+          {name}
+        </div>
+    },
+    {
+      title: "Số lượng sản phẩm",
+      dataIndex: "_id",
+      key: "_id",
+      sorter: (a, b) => Number(a.products?.length) - Number(b.products?.length),
+      showSorterTooltip: { title: "click để sắp xếp theo số lượng sản phẩm" },
+      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[200px] lg:max-w-[25 0px]",
+      render: (_, categoty: ICategory) =>
+        <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
+          {categoty.products?.length}
+        </div>
+    },
+    {
+      title: "Thời gian cập nhật",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
+      showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
+      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
+      render: (updatedAt: string) =>
+        <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
+          {new Date(updatedAt).toLocaleString()}
+        </div>
+    },
+    {
+      title: "Hành động",
+      dataIndex: "_id",
+      key: "_id",
+      align: "center",
+      className: "w-auto",
+      fixed: "right",
+      render: (_id: string) =>
+        _id && (
+          <div className="w-max m-auto flex gap-3 cursor-pointer">
+            <Popconfirm
+              title
+              description="Xóa danh mục?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+              cancelButtonProps={{ className: "border-slate-400" }}
+              onConfirm={() => handleDeleteCategory([_id])}
+            >
+              <Tooltip placement="right" title="Xóa">
+                <BsTrash3 className="fill-red-600 w-4 h-4" />
+              </Tooltip>
+            </Popconfirm>
+          </div >
+        ),
+    },
+  ];
+
+  const sortUpdatedAtCategoryData = categoryData && [...categoryData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
+
+  const dataSource = sortUpdatedAtCategoryData?.map((category: ICategory, index: number) => ({
+    ...category,
+    key: category._id,
+    index: index + 1
+  }))
+
   return (
     <>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      <Modal
-        title="Thêm mới category"
-        centered
-        open={formAdd}
-        okButtonProps={{ className: "bg-blue-500 hover:bg-blue-500 active:bg-blue-700" }}
-        onCancel={() => setFormAdd(false)}
-        footer
-      >
-        <form className="w-full px-[20px] grid grid-cols-1 gap-y-[10px] justify-items-end">
-          <Input required className="border border-slate-500 w-full rounded-lg " />
-          <div className="w-max grid grid-cols-2 gap-x-[10px] items-center justify-items-end ">
-            <Button
-              onClick={() => setFormAdd(false)}
-              className="cursor-pointer capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="cursor-pointer capitalize bg-gradient-to-r from-[#6f89fb] to-[#5151ec] w-max px-3 py-2 font-medium text-white rounded-lg ">
-              Thêm mới
-            </Button>
-          </div>
+      <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">
+          Tất cả danh mục sản phẩm
+        </div>
+        <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
+          <Button
+            onClick={() => setForm({ open: true, method: "add" })}
+            variant="contained"
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            startIcon={<BsPlus className="w-6 h-6" />}
+          >
+            Thêm Mới
+          </Button>
+        </div>
+      </div>
+      <div className="h-[35px] w-full my-3 flex gap-2">
+        <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
+          <input
+            type="text" placeholder="tìm kiếm danh mục" {...registerSearch('search')}
+            className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
+          <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
-      </Modal>
-      <Card className="h-full w-full shadow-lg px-[20px] ">
-        <CardHeader
-          floated={false}
-          shadow={false}
-          className="rounded-none space-y-[20px] ">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
-            <div>
-              <Typography
-                variant="h5"
-                color="blue-gray"
-                className="text-[30px] font-[600]">
-                Danh sách Category
-              </Typography>
-            </div>
-            <div className="flex w-full shrink-0 gap-2 md:w-max ">
-              <div className="w-full md:w-72 relative h-full">
-                <Input
-                  placeholder="Search..."
-                  className="border outline-transparent focus:border-gray-500 border-gray-400 rounded-lg"
-                />
-                <muiIcons.SearchIcon className="cursor-pointer hover:text-pink-500 h-5 w-5 absolute top-[50%] right-[10px] translate-y-[-50%] " />
-              </div>
+        {
+          selectedRowKeys.length > 0 && <div className="w-full flex items-center  cursor-pointer">
+            <Popconfirm
+              title
+              description="Xóa danh mục?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+              cancelButtonProps={{ className: "border-slate-400" }}
+              onConfirm={() => handleDeleteCategory(selectedRowKeys as string[])}
+            >
+              <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa danh mục</span>
+              </Tooltip>
+            </Popconfirm>
+          </div>
+        }
+      </div>
+      <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
+      <>
+        {contextHolder}
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loadAdd || loadDelete || loadUpdate}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <Modal
+          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">{form.method === "update" ? "Cập nhật danh mục" : "Thêm mới danh mục"}</div>}
+          centered open={form.open}
+          onCancel={() => setForm({ open: false, method: "" })}
+          okButtonProps={{ style: { display: "none" } }}
+          cancelButtonProps={{ style: { display: "none" } }}
+        >
+          <form
+            onSubmit={handleSubmit(handleAddUpdateCategory)}
+            className="w-full px-[20px]"
+          >
+            <label className="text-slate-600 font-semibold block float-left">Tên Danh mục<span className="text-red-500">*</span></label>
+            <input
+              {...register("name")} type="text"
+              autoFocus placeholder="Giày nam, Giày nữ..."
+              className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && "border-red-500"}`}
+            />
+            {errors.name && <span className="text-red-500">{errors.name.message}</span>}
+            <div className="w-full grid items-center justify-end mt-2">
               <Button
-                onClick={() => setFormAdd(true)}
-                className="flex items-center gap-3 bg-black relative pl-[40px]">
-                <muiIcons.AddIcon className="absolute top-[50%] left-[10px] translate-y-[-50%] " />
-                Thêm mới
+                type="submit"
+                variant="contained"
+                className="w-max !font-semibold !bg-[#58b4ff] !shadow-none"
+                startIcon={form.method === "update" ? <BsPencilSquare className="w-4 h-4" /> : <BsPlusLg className="w-4 h-4" />}
+              >
+                {form.method === "update" ? "cập nhật" : "Thêm mới"}
               </Button>
             </div>
-          </div>
-        </CardHeader>
-        <CardBody className="px-0">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 uppercase">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal leading-none opacity-70">
-                      {head}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {TABLE_ROWS?.map((row: ICategory, index: number) => {
-                const isLast = index === TABLE_ROWS.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
-                return (
-                  <tr key={row._id}>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3 min-w-[100px] ">
-                        <Typography>{index + 1}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3 min-w-[200px] ">
-                        <Typography>{row.name}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Typography>{row.createdAt}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Typography>{row.updatedAt}</Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="grid grid-cols-2 justify-start">
-                        <div className="grid grid-cols-2 gap-x-[20px] items-center cursor-pointer">
-                          <Popconfirm
-                            title="Delete the task"
-                            description="Are you sure to delete this task?"
-                            okText="Yes"
-                            cancelText="No"
-                            okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-                            cancelButtonProps={{ className: "border-slate-400" }}
-                            onConfirm={() => handleDeleteCategory(String(row._id))}
-                          >
-                            <muiIcons.DeleteSweepOutlinedIcon
-                              className="h-5 w-5 text-pink-600 "
-                            />
-                          </Popconfirm>
-                          <muiComponent.Tooltip
-                            title="Edit category"
-                            placement="top">
-                            <muiIcons.ModeEditIcon
-                              onClick={() => navigate(`update/${row._id}`)}
-                              className="h-5 w-5 text-orange-400 "
-                            />
-                          </muiComponent.Tooltip>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </CardBody>
-        <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          <Button variant="outlined" size="sm">
-            Previous
-          </Button>
-          <div className="flex items-center gap-2">
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              1
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              2
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              3
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              4
-            </IconButton>
-            <IconButton
-              variant="outlined"
-              className="shadow-[none] border border-gray-300 text-gray-500 grid place-items-center w-max h-max p-[15px]">
-              5
-            </IconButton>
-          </div>
-          <Button variant="outlined" size="sm">
-            Next
-          </Button>
-        </CardFooter>
-      </Card >
+          </form>
+        </Modal>
+      </>
     </>
   );
 };

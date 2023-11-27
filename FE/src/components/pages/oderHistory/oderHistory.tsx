@@ -1,282 +1,173 @@
 import Banner from "../userinformation/banner";
+import { useEffect, useState } from "react";
+import { notification } from "antd";
+import { useGetOrdersQuery } from "@/api/orderedProduct";
+type NotificationType = "success" | "info" | "warning" | "error";
 
 const OderHistory = () => {
-  return (
-    <div>
-      <Banner />
-      <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
-        <div className="flex justify-start item-start space-y-2 flex-col">
-          <h1 className="text-3xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">
-            Order #13432
-          </h1>
-          <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">
-            21st Mart 2021 at 10:34 PM
-          </p>
-        </div>
-        <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
-          <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
-            <div className="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
-              <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">
-                Customer’s Cart
-              </p>
-              <div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
-                <div className="pb-4 md:pb-8 w-full md:w-40">
-                  <img
-                    className="w-full hidden md:block"
-                    src="https://i.ibb.co/84qQR4p/Rectangle-10.png"
-                    alt="dress"
-                  />
-                  <img
-                    className="w-full md:hidden"
-                    src="https://i.ibb.co/L039qbN/Rectangle-10.png"
-                    alt="dress"
-                  />
-                </div>
-                <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                  <div className="w-full flex flex-col justify-start items-start space-y-8">
-                    <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-                      Premium Quaility Dress
-                    </h3>
-                    <div className="flex justify-start items-start flex-col space-y-2">
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Style:{" "}
-                        </span>{" "}
-                        Italic Minimal Design
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Size:{" "}
-                        </span>{" "}
-                        Small
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Color:{" "}
-                        </span>{" "}
-                        Light Blue
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Quantity:{" "}
-                        </span>{" "}
-                        Light Blue
-                      </p>
-                      <p className="text-base dark:text-white xl:text-lg leading-6">
-                        $36.00{" "}
-                        <span className="text-red-300 line-through">
-                          {" "}
-                          $45.00
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between space-x-8 items-start w-full">
-                    <button className="mt-[110px] py-3 w-[150px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                      View product
-                    </button>
-                    <button className="mt-[110px] py-3 w-[140px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                      Buy again
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
-                <div className="pb-4 md:pb-8 w-full md:w-40">
-                  <img
-                    className="w-full hidden md:block"
-                    src="https://i.ibb.co/84qQR4p/Rectangle-10.png"
-                    alt="dress"
-                  />
-                  <img
-                    className="w-full md:hidden"
-                    src="https://i.ibb.co/L039qbN/Rectangle-10.png"
-                    alt="dress"
-                  />
-                </div>
-                <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                  <div className="w-full flex flex-col justify-start items-start space-y-8">
-                    <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-                      Premium Quaility Dress
-                    </h3>
-                    <div className="flex justify-start items-start flex-col space-y-2">
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Style:{" "}
-                        </span>{" "}
-                        Italic Minimal Design
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Size:{" "}
-                        </span>{" "}
-                        Small
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Color:{" "}
-                        </span>{" "}
-                        Light Blue
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Quantity:{" "}
-                        </span>{" "}
-                        Light Blue
-                      </p>
-                      <p className="text-base dark:text-white xl:text-lg leading-6">
-                        $36.00{" "}
-                        <span className="text-red-300 line-through">
-                          {" "}
-                          $45.00
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between space-x-8 items-start w-full">
-                    <button className="mt-[110px] py-3 w-[150px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                      View product
-                    </button>
-                    <button className="mt-[110px] py-3 w-[140px] rounded-lg lg:w-full md:w-full sm:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                      Buy again
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6 md:mt-0 flex justify-start flex-col md:flex-row items-start md:items-center space-y-4 md:space-x-6 xl:space-x-8 w-full">
-                <div className="w-full md:w-40">
-                  <img
-                    className="w-full hidden md:block"
-                    src="https://i.ibb.co/s6snNx0/Rectangle-17.png"
-                    alt="dress"
-                  />
-                  <img
-                    className="w-full md:hidden"
-                    src="https://i.ibb.co/BwYWJbJ/Rectangle-10.png"
-                    alt="dress"
-                  />
-                </div>
-                <div className="flex justify-between items-start w-full flex-col md:flex-row space-y-4 md:space-y-0">
-                  <div className="w-full flex flex-col justify-start items-start space-y-8">
-                    <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-                      High Quaility Italic Dress
-                    </h3>
-                    <div className="flex justify-start items-start flex-col space-y-2">
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Style:{" "}
-                        </span>{" "}
-                        Italic Minimal Design
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Size:{" "}
-                        </span>{" "}
-                        Small
-                      </p>
-                      <p className="text-sm dark:text-white leading-none text-gray-800">
-                        <span className="dark:text-gray-400 text-gray-300">
-                          Color:{" "}
-                        </span>{" "}
-                        Light Blue
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between space-x-8 items-start w-full">
-                    <p className="text-base dark:text-white xl:text-lg leading-6">
-                      $20.00{" "}
-                      <span className="text-red-300 line-through"> $30.00</span>
-                    </p>
+  const { data: order } = useGetOrdersQuery();
+  console.log(order);
+  const [userData, setUserData] = useState(localStorage);
+  const [received, setReceived] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
+  useEffect(() => {
+    const openNotification = (type: NotificationType, message: string) => {
+      api[type]({
+        message: "Thông báo",
+        description: message,
+      });
+    };
+    const params = new URLSearchParams(window.location.search);
+    const vnp_TransactionStatus = params.get("vnp_TransactionStatus");
+    const currentURL = window.location.href;
+    if (currentURL !== "http://localhost:5174/oder&history") {
+      if (vnp_TransactionStatus) {
+        if (vnp_TransactionStatus == "00") {
+          console.log("Thanh Toán Thành Công");
+          openNotification("success", "Thanh Toán Thành Công");
+        } else if (vnp_TransactionStatus != "00") {
+          openNotification("error", "Bạn Đã Hủy Tanh Toán");
+        }
+      }
+    }
+    const user = localStorage.getItem("user");
+    if (user) {
+      const userData = JSON.parse(user);
+      setUserData(userData);
+    }
+  }, []);
 
-                    <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">
-                      $20.00
-                    </p>
+  const orderCart = order?.filter((item) => item?.userEmail == userData.email);
+
+  console.log(orderCart);
+
+  const reversedOrderCart = orderCart?.slice().reverse();
+
+  const handleReceive = (orderId) => {
+    // Perform any necessary actions here, such as updating the order status
+    // ...
+
+    // Set the received state to true
+    setReceived(true);
+
+    // Show a notification or perform any other necessary actions
+    api.success({
+      message: "Thông báo",
+      description: "Bạn đã xác nhận đã nhận được hàng.",
+    });
+  };
+
+  return (
+    <>
+      <Banner />
+      {contextHolder}
+      <div className="pt-20"></div>
+      {reversedOrderCart?.map((orderItem: any) => (
+        <div key={orderItem._id} className="pt-7 container mx-auto p-12">
+          {orderItem?.products.map((product: any) => (
+            <div key={product.productId}>
+              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[3fr,5fr,4fr,6fr,4fr]">
+                <img
+                  className="border rounded-xl w-full h-full"
+                  alt=""
+                  src={product.productImage}
+                  width={"100%"}
+                  height={"240px"}
+                />
+                <div className="p-5">
+                  <div className="font-medium text-lg">
+                    Tên Sản Phẩm: {product.productName}
+                  </div>
+                  <div className="font-medium text-lg">
+                    Giá sản phẩm:{" "}
+                    <span className="text-red-500">
+                      {product.productInitialPrice.toLocaleString("vi-VN")}VND
+                    </span>
+                  </div>
+                  <div className="font-medium text-lg">
+                    Màu Sản Phẩm:{" "}
+                    <span className="pt-2 uppercase">
+                      {product.productColor}
+                    </span>
+                  </div>
+                  <div className="font-medium text-lg">
+                    Khích cỡ Sản Phẩm:{" "}
+                    <span className="pt-5">{product.productSize}</span>
+                  </div>
+                  <div className="font-medium text-lg">
+                    Số lượng Sản Phẩm:{" "}
+                    <span className="pt-5">{product.productQuantity}</span>
+                  </div>
+                  <div className="font-medium text-lg">
+                    Tổng giá Sản Phẩm:{" "}
+                    <span className="pt-5 text-red-500">
+                      {product.productPrice.toLocaleString("vi-VN")}VND
+                    </span>
                   </div>
                 </div>
-              </div>
-            </div>
-            {/* sp */}
-            <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
-              <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
-                <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
-                  Summary
-                </h3>
-                <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
-                  <div className="flex justify-between w-full">
-                    <p className="text-base dark:text-white leading-4 text-gray-800">
-                      Subtotal
-                    </p>
-                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                      $56.00
-                    </p>
+                <div className="flex flex-col">
+                  <div className="pt-5  flex justify-center items-center font-medium text-lg">
+                    Đánh giá sản phẩm
                   </div>
-                  <div className="flex justify-between items-center w-full">
-                    <p className="text-base dark:text-white leading-4 text-gray-800">
-                      Discount{" "}
-                      <span className="bg-gray-200 p-1 text-xs font-medium dark:bg-white dark:text-gray-800 leading-3 text-gray-800">
-                        STUDENT
-                      </span>
-                    </p>
-                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                      -$28.00 (50%)
-                    </p>
+                  <div className="flex gap-5 justify-center pt-5">
+                    {[...Array(5)].map((_, index) => (
+                      <div key={index}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="22"
+                          height="22"
+                          viewBox="0 0 22 22"
+                          fill="yellow"
+                        >
+                          <path
+                            d="M9.97183 1.70846C10.4382 0.933481 11.5618 0.933482 12.0282 1.70847L14.3586 5.58087C14.5262 5.85928 14.7995 6.05784 15.116 6.13116L19.5191 7.15091C20.4002 7.35499 20.7474 8.42356 20.1545 9.10661L17.1918 12.5196C16.9788 12.765 16.8744 13.0863 16.9025 13.41L17.2932 17.9127C17.3714 18.8138 16.4625 19.4742 15.6296 19.1214L11.4681 17.3583C11.1689 17.2316 10.8311 17.2316 10.5319 17.3583L6.37038 19.1214C5.53754 19.4742 4.62856 18.8138 4.70677 17.9127L5.09754 13.41C5.12563 13.0863 5.02124 12.765 4.80823 12.5196L1.8455 9.1066C1.25257 8.42356 1.59977 7.35499 2.48095 7.15091L6.88397 6.13116C7.20053 6.05784 7.47383 5.85928 7.64138 5.58087L9.97183 1.70846Z"
+                            stroke="black"
+                            strokeWidth="1.5"
+                          />
+                        </svg>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex justify-between items-center w-full">
-                    <p className="text-base dark:text-white leading-4 text-gray-800">
-                      Shipping
-                    </p>
-                    <p className="text-base dark:text-gray-300 leading-4 text-gray-600">
-                      $8.00
-                    </p>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center w-full">
-                  <p className="text-base dark:text-white font-semibold leading-4 text-gray-800">
-                    Total
-                  </p>
-                  <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">
-                    $36.00
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col justify-center px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
-                <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">
-                  Shipping
-                </h3>
-                <div className="flex justify-between items-start w-full">
-                  <div className="flex justify-center items-center space-x-4">
-                    <div className="w-8 h-8">
-                      <img
-                        className="w-full h-full"
-                        alt="logo"
-                        src="https://i.ibb.co/L8KSdNQ/image-3.png"
-                      />
-                    </div>
-                    <div className="flex flex-col justify-start items-center">
-                      <p className="text-lg leading-6 dark:text-white font-semibold text-gray-800">
-                        DPD Delivery
-                        <br />
-                        <span className="font-normal">
-                          Delivery with 24 Hours
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-lg font-semibold leading-6 dark:text-white text-gray-800">
-                    $8.00
-                  </p>
-                </div>
-                <div className="w-full flex justify-center items-center">
-                  <button className="hover:bg-black dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 py-5 w-96 md:w-full bg-gray-800 text-base font-medium leading-4 text-white">
-                    View Carrier Details
+                  <button className="mt-10 bg-blue-500 h-12 text-white rounded-xl hover:bg-blue-700">
+                    Lưu Đánh Giá
                   </button>
                 </div>
+                <div>
+                  <h3 className="flex justify-center pt-5 font-medium text-lg">
+                    Trạng Thái Đơn Hàng
+                  </h3>
+                  <div className="flex gap-2">
+                    <div className="border p-2 w-full text-center h-12 rounded-xl flex justify-center items-center mt-20">
+                      {orderItem.status}
+                    </div>
+                    {orderItem.status === "Đơn Hàng Đã Giao Thành Công" &&
+                      !received && (
+                        <div
+                          className="border w-full text-center h-12 rounded-xl flex justify-center items-center mt-20"
+                          onClick={() => handleReceive(orderItem._id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          Đã Nhận Được Hàng
+                        </div>
+                      )}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="flex justify-center pt-5 font-medium text-lg">
+                    Thao Tác
+                  </h3>
+                  <div className="flex gap-10 justify-center">
+                    <button className="mt-20 bg-blue-500 w-6/12 h-12 text-white rounded-xl hover:bg-blue-700">
+                      Mua Lại
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      </div>
-    </div>
+      ))}
+    </>
   );
 };
 

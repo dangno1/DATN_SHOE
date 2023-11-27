@@ -24,7 +24,7 @@ const categoryApi = createApi({
       invalidatesTags: ["Category"],
     }),
     addCategory: builder.mutation<ICategory, ICategory>({
-      query: (category) => ({
+      query: (category: ICategory) => ({
         url: `/categoryes`,
         method: "post",
         body: category,
@@ -32,7 +32,7 @@ const categoryApi = createApi({
       invalidatesTags: ["Category"],
     }),
     updateCategory: builder.mutation<ICategory, ICategory>({
-      query: (category) => ({
+      query: (category: ICategory) => ({
         url: `/categoryes/update/${category._id}`,
         method: "PATCH",
         body: { ...category, _id: undefined },

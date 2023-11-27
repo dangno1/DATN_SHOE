@@ -1,13 +1,17 @@
 import Slider from "./banner";
 import WomenList from "./womenList";
-import Social from "./social";
+import Blog from "../home/blog";
+import Social from "../home/social";
+import Socials from "./socials";
 
 const Women = () => {
   return (
     <div>
       <Slider />
-      <Social />
+      <Socials />
       <WomenList />
+      <Social/>
+      <Blog/>
     </div>
   );
 };
