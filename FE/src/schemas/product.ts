@@ -49,7 +49,9 @@ const productSchema = {
     required: "Danh mục sản phẩm không được để trống",
   },
 
-  sizeId: { required: "Kích thước không được để trống" },
+  sizeId: {
+    required: "Kích thước không được để trống",
+  },
 
   colorId: { required: "Màu sắc không được để trống" },
 

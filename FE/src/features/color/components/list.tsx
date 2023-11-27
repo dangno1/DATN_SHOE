@@ -36,6 +36,7 @@ const ListColor = () => {
     reset,
     setFocus,
     setValue,
+    setError,
     formState: { errors } } = useForm<IColor>({
       resolver: joiResolver(colorSchema)
     })
@@ -61,25 +62,29 @@ const ListColor = () => {
 
   const handleDeleteColor = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteColor(id)
+      await deleteColor(id).unwrap().then(() => openNotification('success', "Xóa màu sắc thành công"))
     })
-    openNotification('success', "Xóa màu sắc thành công")
   };
 
   const handleAddUpdateColor = async (data: IColor) => {
     try {
-      const { open, method } = form
-      if (open && method === "add") {
-        await addColor(data)
-        openNotification('success', "Thêm màu sắc thành công")
+      const existColor = colorDatas.find(({ value }: IColor) => value.toLowerCase() === data.value.toLowerCase())
+      const { method } = form
+      if (method === "add" && !existColor) {
+        const result = await addColor(data)
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Thêm màu sắc thành công")
+          : openNotification('success', "Thêm màu sắc thất bại, vui lòng thử lại sau")
         return
       }
-      if (open && method === "update" && form._id) {
-        await updateColor({ ...data, _id: form._id })
-        openNotification('success', "Cập nhật màu sắc thành công")
+      if (method === "update" && !existColor || (existColor && existColor._id === form._id)) {
+        const result = await updateColor({ ...data, _id: form._id })
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Cập nhật màu sắc thành công")
+          : openNotification('success', "Cập nhật màu sắc thất bại, vui lòng thử lại sau")
         return
       }
-      reset()
+      setError("value", { type: "exist", message: "Màu sắc đã tồn tại" })
     } catch (error) {
       return error
     }
@@ -219,7 +224,7 @@ const ListColor = () => {
               onConfirm={() => handleDeleteColor(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa {selectedRowKeys.length} màu sắc</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa màu sắc</span>
               </Tooltip>
             </Popconfirm>
           </div >

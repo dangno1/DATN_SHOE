@@ -10,6 +10,7 @@ export interface IProduct {
   updatedAt?: string;
   createdAt?: string;
   variants: {
+    _id?: string | number;
     sizeId: string;
     colorId: string;
     price: number;

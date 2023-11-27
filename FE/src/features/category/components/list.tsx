@@ -15,7 +15,7 @@ type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
 const ListCategory = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-  const [categoryData, setCategoryData] = useState<ICategory[]>()
+  const [categoryData, setCategoryData] = useState<ICategory[]>([]);
 
   const [deleteCategory, { isLoading: loadDelete }] = useRemoveCategoryMutation();
   const [updateCategory, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateCategoryMutation();
@@ -58,13 +58,13 @@ const ListCategory = () => {
 
   useEffect(() => {
     categoryDatas && setCategoryData(categoryDatas)
-  }, [categoryDatas])
+  }, [categoryDatas, selectedRowKeys])
 
   const handleDeleteCategory = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteCategory(id)
+      await deleteCategory(id).unwrap().then(() => openNotification('success', "Xóa Danh mục thành công"))
     })
-    openNotification('success', "Xóa Danh mục thành công")
+    setSelectedRowKeys([])
   };
 
   const handleAddUpdateCategory = async (data: ICategory) => {
@@ -73,14 +73,18 @@ const ListCategory = () => {
       const { method } = form
 
       if (method === "add" && !existCategory) {
-        await addCategory(data)
-        openNotification('success', "Thêm danh mục thành công")
+        const result = await addCategory(data)
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Thêm danh mục thành công")
+          : openNotification('error', "Thêm danh mục thất bại, vui lòng thử lại")
         return;
       }
 
       if (method === "update" && !existCategory || (existCategory && existCategory._id === form._id)) {
-        await updateCategory({ ...data, _id: form._id })
-        openNotification('success', "Cập nhật danh mục thành công")
+        const result = await updateCategory({ ...data, _id: form._id })
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Cập nhật danh mục thành công")
+          : openNotification('error', "Cập nhật danh mục thất bại, vui lòng thử lại")
         return;
       }
 
@@ -91,7 +95,8 @@ const ListCategory = () => {
   }
 
   const handleSearch = (data: { search?: string }) => {
-    const newData = categoryDatas && categoryDatas.filter((item: ICategory) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
+    const newData = categoryDatas
+      && categoryDatas.filter((item: ICategory) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
     setCategoryData(newData)
   }
 
@@ -178,7 +183,8 @@ const ListCategory = () => {
     },
   ];
 
-  const sortUpdatedAtCategoryData = categoryData && [...categoryData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
+  const sortUpdatedAtCategoryData = categoryData
+    && [...categoryData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
 
   const dataSource = sortUpdatedAtCategoryData?.map((category: ICategory, index: number) => ({
     ...category,
@@ -222,7 +228,7 @@ const ListCategory = () => {
               onConfirm={() => handleDeleteCategory(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa {selectedRowKeys.length} danh mục</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa danh mục</span>
               </Tooltip>
             </Popconfirm>
           </div>

@@ -55,26 +55,22 @@ const ListProduct = () => {
     listId.map(async (id: string) => {
       const product = productDataApi?.find((product: IProduct) => product._id === id)
       const oldImage = [...product?.image as File[]]
-      await updateProduct({ ...product, image: oldImage, isDelete: true, _id: id } as IProduct)
-      return
+      await updateProduct({ ...product, image: oldImage, isDelete: true, _id: id } as IProduct).unwrap().then(() => openNotification('success', 'Đã di chuyển sản phẩm đến thùng rác'))
     })
-    openNotification('success', 'Đã di chuyển sản phẩm đến thùng rác')
   };
 
   const handleDelete = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteProdcut(String(id));
+      await deleteProdcut(String(id)).unwrap().then(() => openNotification('success', 'Xóa thành công'))
     })
-    openNotification('success', 'Xóa thành công')
   }
 
   const handleRecovery = (listId: string[]) => {
     listId.map(async (id: string) => {
       const product = productDataApi?.find((product: IProduct) => product._id === id)
       const oldImage = [...product?.image as File[]]
-      await updateProduct({ ...product, image: oldImage, isDelete: false, _id: id } as IProduct)
+      await updateProduct({ ...product, image: oldImage, isDelete: false, _id: id } as IProduct).unwrap().then(() => openNotification('success', 'Khôi phục thành công'))
     })
-    openNotification('success', 'Khôi phục thành công')
   }
 
   const handleSearch = (data: { search?: string }) => {
@@ -245,14 +241,15 @@ const ListProduct = () => {
               onConfirm={() => trashCanState ? handleDelete(selectedRowKeys as string[]) : handleTrushCan(selectedRowKeys as string[])}
               className="flex place-items-center gap-1 pr-2"
             >
-              <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa {selectedRowKeys.length} sản phẩm</span>
+              <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa sản phẩm</span>
             </Popconfirm>
             {
               trashCanState
               && <div
                 onClick={() => handleRecovery(selectedRowKeys as string[])}
                 className="flex place-items-center gap-1 pr-2 before:w-[1px] before:h-[15px] before:bg-gray-500">
-                <BsArrowCounterclockwise className="fill-blue-500 w-4 h-4" /><span className="font-semibold hover:text-blue-500 select-none">Khôi phục {selectedRowKeys.length} </span>
+                <BsArrowCounterclockwise className="fill-blue-500 w-4 h-4" />
+                <span className="font-semibold hover:text-blue-500 select-none">Khôi phục</span>
               </div>
             }
           </div >

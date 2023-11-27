@@ -117,9 +117,10 @@ const AddProduct = () => {
     try {
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
-      const result = await AddProduct({ ...data, thumbnail: newThumbnail, image: newImage, desc: data.desc ?? "Đang cập nhật" });
-      "data" in result && "success" in result.data && result.data.success ? openNotification("success", "Thêm sản phẩm thành công")
-        : openNotification("success", "Thêm sản phẩm thành công")
+      const result = await AddProduct({ ...data, thumbnail: newThumbnail, image: newImage });
+      "data" in result && "success" in result.data && result.data.success
+        ? openNotification("success", "Thêm sản phẩm thành công")
+        : openNotification("error", "Thêm sản phẩm thất bại, vui lòng thử lại sau")
       reset()
       setImage(null)
       setThumbnail(null)

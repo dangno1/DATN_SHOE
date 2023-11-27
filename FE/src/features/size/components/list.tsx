@@ -63,10 +63,10 @@ const ListSize = () => {
 
   const handleDeleteSize = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteSize(id)
+      await deleteSize(id).unwrap().then(() => openNotification('success', "Xóa kích cỡ thành công"))
     }
     )
-    openNotification('success', "Xóa kích cỡ thành công")
+
   };
 
   const handleAddUpdateSize = async (data: ISize) => {
@@ -75,17 +75,20 @@ const ListSize = () => {
 
       const { method } = form
       if (method === "add" && !existSize) {
-        await addSize(data)
-        openNotification('success', "Thêm kích cỡ thành công")
+        const result = await addSize(data)
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Thêm kích cỡ thành công")
+          : openNotification('error', "Thêm kích cỡ thất bại, vui lòng thử lại")
         return
       }
 
       if (method === "update" && !existSize || (existSize && existSize._id === form._id)) {
-        await updateSize({ ...data, _id: form._id })
-        openNotification('success', "Cập nhật kích cỡ thành công")
+        const result = await updateSize({ ...data, _id: form._id })
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Cập nhật kích cỡ thành công")
+          : openNotification('error', "Cập nhật kích cỡ thất bại, vui lòng thử lại")
         return
       }
-
       setError("value", { type: "exist", message: "Kích cỡ đã tồn tại" })
     } catch (error) {
       return error
@@ -232,7 +235,7 @@ const ListSize = () => {
               onConfirm={() => handleDeleteSize(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa {selectedRowKeys.length} kích cỡ</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa kích cỡ</span>
               </Tooltip>
             </Popconfirm>
           </div >

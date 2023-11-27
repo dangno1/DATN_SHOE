@@ -113,8 +113,10 @@ const UpdateProduct = () => {
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
 
-      await UpdateProduct({ ...data, thumbnail: newThumbnail, image: newImage, _id: id })
-      openNotificationWithIcon("success", "Cập nhật sản phẩm thành công")
+      const result = await UpdateProduct({ ...data, thumbnail: newThumbnail, image: newImage, _id: id })
+      "data" in result && "success" in result.data && result.data.success
+        ? openNotificationWithIcon("success", "Cập nhật sản phẩm thành công")
+        : openNotificationWithIcon("error", "Cập nhật sản phẩm thất bại, vui lòng thử lại sau")
       setThumbnail(null)
     } catch (error: unknown) {
       return error && error instanceof Error && error.message

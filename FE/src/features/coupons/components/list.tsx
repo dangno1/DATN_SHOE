@@ -35,11 +35,17 @@ const ListCoupons = () => {
     handleSubmit,
     reset,
     setFocus,
+    setValue,
+    setError,
     formState: { errors }
   } = useForm<ICoupons>({
     resolver: joiResolver(couponsSchema)
   })
-  const { register: registerSearch, handleSubmit: handleSubmitSearch } = useForm<{ search: string }>()
+
+  const {
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch
+  } = useForm<{ search: string }>()
 
   useEffect(() => {
     reset()
@@ -49,11 +55,13 @@ const ListCoupons = () => {
     setFocus("code")
     if (form._id && form.method === "update") {
       const coupons = couponsData.find((item: ICoupons) => item._id == form._id)
-      reset({ ...coupons, createdAt: undefined, updatedAt: undefined })
+      setValue("code", String(coupons?.code))
+      setValue("discountValue", Number(coupons?.discountValue))
+      setValue("quantity", Number(coupons?.quantity))
+      return;
     }
-
     reset()
-  }, [form, reset, couponsData, setFocus])
+  }, [form, reset, couponsData, setFocus, setValue])
 
   useEffect(() => {
     couponsDatas && setCouponsData(couponsDatas)
@@ -61,25 +69,30 @@ const ListCoupons = () => {
 
   const handleDeleteCoupons = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteCoupons(id)
+      await deleteCoupons(id).unwrap().then(() => openNotification('success', "Xóa mã giảm giá thành công"))
     })
-    openNotification('success', "Xóa mã giảm giá thành công")
   };
 
   const handleAddUpdateCoupons = async (data: ICoupons) => {
     try {
-      const { open, method } = form
-      if (open && method === "add") {
-        await addCoupons(data)
-        openNotification('success', "Thêm mã giảm giá thành công")
+      const existCoupons = couponsDatas.find(({ code }: ICoupons) => code.toLowerCase() === data.code.toLowerCase())
+      const { method } = form
+      if (method === "add" && !existCoupons) {
+        const result = await addCoupons(data)
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Thêm mã giảm giá thành công")
+          : openNotification('success', "Thêm mã giảm giá thất bại, vui lòng thử lại sau")
         return
       }
-      if (open && method === "update" && form._id) {
-        await updateCoupons(data)
-        openNotification('success', "Cập nhật mã giảm giá thành công")
+      if (method === "update" && !existCoupons || (existCoupons && existCoupons._id === form._id)) {
+        const result = await updateCoupons({ ...data, _id: form._id })
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Cập nhật mã giảm giá thành công")
+          : openNotification('success', "Cập nhật mã giảm giá thất bại, vui lòng thử lại sau")
         return
       }
-      reset()
+      setError("code", { type: "exist", message: "Mã giảm giá đã tồn tại" })
+
     } catch (error) {
       return error
     }
@@ -190,9 +203,6 @@ const ListCoupons = () => {
     index: index + 1
   }))
 
-  console.log(errors);
-
-
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
@@ -229,7 +239,7 @@ const ListCoupons = () => {
               onConfirm={() => handleDeleteCoupons(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa {selectedRowKeys.length} mã giảm giá</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa mã giảm giá</span>
               </Tooltip>
             </Popconfirm>
           </div >
