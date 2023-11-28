@@ -15,5 +15,5 @@ export interface ICart {
   color: string,
   status: string,
   otp?: string;
-
+  productID: string | number | undefined;
 }

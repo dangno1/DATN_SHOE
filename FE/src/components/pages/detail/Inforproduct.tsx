@@ -13,13 +13,12 @@ import { ICart } from "@/interface/cart";
 import { message } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
-import { IProduct } from "@/interface/product";
+import { useGetRateQuery } from "@/api/rating";
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
-  console.log(productData);
   const variants = productData?.variants;
   const size = variants?.map((item: unknown) => {
     const sizeProduct = sizeData?.find(
@@ -27,7 +26,6 @@ const Inforproduct = () => {
     );
     return sizeProduct;
   });
-
   const color = variants?.map((item: unknown) => {
     const colorProduct = colorData?.find(
       (colorItem: IColor) => item?.colorId == colorItem._id
@@ -35,26 +33,6 @@ const Inforproduct = () => {
     return colorProduct;
   });
   console.log(color);
-
-  // const priceproduct = variants?.map((item: unknown) => {
-  //   return item;
-  // });
-  // if (variants && priceproduct) {
-  //   const price = variants.map((item: unknown) => {
-  //     // Kiểm tra xem item và item?.price có tồn tại trước khi sử dụng
-  //     if (item && typeof item === 'object' && 'price' in item) {
-  //       const pricepro = priceproduct.find((priceItem: any) => {
-  //         return item['price'] === priceItem.price;
-  //       });
-  //       return pricepro;
-  //     }
-  //     return null; // Trả về giá trị mặc định nếu không tìm thấy giá trị hoặc có lỗi
-  //   });
-
-  //   console.log(price); // In ra mảng kết quả sau khi xử lý
-  // }
-  // console.log(size);
-  // console.log(color);
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
   const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
@@ -108,7 +86,8 @@ const Inforproduct = () => {
         category: productData.categoryId,
         image: String(productData.image),
         color: selectedColor.value,
-        status: String(productData.variants[0].status)
+        status: String(productData.variants[0].status),
+        productID: productData._id
       };
       const data = await addCart(productToAdd);
       message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
@@ -127,7 +106,7 @@ const Inforproduct = () => {
     setImage(listImage)
   }, [productData])
 
-  const [activeImgId, setActiveImageId] = useState(1); // Initialize active image ID to 1
+  const [activeImgId, setActiveImageId] = useState(1); 
 
   const handleImageClick = (id: number) => {
     setActiveImageId(id); // Update the active image ID when a thumbnail is clicked
@@ -141,6 +120,39 @@ const Inforproduct = () => {
       setAmount(amount - 1);
     }
   };
+  //--------------------------------
+  const starsData = useGetRateQuery();
+  const calculateAverageStarsFromPath = (starsData, idFromPath) => {
+    let totalStars = 0;
+    let numberOfRatings = 0;     
+    
+    const stars = starsData?.data?.filter((item:any) => item.productID._id === id);
+    
+    if (stars && Array.isArray(stars)) {
+      stars.forEach((item) => {
+        if (item && item.stars) {
+          totalStars += item.stars;
+          numberOfRatings++;
+        }
+      });
+    }
+   
+   
+    const averageStars = numberOfRatings > 0 ? totalStars / numberOfRatings : 0;
+  
+    return {
+      totalStars,
+      averageStars: averageStars.toFixed(1), 
+    };
+  };
+  
+  const saoData = starsData;
+  console.log(saoData);
+  const { totalStars, averageStars } = calculateAverageStarsFromPath(saoData, id);
+
+console.log('Total Stars:', totalStars);
+console.log('Average Stars:', averageStars);
+
   return (
     <div>
       <section className="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800">
@@ -188,6 +200,24 @@ const Inforproduct = () => {
                     <div className="mb-8">
                       <span className="text-lg font-medium text-rose-500 dark:text-rose-200 uppercase">{productData.brand}</span>
                       <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl uppercase">{productData.name}</h2>
+                      <div className="mr-7">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="22"
+                          height="22"
+                          viewBox="0 0 22 22"
+                          // fill={index + 1 <= (hoverRating || rating) ? "yellow" : "none"}
+                          fill="yellow"
+                          stroke="black"
+                          strokeWidth="1.5"
+                        >
+                          <path
+                            d="M9.97183 1.70846C10.4382 0.933481 11.5618 0.933482 12.0282 1.70847L14.3586 5.58087C14.5262 5.85928 14.7995 6.05784 15.116 6.13116L19.5191 7.15091C20.4002 7.35499 20.7474 8.42356 20.1545 9.10661L17.1918 12.5196C16.9788 12.765 16.8744 13.0863 16.9025 13.41L17.2932 17.9127C17.3714 18.8138 16.4625 19.4742 15.6296 19.1214L11.4681 17.3583C11.1689 17.2316 10.8311 17.2316 10.5319 17.3583L6.37038 19.1214C5.53754 19.4742 4.62856 18.8138 4.70677 17.9127L5.09754 13.41C5.12563 13.0863 5.02124 12.765 4.80823 12.5196L1.8455 9.1066C1.25257 8.42356 1.59977 7.35499 2.48095 7.15091L6.88397 6.13116C7.20053 6.05784 7.47383 5.85928 7.64138 5.58087L9.97183 1.70846Z"
+                            strokeWidth="1.5"
+                          />
+                        </svg>
+                        <p>{averageStars}</p>
+                      </div>
                       <p className="max-w-md mb-8 text-gray-700 dark:text-gray-400 capitalize">
                         {productData.desc}
                       </p>

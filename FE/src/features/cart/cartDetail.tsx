@@ -96,6 +96,7 @@ const CartDetail = () => {
         size: unknown;
         quantity: unknown;
         otp: unknown;
+        productID: unknown;
       }) => ({
         productName: item?.productName,
         productInitialPrice: item?.initialPrice,
@@ -105,6 +106,7 @@ const CartDetail = () => {
         productSize: item?.size,
         productQuantity: item?.quantity,
         otp: item?.otp,
+        productID: item?.productID,
       })
     );
 
