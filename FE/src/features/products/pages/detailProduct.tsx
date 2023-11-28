@@ -236,11 +236,11 @@ const DetailProduct = () => {
                       </div>
                     </td>
                     <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">{variant.discount}</div>
+                      <div className="p-2">{variant.price}</div>
                     </td>
                     <td className="w-auto border-b border-r border-gray-300">
                       <div className="p-2">
-                        <div className="p-2">{variant.price}</div>
+                        <div className="p-2">{variant.discount}</div>
                       </div>
                     </td>
                     <td className="w-auto border-b border-r border-gray-300">
