@@ -29,15 +29,10 @@ const BodyCart = () => {
   }, []);
 
   console.log(userData.email);
-  
 
   const dataCart = carts?.data.filter(
     (item) => item?.userEmail == userData.email
   );
-
-  console.log(dataCart);
-  
-
 
   const handleCheckboxChange = (checked: boolean, item: ICart) => {
     let itemPrice;
@@ -88,19 +83,25 @@ const BodyCart = () => {
           {dataCart?.map((item: ICart) => (
             <div className="pt-7" key={item._id}>
               <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[5fr,10fr,1fr]">
-                <img className="border rounded-xl" src={item?.image} alt="" width={"100%"} height={"240px"} />
+                <img
+                  className="border rounded-xl"
+                  src={item?.image}
+                  alt=""
+                  width={"100%"}
+                  height={"240px"}
+                />
                 <div className="p-5">
                   <div className="flex justify-between">
-                    <p>{item?.productName}</p>
-                    <span className="text-red-500">{item?.price.toLocaleString("vi-VN")}₫</span>
+                    <p>Tên sản phẩm: {item?.productName}</p>
+                    <span className="text-red-500">
+                      {item?.price.toLocaleString("vi-VN")}VND
+                    </span>
                   </div>
-                  <div className="pt-2 uppercase">
-                    SOLAR GOLD / CORE BLACK / {item?.color}
-                  </div>
+                  <div className="pt-2">Màu: {item?.color}</div>
                   <div className="pt-5">Khích cỡ: {item?.size}</div>
                   <div className="pt-2">
                     Số lượng hàng trong kho:
-                    <span className="font-medium text-lg">1000</span>
+                    <span className="font-medium text-lg">20</span>
                   </div>
                   <div className="flex items-center pt-14">
                     <button
@@ -297,8 +298,8 @@ const BodyCart = () => {
           </div>
           <div>
             <div className="flex justify-between items-center pt-5">
-              <p className="text-gray-800">2 items</p>
-              <span className="text-gray-900">{totalPrice}₫</span>
+              <p className="text-gray-800">Giá sản phẩm </p>
+              <span className="text-gray-900">{totalPrice.toLocaleString("vi-VN")}₫</span>
             </div>
             <div className="flex justify-between items-center pt-5 border-b pb-2">
               <p className="text-gray-800">Delivery</p>
@@ -308,7 +309,9 @@ const BodyCart = () => {
               <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
                 Tổng Giá
               </p>
-              <span className="text-gray-900">{totalPrice.toLocaleString("vi-VN")}₫</span>
+              <span className="text-gray-900">
+                {totalPrice.toLocaleString("vi-VN")}₫
+              </span>
             </div>
             <div className="pt-10">
               <div className="font-semibold font-sans leading-10">

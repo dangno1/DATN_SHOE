@@ -261,12 +261,12 @@ const Test001 = () => {
             >
               <option value="Chưa Xác Nhận">Chưa Xác Nhận</option>
               <option value="Đã Xác Nhận">Đã Xác Nhận</option>
-              <option value="Đơn Hàng Đang Được Chuẩn Bị">
+              {/* <option value="Đơn Hàng Đang Được Chuẩn Bị">
                 Đơn Hàng Đang Được Chuẩn Bị
-              </option>
-              <option value="Đơn Hàng Đang Giao Đến Bạn">
+              </option> */}
+              {/* <option value="Đơn Hàng Đang Giao Đến Bạn">
                 Đơn Hàng Đang Giao Đến Bạn
-              </option>
+              </option> */}
               <option value="Đơn Hàng Đã Giao Thành Công">
                 Đơn Hàng Đã Giao Thành Công
               </option>
