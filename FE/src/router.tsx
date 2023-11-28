@@ -58,6 +58,10 @@ export const router = createBrowserRouter([
         element: <CartDetail />,
       },
       {
+        path: "cartDetail/:id",
+        element: <CartDetail />,
+      },
+      {
         path: "oder&history",
         element: <OderHistory />,
       },
