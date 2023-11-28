@@ -28,8 +28,9 @@ const Index = () => {
   };
   const filteredOrders = orders
     ? orders.filter((order: IOrder) => {
-        const searchTerm = searchCode.toLowerCase();
-        const codeMatch = order.orderCode.toLowerCase().includes(searchTerm);
+        const searchTerm = searchCode.toLowerCase().replace(/\s/g, '');
+        const codeWithoutSpaces = order.orderCode.toLowerCase().replace(/\s/g, '');
+        const codeMatch = codeWithoutSpaces.includes(searchTerm);
         const phoneMatch = String(order.userPhone)
           .toLowerCase()
           .includes(searchTerm);
