@@ -13,13 +13,19 @@ const Statistical = () => {
   const [chartData, setChartData] = useState([]);
   const [pendingConfirmationChartData, setChartDataStatus] = useState([]);
   const [orderSuccessfully, setOrderSuccessfully] = useState([]);
+
   const [test, setTest] = useState([]);
   const [testCount, setTestCount] = useState(0);
   const [testPrice, setTestPrice] = useState(0);
+
   const [pendingConfirmationCount, setPendingConfirmationCount] = useState(0);
   const [pendingConfirmationTotal, setPendingConfirmationTotal] = useState(0);
   const [priceOrderSuccessCount, setPriceOrderSuccessCount] = useState(0);
   const [priceOrderSuccess, setPriceOrderSuccess] = useState(0);
+
+  const [canceledOrders, setCanceledOrders] = useState([]);
+  const [canceledCount, setCanceledCount] = useState(0);
+  const [canceledTotal, setCanceledTotal] = useState(0);
 
   // Dữ liệu cho biểu đồ thanh
   useEffect(() => {
@@ -163,6 +169,43 @@ const Statistical = () => {
           },
         },
       };
+
+      const canceledOrders = {
+        series: [
+          {
+            name: "Tổng Giá Đơn Hàng",
+            data: orderProduct
+              .filter((order) => order.status === "Đơn Hàng Đã Hủy")
+              .map((order) =>
+                order.products.reduce(
+                  (acc, product) =>
+                    acc + product.productInitialPrice * product.productQuantity,
+                  0
+                )
+              ),
+          },
+        ],
+        options: {
+          chart: {
+            type: "area",
+          },
+          yaxis: {
+            labels: {
+              formatter: function (value: { toLocaleString: () => string }) {
+                return value.toLocaleString() + " VND";
+              },
+            },
+          },
+          tooltip: {
+            y: {
+              formatter: function (value) {
+                return value.toLocaleString() + " VND";
+              },
+            },
+          },
+        },
+      };
+
       const pendingConfirmationCount = orderProduct.filter(
         (order) => order.status === "Chờ Xác Nhận"
       ).length;
@@ -171,6 +214,10 @@ const Statistical = () => {
       ).length;
       const testCount = orderProduct.filter(
         (order) => order.status === "Đã Xác Nhận"
+      ).length;
+
+      const canceledCount = orderProduct.filter(
+        (order) => order.status === "Đơn Hàng Đã Hủy"
       ).length;
 
       const pendingConfirmationTotal = orderProduct
@@ -213,6 +260,20 @@ const Statistical = () => {
           );
         }, 0);
 
+      const canceledTotal = orderProduct
+        .filter((order) => order.status === "Đơn Hàng Đã Hủy")
+        .reduce((acc, order) => {
+          return (
+            acc +
+            order.products.reduce((productTotal, product) => {
+              return (
+                productTotal +
+                product.productInitialPrice * product.productQuantity
+              );
+            }, 0)
+          );
+        }, 0);
+
       setPendingConfirmationTotal(pendingConfirmationTotal);
       setPendingConfirmationCount(pendingConfirmationCount);
       setPriceOrderSuccess(priceOrderSuccess);
@@ -223,6 +284,10 @@ const Statistical = () => {
       setTest(test);
       setTestCount(testCount);
       setTestPrice(testPrice);
+      setCanceledTotal(canceledTotal);
+      setCanceledCount(canceledCount);
+      setCanceledOrders(canceledOrders);
+
     }
   }, [orderProduct]);
 
@@ -514,6 +579,32 @@ const Statistical = () => {
                 className="flex font-bold text-xl gap-2"
                 title="Tổng Giá Trị Đơn Hàng Đã Giao Thành Công:"
                 value={priceOrderSuccess}
+                formatter={(value) => `${(+value).toLocaleString()} VND`}
+              />
+            </div>
+            <ReactApexChart
+              className="font-bold text-xl gap-2 items-center"
+              options={orderSuccessfully?.options}
+              series={orderSuccessfully?.series}
+              type="area"
+              height={350}
+            />
+          </div>
+
+          <div>
+            <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+              Tất Cả Đơn Hàng Đã Hủy
+            </h3>
+            <div className="flex items-center justify-between">
+              <Statistic
+                className="flex font-bold text-xl gap-2"
+                title="Số Đơn Hàng Đã Giao Thành Công:"
+                value={canceledCount}
+              />
+              <Statistic
+                className="flex font-bold text-xl gap-2"
+                title="Tổng Giá Trị Đơn Hàng Đã Hủy:"
+                value={canceledTotal}
                 formatter={(value) => `${(+value).toLocaleString()} VND`}
               />
             </div>

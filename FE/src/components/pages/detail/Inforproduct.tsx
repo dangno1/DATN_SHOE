@@ -20,6 +20,8 @@ const Inforproduct = () => {
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
   console.log(productData);
+  
+  
   const variants = productData?.variants;
   const size = variants?.map((item: unknown) => {
     const sizeProduct = sizeData?.find(
@@ -108,7 +110,8 @@ const Inforproduct = () => {
         category: productData.categoryId,
         image: String(productData.image),
         color: selectedColor.value,
-        status: String(productData.variants[0].status)
+        status: String(productData.variants[0].status),
+        productID: String(productData?._id),
       };
       const data = await addCart(productToAdd);
       message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
