@@ -13,19 +13,28 @@ const Statistical = () => {
   const [chartData, setChartData] = useState([]);
   const [pendingConfirmationChartData, setChartDataStatus] = useState([]);
   const [orderSuccessfully, setOrderSuccessfully] = useState([]);
-
-  const [test, setTest] = useState([]);
-  const [testCount, setTestCount] = useState(0);
-  const [testPrice, setTestPrice] = useState(0);
-
   const [pendingConfirmationCount, setPendingConfirmationCount] = useState(0);
   const [pendingConfirmationTotal, setPendingConfirmationTotal] = useState(0);
   const [priceOrderSuccessCount, setPriceOrderSuccessCount] = useState(0);
   const [priceOrderSuccess, setPriceOrderSuccess] = useState(0);
-
   const [canceledOrders, setCanceledOrders] = useState([]);
   const [canceledCount, setCanceledCount] = useState(0);
   const [canceledTotal, setCanceledTotal] = useState(0);
+  const [monthlyChartData, setMonthlyChartData] = useState({});
+  const [dailyChartData, setDailyChartData] = useState({});
+  const [test, setTest] = useState([]);
+  const [testCount, setTestCount] = useState(0);
+  const [testPrice, setTestPrice] = useState(0);
+  const [test1, setTest1] = useState([]);
+  const [testCount1, setTestCount1] = useState(0);
+  const [testPrice1, setTestPrice1] = useState(0);
+
+  const extractMonthYear = (orderTime) => {
+    const dateParts = orderTime.split("T")[0].split("-");
+    const year = dateParts[0];
+    const month = dateParts[1];
+    return `${year}-${month}`;
+  };
 
   // Dữ liệu cho biểu đồ thanh
   useEffect(() => {
@@ -169,7 +178,41 @@ const Statistical = () => {
           },
         },
       };
-
+      const test1 = {
+        series: [
+          {
+            name: "Tổng Giá Đơn Hàng",
+            data: orderProduct
+              .filter((order) => order.status === "Đơn Hàng Đang Giao Đến Bạn")
+              .map((order) =>
+                order.products.reduce(
+                  (acc, product) =>
+                    acc + product.productInitialPrice * product.productQuantity,
+                  0
+                )
+              ),
+          },
+        ],
+        options: {
+          chart: {
+            type: "area",
+          },
+          yaxis: {
+            labels: {
+              formatter: function (value: { toLocaleString: () => string }) {
+                return value.toLocaleString() + " VND";
+              },
+            },
+          },
+          tooltip: {
+            y: {
+              formatter: function (value) {
+                return value.toLocaleString() + " VND";
+              },
+            },
+          },
+        },
+      };
       const canceledOrders = {
         series: [
           {
@@ -215,9 +258,11 @@ const Statistical = () => {
       const testCount = orderProduct.filter(
         (order) => order.status === "Đã Xác Nhận"
       ).length;
-
       const canceledCount = orderProduct.filter(
         (order) => order.status === "Đơn Hàng Đã Hủy"
+      ).length;
+      const testCount1 = orderProduct.filter(
+        (order) => order.status === "Đơn Hàng Đang Giao Đến Bạn"
       ).length;
 
       const pendingConfirmationTotal = orderProduct
@@ -259,7 +304,6 @@ const Statistical = () => {
             }, 0)
           );
         }, 0);
-
       const canceledTotal = orderProduct
         .filter((order) => order.status === "Đơn Hàng Đã Hủy")
         .reduce((acc, order) => {
@@ -274,20 +318,120 @@ const Statistical = () => {
           );
         }, 0);
 
+        const testPrice1 = orderProduct
+        .filter((order) => order.status === "Đơn Hàng Đang Giao Đến Bạn")
+        .reduce((acc, order) => {
+          return (
+            acc +
+            order.products.reduce((productTotal, product) => {
+              return (
+                productTotal +
+                product.productInitialPrice * product.productQuantity
+              );
+            }, 0)
+          );
+        }, 0);
+
+      const ordersByMonth = orderProduct.reduce((acc, order) => {
+        const monthYear = extractMonthYear(order.orderTime);
+        if (!acc[monthYear]) {
+          acc[monthYear] = 1;
+        } else {
+          acc[monthYear]++;
+        }
+        return acc;
+      }, {});
+
+      const monthlyChartData = {
+        series: [
+          {
+            name: "Số Đơn Hàng",
+            data: Object.values(ordersByMonth),
+          },
+        ],
+        options: {
+          chart: {
+            type: "bar",
+          },
+          xaxis: {
+            categories: Object.keys(ordersByMonth),
+          },
+          yaxis: {
+            title: {
+              text: "Số Đơn Hàng",
+            },
+          },
+          tooltip: {
+            y: {
+              formatter: function (value) {
+                return value + " đơn hàng";
+              },
+            },
+          },
+        },
+      };
+
+      const ordersByDay = orderProduct.reduce((acc, order) => {
+        const orderDate = new Date(order.orderTime);
+        const day = `${orderDate.getFullYear()}-${String(
+          orderDate.getMonth() + 1
+        ).padStart(2, "0")}-${String(orderDate.getDate()).padStart(2, "0")}`;
+
+        if (!acc[day]) {
+          acc[day] = 1;
+        } else {
+          acc[day]++;
+        }
+        return acc;
+      }, {});
+
+      const dailyChartData = {
+        series: [
+          {
+            name: "Số Đơn Hàng",
+            data: Object.values(ordersByDay),
+          },
+        ],
+        options: {
+          chart: {
+            type: "bar",
+          },
+          xaxis: {
+            categories: Object.keys(ordersByDay),
+          },
+          yaxis: {
+            title: {
+              text: "Số Đơn Hàng",
+            },
+          },
+          tooltip: {
+            y: {
+              formatter: function (value) {
+                return value + " đơn hàng";
+              },
+            },
+          },
+        },
+      };
+
+      setDailyChartData(dailyChartData);
+      setMonthlyChartData(monthlyChartData);
       setPendingConfirmationTotal(pendingConfirmationTotal);
       setPendingConfirmationCount(pendingConfirmationCount);
       setPriceOrderSuccess(priceOrderSuccess);
       setPriceOrderSuccessCount(priceOrderSuccessCount);
+      setTestCount(testCount);
+      setTestPrice(testPrice);
+      setTestCount1(testCount1);
+      setTestPrice1(testPrice1);
+      setCanceledTotal(canceledTotal);
+      setCanceledCount(canceledCount);
+      setCanceledOrders(canceledOrders);
       setOrderSuccessfully(orderSuccessfully);
       setChartData(chartData);
       setChartDataStatus(pendingConfirmationChartData);
       setTest(test);
-      setTestCount(testCount);
-      setTestPrice(testPrice);
-      setCanceledTotal(canceledTotal);
-      setCanceledCount(canceledCount);
-      setCanceledOrders(canceledOrders);
-
+      setTest1(test1);
     }
   }, [orderProduct]);
 
@@ -307,19 +451,6 @@ const Statistical = () => {
       }, 0)
     );
   }, 0);
-
-  // Tính thống kê theo ngày
-  // const dailyStats = orderProduct.reduce((acc, order) => {
-  //   const orderDate = order.timer ? new Date(order.timer) : null;
-
-  //   // Kiểm tra xem orderDate có là một đối tượng Date hợp lệ không
-  //   if (orderDate instanceof Date && !isNaN(orderDate)) {
-  //     const dateKey = orderDate.toISOString().split("T")[0];
-  //     acc[dateKey] = (acc[dateKey] || 0) + 1;
-  //   }
-
-  //   return acc;
-  // }, {});
 
   // Tính toán dữ liệu thống kê hàng được đặt nhiều nhất
   const mostOrderedProducts = orderProduct.reduce((acc, order) => {
@@ -391,26 +522,6 @@ const Statistical = () => {
       return acc + product.productInitialPrice * product.productQuantity;
     }, 0),
   }));
-
-  // Dữ liệu cho thống kê theo ngày
-  // const dailyData = Object.entries(dailyStats).map(([date, count]) => ({
-  //   date,
-  //   count,
-  // }));
-
-  // Các cột cho bảng thống kê theo ngày
-  // const dailyColumns = [
-  //   {
-  //     title: "Ngày",
-  //     dataIndex: "date",
-  //     key: "date",
-  //   },
-  //   {
-  //     title: "Số Lượng Đơn Hàng",
-  //     dataIndex: "count",
-  //     key: "count",
-  //   },
-  // ];
 
   // Các cột cho bảng thống kê hàng được đặt nhiều nhất
   const mostOrderedColumns = [
@@ -564,7 +675,62 @@ const Statistical = () => {
               />
             </div>
           </div>
+          {/* rtyuiop */}
+          <br />
+          <div className="flex gap-10">
+            <div className="w-3/6">
+              <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+                Đơn Hàng Đang Giao Đến Bạn
+              </h3>
+              <div className="flex items-center justify-between">
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Số Đơn Hàng Đã Giao Thành Công:"
+                  value={testCount1}
+                />
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Tổng Giá Trị Đơn Hàng Đã Hủy:"
+                  value={testPrice1}
+                  formatter={(value) => `${(+value).toLocaleString()} VND`}
+                />
+              </div>
+              <ReactApexChart
+                className="font-bold text-xl gap-2 items-center"
+                options={test1?.options}
+                series={test1?.series}
+                type="area"
+                height={350}
+              />
+            </div>
 
+            <div className="w-3/6">
+              <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+                Tất Cả Đơn Hàng Đã Hủy
+              </h3>
+              <div className="flex items-center justify-between">
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Số Đơn Hàng Đã Giao Thành Công:"
+                  value={canceledCount}
+                />
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Tổng Giá Trị Đơn Hàng Đã Hủy:"
+                  value={canceledTotal}
+                  formatter={(value) => `${(+value).toLocaleString()} VND`}
+                />
+              </div>
+              <ReactApexChart
+                className="font-bold text-xl gap-2 items-center"
+                options={canceledOrders?.options}
+                series={canceledOrders?.series}
+                type="area"
+                height={350}
+              />
+            </div>
+          </div>
+          <br />
           <div>
             <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
               Tất Cả Đơn Hàng Đã Giao Thành Công
@@ -590,41 +756,40 @@ const Statistical = () => {
               height={350}
             />
           </div>
-
-          <div>
-            <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
-              Tất Cả Đơn Hàng Đã Hủy
-            </h3>
-            <div className="flex items-center justify-between">
-              <Statistic
-                className="flex font-bold text-xl gap-2"
-                title="Số Đơn Hàng Đã Giao Thành Công:"
-                value={canceledCount}
-              />
-              <Statistic
-                className="flex font-bold text-xl gap-2"
-                title="Tổng Giá Trị Đơn Hàng Đã Hủy:"
-                value={canceledTotal}
-                formatter={(value) => `${(+value).toLocaleString()} VND`}
-              />
-            </div>
-            <ReactApexChart
-              className="font-bold text-xl gap-2 items-center"
-              options={orderSuccessfully?.options}
-              series={orderSuccessfully?.series}
-              type="area"
-              height={350}
-            />
-          </div>
         </TabPane>
         <TabPane tab="Chi Tiết Đơn Hàng" key="total">
           <Table columns={columns} dataSource={data} />
         </TabPane>
-        {/* <TabPane tab="Thống Kê Theo Ngày" key="byDay">
-          <Table columns={dailyColumns} dataSource={dailyData} />
-        </TabPane> */}
         <TabPane tab="Hàng Được Đặt Nhiều Nhất" key="mostOrdered">
           <Table columns={mostOrderedColumns} dataSource={mostOrderedData} />
+        </TabPane>
+        <TabPane tab="Thống Kê Theo Ngày" key="byDay">
+          <div>
+            <h3 className="grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+              Thống Kê Theo Ngày
+            </h3>
+            <ReactApexChart
+              className="font-bold text-xl gap-2 items-center"
+              options={dailyChartData?.options}
+              series={dailyChartData?.series}
+              type="bar"
+              height={350}
+            />
+          </div>
+        </TabPane>
+        <TabPane tab="Thống Kê Theo Tháng" key="byMonth">
+          <div>
+            <h3 className="grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+              Thống Kê Theo Tháng
+            </h3>
+            <ReactApexChart
+              className="font-bold text-xl gap-2 items-center"
+              options={monthlyChartData?.options}
+              series={monthlyChartData?.series}
+              type="bar"
+              height={350}
+            />
+          </div>
         </TabPane>
       </Tabs>
     </div>
