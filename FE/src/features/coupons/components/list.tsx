@@ -81,14 +81,15 @@ const ListCoupons = () => {
         const result = await addCoupons(data)
         "data" in result && "success" in result.data && result.data.success
           ? openNotification('success', "Thêm mã giảm giá thành công")
-          : openNotification('success', "Thêm mã giảm giá thất bại, vui lòng thử lại sau")
+          : openNotification('error', "Thêm mã giảm giá thất bại, vui lòng thử lại sau")
         return
       }
       if (method === "update" && !existCoupons || (existCoupons && existCoupons._id === form._id)) {
+        
         const result = await updateCoupons({ ...data, _id: form._id })
         "data" in result && "success" in result.data && result.data.success
           ? openNotification('success', "Cập nhật mã giảm giá thành công")
-          : openNotification('success', "Cập nhật mã giảm giá thất bại, vui lòng thử lại sau")
+          : openNotification('error', "Cập nhật mã giảm giá thất bại, vui lòng thử lại sau")
         return
       }
       setError("code", { type: "exist", message: "Mã giảm giá đã tồn tại" })
