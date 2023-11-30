@@ -16,7 +16,6 @@ export interface IOrder {
   }[],
   orderCode: string,
   status: string,
-  timer: string;
-  totalPrice: string; 
+  totalPrice: number; 
   }
   
