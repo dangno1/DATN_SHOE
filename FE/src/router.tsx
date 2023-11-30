@@ -31,8 +31,10 @@ import SaleProduct from "./components/pages/home/newProduct";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
 import DetailProduct from "./features/products/pages/detailProduct";
 import Test001 from "./components/pages/admin/order/test001";
+import CommentAdmin from "./features/comment/components/list";
 import Statistical from "./features/statistical/statistical";
 import Test002 from "./features/statistical/statisticalDetail";
+
 
 
 
@@ -148,6 +150,11 @@ export const router = createBrowserRouter([
         path: "add",
         element: <AddAdmin />,
       },
+      {
+        path:"comment",
+        element:<CommentAdmin/>
+      }
+      
     ],
   },
 ]);
