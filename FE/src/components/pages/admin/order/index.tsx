@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useGetOrdersQuery } from "@/api/orderedProduct";
 import { IOrder } from "@/interface/order";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [searchCode, setSearchCode] = useState("");
   const { data: orders } = useGetOrdersQuery();
+  const navigate = useNavigate();
   console.log(orders);
 
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -26,15 +28,16 @@ const Index = () => {
   };
   const filteredOrders = orders
     ? orders.filter((order: IOrder) => {
-        const searchTerm = searchCode.toLowerCase();
-        const codeMatch = order.orderCode.toLowerCase().includes(searchTerm);
+        const searchTerm = searchCode.toLowerCase().replace(/\s/g, '');
+        const codeWithoutSpaces = order.orderCode.toLowerCase().replace(/\s/g, '');
+        const codeMatch = codeWithoutSpaces.includes(searchTerm);
         const phoneMatch = String(order.userPhone)
           .toLowerCase()
           .includes(searchTerm);
         const emailMatch = order.userEmail.toLowerCase().includes(searchTerm);
         const statusMatch =
-          selectedStatus === "" ||
-          order.status.toLowerCase() === selectedStatus.toLowerCase();
+        selectedStatus === "" || (order.status && order.status.toLowerCase() === selectedStatus.toLowerCase());
+      
         return (codeMatch || phoneMatch || emailMatch) && statusMatch;
       })
     : [];
@@ -53,26 +56,32 @@ const Index = () => {
             <option className="text-sm text-indigo-800" value="">
               Tất cả đơn hàng
             </option>
-            <option className="text-sm text-indigo-800" value="chờ xác nhận">
-              Chờ xác nhận
+            <option className="text-sm text-indigo-800" value=" Chưa Xác Nhận">
+            Chưa Xác Nhận
             </option>
             <option
               className="text-sm text-indigo-800"
-              value=" Đang Chuẩn Bị Hàng"
+              value="Đã Xác Nhận"
             >
-              Đang Chuẩn Bị Hàng
+             Đã Xác Nhận
             </option>
             <option
               className="text-sm text-indigo-800"
-              value="Đơn Hàng Đang Đến Với Bạn"
+              value="Chờ Xác Nhận"
             >
-              Đơn Hàng Đang Đến Với Bạn
+             Chờ Xác Nhận
             </option>
             <option
               className="text-sm text-indigo-800"
-              value=" Giao hàng thành công"
+              value=" Đơn Hàng Đang Giao Đến Bạn"
             >
-              Giao hàng thành công
+               Đơn Hàng Đang Giao Đến Bạn
+            </option>
+            <option
+              className="text-sm text-indigo-800"
+              value="Đơn Hàng Đã Giao Thành Công"
+            >
+              Đơn Hàng Đã Giao Thành Công
             </option>
           </select>
         </div>
@@ -182,6 +191,12 @@ const Index = () => {
                       >
                         Trạng thái đơn hàng
                       </th>
+                      <th
+                        scope="col"
+                        className="flex justify-center px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      >
+                        Chi tiết đơn hàng
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
@@ -202,7 +217,7 @@ const Index = () => {
                           </p>
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                          {order.timer}
+                          {order.orderTime && order.orderTime.toString()}
                         </td>
                         <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                           <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
@@ -249,8 +264,6 @@ const Index = () => {
                             </div>
                           </div>
                         </td>
-
-                        {/* <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{order.node}</td> */}
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
                           <select
                             id="cars"
@@ -260,6 +273,9 @@ const Index = () => {
                               {order.status}
                             </option>
                           </select>
+                        </td>
+                        <td className="flex justify-center items-center pt-7" onClick={() => navigate(`detail/${order._id}`)}>
+                          ...
                         </td>
                       </tr>
                     ))}

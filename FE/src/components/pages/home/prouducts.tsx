@@ -8,6 +8,7 @@ import { useGetSizeQuery, useGetSizesQuery } from "@/api/size";
 import { BsBagPlus } from "react-icons/bs";
 import { useGetCategoryesQuery } from "@/api/category";
 import { Link } from "react-router-dom";
+import { IProduct } from "@/interface/product";
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
   const { data: Color } = useGetColorsQuery();

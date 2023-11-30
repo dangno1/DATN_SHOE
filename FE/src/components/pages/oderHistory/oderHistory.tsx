@@ -1,14 +1,20 @@
 import Banner from "../userinformation/banner";
 import { useEffect, useState } from "react";
 import { notification } from "antd";
-import { useGetOrdersQuery } from "@/api/orderedProduct";
+import {
+  useGetOrdersQuery,
+  useUpdateOrderAdminMutation,
+} from "@/api/orderedProduct";
+import { Link } from "react-router-dom";
 type NotificationType = "success" | "info" | "warning" | "error";
 
 const OderHistory = () => {
   const { data: order } = useGetOrdersQuery();
-  console.log(order);
-  const [userData, setUserData] = useState(localStorage);
+  // console.log(order);
+  const [updateOrder] = useUpdateOrderAdminMutation();
 
+  const [userData, setUserData] = useState(localStorage);
+  const [received, setReceived] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   useEffect(() => {
     const openNotification = (type: NotificationType, message: string) => {
@@ -39,9 +45,25 @@ const OderHistory = () => {
 
   const orderCart = order?.filter((item) => item?.userEmail == userData.email);
 
-  console.log(orderCart);
-
   const reversedOrderCart = orderCart?.slice().reverse();
+  console.log(reversedOrderCart);
+
+  const handleReceive = (orderId) => {
+    setReceived(true);
+    api.success({
+      message: "Thông báo",
+      description: "Bạn đã xác nhận đã nhận được hàng.",
+    });
+  };
+
+  const handleCancel = (orderId) => {
+    console.log(orderId);
+    updateOrder({ _id: orderId, status: "Đơn Hàng Đã Hủy" });
+    api.warning({
+      message: "Thông báo",
+      description: "Đơn hàng đã được hủy.",
+    });
+  };
 
   return (
     <>
@@ -87,7 +109,7 @@ const OderHistory = () => {
                   <div className="font-medium text-lg">
                     Tổng giá Sản Phẩm:{" "}
                     <span className="pt-5 text-red-500">
-                      {product.productPrice.toLocaleString("vi-VN")}VND
+                      {orderItem?.totalPrice.toLocaleString("vi-VN")}VND
                     </span>
                   </div>
                 </div>
@@ -126,13 +148,22 @@ const OderHistory = () => {
                     <div className="border p-2 w-full text-center h-12 rounded-xl flex justify-center items-center mt-20">
                       {orderItem.status}
                     </div>
-                    {orderItem.status === "Đơn Hàng Đã Giao Thành Công" && (
+                    {orderItem.status === "Đơn Hàng Đã Giao Thành Công" &&
+                      !received && (
+                        <div
+                          className="border w-full text-center h-12 rounded-xl flex justify-center items-center mt-20"
+                          onClick={() => handleReceive(orderItem._id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          Đã Nhận Được Hàng
+                        </div>
+                      )}
+                    {orderItem.status === "Chờ Xác Nhận" && (
                       <div
-                        className="border w-full text-center h-12 rounded-xl flex justify-center items-center mt-20"
-                        onClick={() => alert("Cảm ơn bạn đã mua hàng")}
-                        style={{ cursor: "pointer" }}
+                        className="border w-full text-center h-12 rounded-xl flex justify-center items-center mt-20 bg-red-500 text-white cursor-pointer"
+                        onClick={() => handleCancel(orderItem._id)}
                       >
-                        Đã Nhận Được Hàng
+                        Hủy Đơn Hàng
                       </div>
                     )}
                   </div>
@@ -142,9 +173,30 @@ const OderHistory = () => {
                     Thao Tác
                   </h3>
                   <div className="flex gap-10 justify-center">
-                    <button className="mt-20 bg-blue-500 w-6/12 h-12 text-white rounded-xl hover:bg-blue-700">
-                      Mua Lại
-                    </button>
+                    <Link
+                      to={{
+                        pathname: "/cartDetail",
+                        state: {
+                          category: product?.category,
+                          color: product?.productColor,
+                          image: product?.productImage,
+                          initialPrice: product?.productInitialPrice,
+                          price: product?.productPrice,
+                          productID: product?.productId,
+                          productName: product?.productName,
+                          quantity: product?.productQuantity,
+                          size: product?.productSize,
+                          status: product?.status,
+                          totalPrice: orderItem?.totalPrice,
+                          userAddress: orderItem?.userAddress,
+                          userEmail: orderItem?.userEmail,
+                          userName: orderItem?.userName,
+                        },
+                      }}
+                      className="mt-20 bg-blue-500 w-6/12 h-12 text-white rounded-xl hover:bg-blue-700"
+                    >
+                      <div className="flex mt-3 ml-8">Mua Lại</div>
+                    </Link>
                   </div>
                 </div>
               </div>

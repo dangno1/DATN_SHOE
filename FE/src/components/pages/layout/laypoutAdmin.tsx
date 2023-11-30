@@ -2,6 +2,7 @@ import { RiCoupon2Line } from "react-icons/ri";
 import { BiCategory } from "react-icons/bi";
 import { Button, Layout, Menu, Popconfirm } from "antd";
 import { useEffect, useState } from "react";
+import { MdQueryStats } from "react-icons/md";
 import {
   AiOutlineMenuFold,
   AiOutlineMenuUnfold,

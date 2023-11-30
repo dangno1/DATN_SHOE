@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Backdrop, CircularProgress, Button } from "@mui/material";
-import { useGetProductQuery, useRemoveThumbnailMutation, useUpdateProductMutation } from "@/api/product";
+import { useGetProductQuery, useGetProductsQuery, useRemoveThumbnailMutation, useUpdateProductMutation } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
@@ -31,6 +31,7 @@ const UpdateProduct = () => {
   const { data: sizeData } = useGetSizesQuery();
   const { data: colorData } = useGetColorsQuery();
   const { data: productData } = useGetProductQuery(String(id))
+  const { data: productDatas } = useGetProductsQuery(false)
   const [removeThumbnail, { isLoading: isLoadingThumbnail }] = useRemoveThumbnailMutation()
 
   const [thumbnail, setThumbnail] = useState<ImageType>(null)
@@ -49,11 +50,7 @@ const UpdateProduct = () => {
   const handleInputThambnail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const thumbnails = event.target.files ? Array.from(event.target.files) : []
     const combineThumb = thumbnail ? [...thumbnail.files, ...thumbnails] : thumbnails
-
-
     const urls = combineThumb.map((file: File) => URL.createObjectURL(file))
-
-
     if (combineThumb.length > 20 - Number(productData?.thumbnail.length)) {
       openNotificationWithIcon("error", `Chọn tối đa ${20 - Number(productData?.thumbnail.length)} ảnh`)
       const newThumb = combineThumb.splice(0, 20 - Number(productData?.thumbnail.length))
@@ -116,8 +113,10 @@ const UpdateProduct = () => {
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
 
-      await UpdateProduct({ ...data, thumbnail: newThumbnail, image: newImage, _id: id })
-      openNotificationWithIcon("success", "Cập nhật sản phẩm thành công")
+      const result = await UpdateProduct({ ...data, thumbnail: newThumbnail, image: newImage, _id: id })
+      "data" in result && "success" in result.data && result.data.success
+        ? openNotificationWithIcon("success", "Cập nhật sản phẩm thành công")
+        : openNotificationWithIcon("error", "Cập nhật sản phẩm thất bại, vui lòng thử lại sau")
       setThumbnail(null)
     } catch (error: unknown) {
       return error && error instanceof Error && error.message
@@ -132,10 +131,6 @@ const UpdateProduct = () => {
     }
   }
 
-  console.log(errors);
-  console.log(productData);
-
-
   return (
     <>
       <div className="p-5">
@@ -146,7 +141,7 @@ const UpdateProduct = () => {
             <div className="h-max mb-[20px]">
               <label className="text-slate-600 font-semibold">Tên sản phẩm<span className="text-red-500">*</span></label>
               <input
-                {...register("name", productSchema.name)} type="text" placeholder="giày af1..."
+                {...register("name", productSchema.name(productDatas, id))} type="text" placeholder="giày af1..."
                 className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500
                   focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]
                  placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && 'border-red-500'}`} />
