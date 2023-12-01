@@ -48,7 +48,7 @@ const LayoutAdmin = () => {
           items={[
             {
               key: 1,
-              label: <NavLink to="/admin">Thống kê</NavLink>,
+              label: <NavLink to="/admin/statistical">Thống kê</NavLink>,
               icon: <TfiDashboard />,
             },
             {
