@@ -29,6 +29,12 @@ import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
 import SaleProduct from "./components/pages/home/newProduct";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
+import DetailProduct from "./features/products/pages/detailProduct";
+import Test001 from "./components/pages/admin/order/test001";
+import CommentAdmin from "./features/comment/components/list";
+import Statistical from "./features/statistical/statistical";
+import Test002 from "./features/statistical/statisticalDetail";
+
 
 
 
@@ -51,6 +57,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "cartDetail",
+        element: <CartDetail />,
+      },
+      {
+        path: "cartDetail/:id",
         element: <CartDetail />,
       },
       {
@@ -87,6 +97,7 @@ export const router = createBrowserRouter([
       },
       { path: "product/add", element: <AddProduct /> },
       { path: "product/update/:id", element: <UpdateProduct /> },
+      { path: "product/detail/:id", element: <DetailProduct /> },
       {
         path: "product/trashCan",
         element: <ListProduct />,
@@ -120,13 +131,30 @@ export const router = createBrowserRouter([
         element: <AdminOrder />,
       },
       {
+        path: "orders/detail/:id",
+        element: <Test001 />,
+      },
+      {
         path: "users",
         element: <AdminUser />,
+      },
+      {
+        path: "statistical",
+        element: <Statistical />,
+      },
+      {
+        path: "statistical/detail/:id",
+        element: <Test002 />,
       },
       {
         path: "add",
         element: <AddAdmin />,
       },
+      {
+        path:"comment",
+        element:<CommentAdmin/>
+      }
+      
     ],
   },
 ]);

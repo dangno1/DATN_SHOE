@@ -51,7 +51,7 @@ const productApi = createApi({
       invalidatesTags: ["Product"],
     }),
 
-    updateProduct: builder.mutation<IProduct, IProduct>({
+    updateProduct: builder.mutation<IProduct, any>({
       query: (product) => {
         const data = new FormData();
         data.append("name", product.name);

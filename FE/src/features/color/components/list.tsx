@@ -30,9 +30,16 @@ const ListColor = () => {
     });
   };
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<IColor>({
-    resolver: joiResolver(colorSchema)
-  })
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setFocus,
+    setValue,
+    setError,
+    formState: { errors } } = useForm<IColor>({
+      resolver: joiResolver(colorSchema)
+    })
 
   const {
     register: registerSearch,
@@ -44,10 +51,10 @@ const ListColor = () => {
   }, [reset, successAdd, successUpdate])
 
   useEffect(() => {
-    form.method === "update"
-      ? reset({ value: colorDatas.find((item: IColor) => item._id == form._id)?.value })
-      : reset({ value: undefined })
-  }, [form, reset, colorDatas])
+    form.method.length && setFocus("value");
+    const updateColor = colorData?.find((item: IColor) => item._id == form._id)?.value
+    form.method === "update" && colorData ? setValue("value", String(updateColor)) : reset()
+  }, [form, reset, setFocus, colorData, setValue])
 
   useEffect(() => {
     colorDatas && setColorData(colorDatas)
@@ -55,25 +62,29 @@ const ListColor = () => {
 
   const handleDeleteColor = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteColor(id)
+      await deleteColor(id).unwrap().then(() => openNotification('success', "Xóa màu sắc thành công"))
     })
-    openNotification('success', "Xóa màu sắc thành công")
   };
 
   const handleAddUpdateColor = async (data: IColor) => {
     try {
-      const { open, method } = form
-      if (open && method === "add") {
-        await addColor(data)
-        openNotification('success', "Thêm màu sắc thành công")
+      const existColor = colorDatas.find(({ value }: IColor) => value.toLowerCase() === data.value.toLowerCase())
+      const { method } = form
+      if (method === "add" && !existColor) {
+        const result = await addColor(data)
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Thêm màu sắc thành công")
+          : openNotification('success', "Thêm màu sắc thất bại, vui lòng thử lại sau")
         return
       }
-      if (open && method === "update" && form._id) {
-        await updateColor({ ...data, _id: form._id })
-        openNotification('success', "Cập nhật màu sắc thành công")
+      if (method === "update" && !existColor || (existColor && existColor._id === form._id)) {
+        const result = await updateColor({ ...data, _id: form._id })
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Cập nhật màu sắc thành công")
+          : openNotification('success', "Cập nhật màu sắc thất bại, vui lòng thử lại sau")
         return
       }
-      reset()
+      setError("value", { type: "exist", message: "Màu sắc đã tồn tại" })
     } catch (error) {
       return error
     }
@@ -92,6 +103,9 @@ const ListColor = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    getCheckboxProps: (color: IColor) => ({
+      disabled: color.products?.length as number > 0,
+    }),
   };
 
   const columns: ColumnsType<IColor> = [
@@ -121,8 +135,7 @@ const ListColor = () => {
       key: "_id",
       sorter: (a, b) => Number(a.products?.length) - Number(b.products?.length),
       showSorterTooltip: { title: "click để sắp xếp theo số lượng sản phẩm" },
-
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[500px]",
+      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[200px] lg:max-w-[500px]",
       render: (_, size: IColor) =>
         <div className="max-h-[45px]">
           {size.products?.length}
@@ -138,7 +151,7 @@ const ListColor = () => {
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
         </div>,
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
+      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[350px] lg:max-w-[500px]",
     },
     {
       title: "Hành động",
@@ -147,10 +160,10 @@ const ListColor = () => {
       align: "center",
       className: "w-auto",
       fixed: "right",
-      render: (_id: string) =>
+      render: (_id: string, color: IColor) =>
         _id && (
           <div className="w-max m-auto flex gap-3 cursor-pointer">
-            <Popconfirm
+            {!color.products?.length ? <Popconfirm
               title
               description="Xóa kích thước?"
               okText="Yes"
@@ -162,7 +175,7 @@ const ListColor = () => {
               <Tooltip placement="right" title="Xóa">
                 <BsTrash3 className="fill-red-600 w-4 h-4" />
               </Tooltip>
-            </Popconfirm>
+            </Popconfirm> : <div className="w-max h-max p-1 bg-red-500 text-white rounded-lg">Không thể xóa</div>}
           </div >
         ),
     },

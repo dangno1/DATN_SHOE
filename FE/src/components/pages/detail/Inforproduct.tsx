@@ -87,7 +87,9 @@ const Inforproduct = () => {
         image: String(productData.image),
         color: selectedColor.value,
         status: String(productData.variants[0].status),
-        productID: productData._id
+
+        productID: String(productData?._id),
+
       };
       const data = await addCart(productToAdd);
       message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
