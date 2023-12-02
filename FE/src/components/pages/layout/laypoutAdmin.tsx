@@ -8,13 +8,11 @@ import {
   AiOutlineMenuUnfold,
   AiOutlineUser,
   AiOutlineShopping,
-  AiOutlineSetting,
   AiOutlineFontSize,
   AiOutlineFontColors,
   AiOutlineOrderedList,
 } from "react-icons/ai";
-
-import { TfiDashboard } from 'react-icons/tfi'
+import { CgAdidas } from "react-icons/cg";
 
 import { NavLink, Outlet } from "react-router-dom";
 import { HiOutlineTrash } from "react-icons/hi2";
@@ -32,19 +30,20 @@ const LayoutAdmin = () => {
   }, [])
 
   return (
-    <Layout className="min-h-[100vh] w-full max-w-[100vw] ">
+    <Layout className="min-h-[100vh] w-full max-w-[100vw]">
       <Sider
         trigger={null}
         collapsible
         collapsed={collapsed}
         width={250}
+        className="max-h-[100vh] w-[250px] !bg-white"
       >
         <Menu
           theme="light"
           mode="inline"
           defaultSelectedKeys={["1"]}
           defaultOpenKeys={["3"]}
-          className="h-full font-semibold"
+          className={`h-full font-semibold fixed top-0 max-w-[250px] ${collapsed && "max-w-[80px]"} overflow-y-auto `}
           items={
             [
               {
@@ -67,9 +66,6 @@ const LayoutAdmin = () => {
                     label: <NavLink to="/admin/product/add">Thêm mới sản phẩm</NavLink>,
                     icon: <BsPlusLg />
                   },
-
-
-
                   {
                     key: 6,
                     label: <NavLink to="/admin/product/trashCan">Thùng rác</NavLink>,
@@ -85,18 +81,18 @@ const LayoutAdmin = () => {
               },
               {
                 key: 8,
+                label: <NavLink to="/admin/brand">Thương hiệu</NavLink>,
+                icon: <CgAdidas />,
+              },
+              {
+                key: 9,
                 label: <NavLink to="/admin/size">Kích cỡ</NavLink>,
                 icon: <AiOutlineFontSize />
               },
               {
-                key: 9,
+                key: 10,
                 label: <NavLink to="/admin/color">Màu sắc</NavLink>,
                 icon: <AiOutlineFontColors />
-              },
-              {
-                key: 10,
-                label: <NavLink to="/admin/users">Khách Hàng</NavLink>,
-                icon: <AiOutlineUser />
               },
               {
                 key: 11,
@@ -104,15 +100,15 @@ const LayoutAdmin = () => {
                 icon: <RiCoupon2Line />
               },
               {
-                key: 15,
-                label: <NavLink to="/admin/orders">Đơn Hàng</NavLink>,
-                icon: <AiOutlineShopping />
+                key: 12,
+                label: <NavLink to="/admin/users">Khách Hàng</NavLink>,
+                icon: <AiOutlineUser />
               },
               {
-                key: 12,
-                label: <NavLink to="/admin/settings">Cài Đặt</NavLink>,
-                icon: <AiOutlineSetting />
-              },
+                key: 13,
+                label: <NavLink to="/admin/orders">Đơn Hàng</NavLink>,
+                icon: <AiOutlineShopping />
+              }
             ]
           }
         />
