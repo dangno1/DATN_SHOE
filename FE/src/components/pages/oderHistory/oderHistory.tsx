@@ -1,18 +1,19 @@
+import { useRateProductMutation } from "@/api/rating";
 import Banner from "../userinformation/banner";
 import { useEffect, useState } from "react";
 import { notification } from "antd";
-import { useGetOrdersQuery } from "@/api/orderedProduct";
-import { useRateProductMutation } from "@/api/rating";
-import { IOrder } from "@/interface/order";
+import {
+  useGetOrdersQuery,
+  useUpdateOrderAdminMutation,
+} from "@/api/orderedProduct";
+import { Link } from "react-router-dom";
 type NotificationType = "success" | "info" | "warning" | "error";
 
 const OderHistory = () => {
-  const { data: orderData } = useGetOrdersQuery();
-  const [order, setOrder] = useState<IOrder[]>();
-  const [userData, setUserData] = useState(localStorage);
-  useEffect(() => {
-    orderData && setOrder(orderData);
-  }, [orderData]);
+  const { data: order } = useGetOrdersQuery();
+  // console.log(order);
+  const [updateOrder] = useUpdateOrderAdminMutation();
+
   const [userData, setUserData] = useState(localStorage);
   const [received, setReceived] = useState(false);
   const [api, contextHolder] = notification.useNotification();
@@ -45,6 +46,25 @@ const OderHistory = () => {
 
   const orderCart = order?.filter((item) => item?.userEmail == userData.email);
 
+  const reversedOrderCart = orderCart?.slice().reverse();
+  console.log(reversedOrderCart);
+
+  const handleReceive = (orderId) => {
+    setReceived(true);
+    api.success({
+      message: "Thông báo",
+      description: "Bạn đã xác nhận đã nhận được hàng.",
+    });
+  };
+
+  const handleCancel = (orderId) => {
+    console.log(orderId);
+    updateOrder({ _id: orderId, status: "Đơn Hàng Đã Hủy" });
+    api.warning({
+      message: "Thông báo",
+      description: "Đơn hàng đã được hủy.",
+    });
+  };
 
 
   const [rating, setRating] = useState(0);
@@ -87,28 +107,6 @@ const OderHistory = () => {
       console.error("Error submitting rating:", error);
       alert("An error occurred while submitting the rating. Please try again.");
     }
-  };
-
-
-
-  const reversedOrderCart = orderCart?.slice().reverse();
-  console.log(reversedOrderCart);
-
-  const handleReceive = (orderId) => {
-    setReceived(true);
-    api.success({
-      message: "Thông báo",
-      description: "Bạn đã xác nhận đã nhận được hàng.",
-    });
-  };
-
-  const handleCancel = (orderId) => {
-    console.log(orderId);
-    updateOrder({ _id: orderId, status: "Đơn Hàng Đã Hủy" });
-    api.warning({
-      message: "Thông báo",
-      description: "Đơn hàng đã được hủy.",
-    });
   };
 
 
