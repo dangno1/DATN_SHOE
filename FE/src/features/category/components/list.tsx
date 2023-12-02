@@ -136,7 +136,7 @@ const ListCategory = () => {
       key: "updatedAt",
       sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
-      className: "capitalize w-[450px] max-w-[450px]",
+      className: "w-[450px] max-w-[450px]",
       render: (updatedAt: string) =>
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}

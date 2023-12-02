@@ -119,7 +119,7 @@ const ListProduct = () => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
-      className: "capitalize w-[130px] max-w-[130px] md:min-w-[200px] lg:min-w-[200px] lg:max-w-[200px]",
+      className: "w-[130px] max-w-[130px] md:min-w-[200px] lg:min-w-[200px] lg:max-w-[200px]",
       render: (name: string) =>
         <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
           {name}
@@ -139,7 +139,7 @@ const ListProduct = () => {
       title: "Danh mục",
       dataIndex: "categoryId",
       key: "categoryId",
-      className: "min-w-[100px] w-[150px] max-w-[150px] capitalize",
+      className: "min-w-[100px] w-[150px] max-w-[150px]",
       render: (categoryId) => {
         const nameCate = dataCategory?.find(
           (category: ICategory) => category._id === categoryId
@@ -151,7 +151,7 @@ const ListProduct = () => {
       title: "Thương hiệu",
       dataIndex: "brandId",
       key: "brandId",
-      className: "min-w-[120px] w-[150px] max-w-[150px] capitalize",
+      className: "min-w-[120px] w-[150px] max-w-[150px]",
       render: (brandId) => {
         const nameBrand = brandDatas?.find(
           (brand: IBrand) => brand._id === brandId

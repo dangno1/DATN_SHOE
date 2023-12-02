@@ -113,14 +113,14 @@ const ListColor = () => {
       title: "STT",
       dataIndex: "index",
       key: "index",
-      className: "w-[70px] max-w-[100px] !pl-8",
+      className: "w-[100px] max-w-[100px]",
       fixed: "left",
     },
     {
-      title: "màu sắc",
+      title: "Màu sắc",
       dataIndex: "value",
       key: "value",
-      className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
+      className: "w-[450px] max-w-[450px]",
       render: (value: string, color: IColor) =>
         <div className="flex items-center gap-2">
           <BsPencilSquare
@@ -130,28 +130,16 @@ const ListColor = () => {
         </div>
     },
     {
-      title: "Số lượng sản phẩm",
-      dataIndex: "_id",
-      key: "_id",
-      sorter: (a, b) => Number(a.products?.length) - Number(b.products?.length),
-      showSorterTooltip: { title: "click để sắp xếp theo số lượng sản phẩm" },
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[200px] lg:max-w-[500px]",
-      render: (_, size: IColor) =>
-        <div className="max-h-[45px]">
-          {size.products?.length}
-        </div>
-    },
-    {
       title: "Thời gian cập nhật",
       dataIndex: "updatedAt",
       key: "updatedAt",
       sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
+      className: "w-[450px] max-w-[450px]",
       render: (updatedAt: string) =>
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
         </div>,
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[350px] lg:max-w-[500px]",
     },
     {
       title: "Hành động",

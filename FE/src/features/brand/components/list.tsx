@@ -119,14 +119,14 @@ const ListBrand = () => {
       title: "STT",
       dataIndex: "index",
       key: "index",
-      className: "w-[70px] max-w-[100px]",
+      className: "w-[100px] max-w-[100px]",
       fixed: "left",
     },
     {
       title: "Tên Thương hiệu",
       dataIndex: "name",
       key: "name",
-      className: "w-[450px] max-w-[450px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
+      className: "w-[450px] max-w-[450px]",
       render: (name: string, brand: IBrand) =>
         <div className="flex items-center gap-2">
           {brand.name.toLowerCase() !== "chưa phân loại"
@@ -144,7 +144,7 @@ const ListBrand = () => {
       key: "updatedAt",
       sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
-      className: "capitalize w-[450px] max-w-[450px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
+      className: "w-[450px] max-w-[450px]",
       render: (updatedAt: string) =>
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}

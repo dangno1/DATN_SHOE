@@ -117,7 +117,7 @@ const ListSize = () => {
       title: "STT",
       dataIndex: "index",
       key: "index",
-      className: "w-[70px] max-w-[100px] !pl-8",
+      className: "w-[100px] max-w-[100px]",
       fixed: "left",
     },
     {
@@ -126,7 +126,7 @@ const ListSize = () => {
       key: "value",
       sorter: (a, b) => a.value - b.value,
       showSorterTooltip: { title: "click để sắp xếp theo kích thước" },
-      className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
+      className: "w-[450px] max-w-[450px]",
       render: (value: string, size: ISize) =>
         <div className="flex items-center gap-2">
           <BsPencilSquare
@@ -139,29 +139,16 @@ const ListSize = () => {
         </div>
     },
     {
-      title: "Số lượng sản phẩm",
-      dataIndex: "_id",
-      key: "_id",
-      sorter: (a, b) => Number(a.products?.length) - Number(b.products?.length),
-      showSorterTooltip: { title: "click để sắp xếp theo số lượng sản phẩm" },
-
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[500px]",
-      render: (_, size: ISize) =>
-        <div className="max-h-[45px]">
-          {size.products?.length}
-        </div>
-    },
-    {
       title: "Thời gian cập nhật",
       dataIndex: "updatedAt",
       key: "updatedAt",
       sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
+      className: "w-[450px] max-w-[450px]",
       render: (updatedAt: string) =>
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
         </div>,
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[350px] lg:max-w-[500px]",
     },
     {
       title: "Hành động",
@@ -219,7 +206,7 @@ const ListSize = () => {
       <div className="h-[35px] w-full my-3 flex gap-2">
         <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="number" placeholder="tìm kiếm theo kích thước" {...registerSearch('search')}
+            type="number" placeholder="tìm kiếm theo kích cỡ" {...registerSearch('search')}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
