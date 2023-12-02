@@ -36,12 +36,14 @@ const productSchema = {
   }),
 
   desc: {
-    required: "Mô tả sản phẩm không được để trống",
-    validate: (value: string) =>
-      value.replace(/<[^>]*>?/gm, "").length >= 10 || "Mô tả quá ngắn",
+    validate: (value?: string) =>
+      value
+        ? value.replace(/<[^>]*>?/gm, "").length >= 10 ||
+          "Vui lòng nhập tối thiểu 10 kí tự"
+        : true,
   },
 
-  brand: {
+  brandId: {
     required: "Thương hiệu không được để trống",
   },
 
@@ -61,8 +63,7 @@ const productSchema = {
   },
 
   discount: (getValues: UseFormGetValues<IProduct>, index: number) => ({
-    required: "Giá khuến mãi không được để trống",
-    min: { value: 0, message: "Giá khuến mãi phải là số dương" },
+    min: { value: 1, message: "Giá khuến mãi phải lớn hơn 0" },
     validate: (value: number) =>
       value <= Number(getValues(`variants.${index}.price`)) ||
       "Giá khuến mãi không được lớn hơn giá gốc",

@@ -1,5 +1,10 @@
-import { useAddCategoryMutation, useGetCategoryesQuery, useRemoveCategoryMutation, useUpdateCategoryMutation } from "@/api/category";
-import { ICategory } from "@/interface/category";
+import {
+  useGetBrandsQuery,
+  useAddBrandMutation,
+  useUpdateBrandMutation,
+  useRemoveBrandMutation,
+} from "@/api/brand";
+import { IBrand } from "@/interface/brand";
 import { Modal, Popconfirm, Table, Tooltip, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
@@ -7,20 +12,20 @@ import { useState, useEffect, Key } from "react";
 import { useForm } from "react-hook-form";
 import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
 import { joiResolver } from "@hookform/resolvers/joi";
-import categorySchema from "@/schemas/category";
+import brandSchema from "@/schemas/brand";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
 
-const ListCategory = () => {
+const ListBrand = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-  const [categoryData, setCategoryData] = useState<ICategory[]>([]);
+  const [brandData, setBrandData] = useState<IBrand[]>([]);
 
-  const [deleteCategory, { isLoading: loadDelete }] = useRemoveCategoryMutation();
-  const [updateCategory, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateCategoryMutation();
-  const [addCategory, { isLoading: loadAdd, isSuccess: successAdd }] = useAddCategoryMutation();
-  const { data: categoryDatas } = useGetCategoryesQuery<{ data: ICategory[] }>();
+  const [deleteBrand, { isLoading: loadDelete }] = useRemoveBrandMutation();
+  const [updateBrand, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateBrandMutation();
+  const [addBrand, { isLoading: loadAdd, isSuccess: successAdd }] = useAddBrandMutation();
+  const { data: brandDatas } = useGetBrandsQuery<{ data: IBrand[] }>();
 
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (type: NotificationType, message: string) => {
@@ -38,8 +43,8 @@ const ListCategory = () => {
     setValue,
     setFocus,
     formState: { errors }
-  } = useForm<ICategory>({
-    resolver: joiResolver(categorySchema)
+  } = useForm<IBrand>({
+    resolver: joiResolver(brandSchema)
   })
   const {
     register: registerSearch,
@@ -52,52 +57,52 @@ const ListCategory = () => {
 
   useEffect(() => {
     form.method.length && setFocus("name");
-    const updateCate = categoryData?.find((item: ICategory) => item._id == form._id)?.name
-    form.method === "update" && categoryData ? setValue("name", String(updateCate)) : reset()
-  }, [categoryData, form, reset, setFocus, setValue])
+    const updateBrand = brandData?.find((item: IBrand) => item._id == form._id)?.name
+    form.method === "update" && brandData ? setValue("name", String(updateBrand)) : reset()
+  }, [brandData, form, reset, setFocus, setValue])
 
   useEffect(() => {
-    categoryDatas && setCategoryData(categoryDatas)
-  }, [categoryDatas, selectedRowKeys])
+    brandDatas && setBrandData(brandDatas)
+  }, [brandDatas, selectedRowKeys])
 
-  const handleDeleteCategory = (listId: string[]) => {
+  const handleDeleteBrand = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteCategory(id).unwrap().then(() => openNotification('success', "Xóa Danh mục thành công"))
+      await deleteBrand(id).unwrap().then(() => openNotification('success', "Xóa thương hiệu thành công"))
     })
     setSelectedRowKeys([])
   };
 
-  const handleAddUpdateCategory = async (data: ICategory) => {
+  const handleAddUpdateBrand = async (data: IBrand) => {
     try {
-      const existCategory = categoryDatas.find((item: ICategory) => item.name.toLowerCase() === data.name.toLowerCase())
+      const existBrand = brandDatas.find((item: IBrand) => item.name.toLowerCase() === data.name.toLowerCase())
       const { method } = form
 
-      if (method === "add" && !existCategory) {
-        const result = await addCategory(data)
+      if (method === "add" && !existBrand) {
+        const result = await addBrand(data)
         "data" in result && "success" in result.data && result.data.success
-          ? openNotification('success', "Thêm danh mục thành công")
-          : openNotification('error', "Thêm danh mục thất bại, vui lòng thử lại")
+          ? openNotification('success', "Thêm thương hiệu thành công")
+          : openNotification('error', "Thêm thương hiệu thất bại, vui lòng thử lại")
         return;
       }
 
-      if (method === "update" && !existCategory || (existCategory && existCategory._id === form._id)) {
-        const result = await updateCategory({ ...data, _id: form._id })
+      if (method === "update" && !existBrand || (existBrand && existBrand._id === form._id)) {
+        const result = await updateBrand({ ...data, _id: form._id })
         "data" in result && "success" in result.data && result.data.success
-          ? openNotification('success', "Cập nhật danh mục thành công")
-          : openNotification('error', "Cập nhật danh mục thất bại, vui lòng thử lại")
+          ? openNotification('success', "Cập nhật thương hiệu thành công")
+          : openNotification('error', "Cập nhật thương hiệu thất bại, vui lòng thử lại")
         return;
       }
 
-      setError("name", { type: "exist", message: "Danh mục đã tồn tại" })
+      setError("name", { type: "exist", message: "Thương hiệu đã tồn tại" })
     } catch (error) {
       return error
     }
   }
 
   const handleSearch = (data: { search?: string }) => {
-    const newData = categoryDatas
-      && categoryDatas.filter((item: ICategory) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
-    setCategoryData(newData)
+    const newData = brandDatas
+      && brandDatas.filter((item: IBrand) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
+    setBrandData(newData)
   }
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
@@ -107,26 +112,29 @@ const ListCategory = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-    getCheckboxProps: (category: ICategory) => ({
-      disabled: category.products?.length as number > 0 || category.name.toLowerCase() == "chưa phân loại",
-    }),
   };
 
-  const columns: ColumnsType<ICategory> = [
+  const columns: ColumnsType<IBrand> = [
     {
       title: "STT",
       dataIndex: "index",
       key: "index",
-      className: "w-[100px] max-w-[100px]",
+      className: "w-[70px] max-w-[100px]",
       fixed: "left",
     },
     {
-      title: "Tên Danh mục",
+      title: "Tên Thương hiệu",
       dataIndex: "name",
       key: "name",
-      className: "w-[450px] max-w-[450px]",
-      render: (name: string) =>
+      className: "w-[450px] max-w-[450px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
+      render: (name: string, brand: IBrand) =>
         <div className="flex items-center gap-2">
+          {brand.name.toLowerCase() !== "chưa phân loại"
+            && < BsPencilSquare
+              className="w-3 h-3 fill-orange-600 cursor-pointer"
+              onClick={() => setForm({ open: true, method: "update", _id: String(brand._id) })}
+            />
+          }
           {name}
         </div>
     },
@@ -136,7 +144,7 @@ const ListCategory = () => {
       key: "updatedAt",
       sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
-      className: "capitalize w-[450px] max-w-[450px]",
+      className: "capitalize w-[450px] max-w-[450px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
       render: (updatedAt: string) =>
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
@@ -147,37 +155,36 @@ const ListCategory = () => {
       dataIndex: "_id",
       key: "_id",
       align: "center",
-      className: "w-auto",
+      className: "w-auto flex justify-center",
       fixed: "right",
-      render: (_id: string, category: ICategory) =>
-        <div className="w-max m-auto flex gap-3 cursor-pointer">
-          <Popconfirm
-            disabled={(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) ? true : false}
-            title
-            description="Xóa danh mục?"
-            okText="Yes"
-            cancelText="No"
-            okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-            cancelButtonProps={{ className: "border-slate-400" }}
-            onConfirm={() => handleDeleteCategory([_id])}
-          >
-            <Tooltip placement="right" title={!(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) ? "Xóa" : ""}>
-              <BsTrash3 className={`fill-red-600 w-4 h-4 ${(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && "fill-slate-500 cursor-not-allowed"}`} />
-            </Tooltip>
-          </Popconfirm>
-          <BsPencilSquare
-            className={`w-4 h-4 fill-orange-600 cursor-pointer disabled:!opacity-0 ${(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && "fill-slate-500 cursor-not-allowed"}`}
-            onClick={() => !(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && setForm({ open: true, method: "update", _id: String(category._id) })} />
-        </div >
+      render: (_id: string, brand: IBrand) =>
+        (_id && brand.name.toLowerCase() !== "chưa phân loại" && !brand.products?.length)
+        && (
+          <div className="w-full m-auto flex justify-center gap-3 cursor-pointer">
+            <Popconfirm
+              title
+              description="Xóa danh mục?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+              cancelButtonProps={{ className: "border-slate-400" }}
+              onConfirm={() => handleDeleteBrand([_id])}
+            >
+              <Tooltip placement="right" title="Xóa">
+                <BsTrash3 className="fill-red-600 w-4 h-4" />
+              </Tooltip>
+            </Popconfirm>
+          </div>
+        )
     },
   ];
 
-  const sortUpdatedAtCategoryData = categoryData
-    && [...categoryData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
+  const sortUpdatedAtbrandData = brandData
+    && [...brandData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
 
-  const dataSource = sortUpdatedAtCategoryData?.map((category: ICategory, index: number) => ({
-    ...category,
-    key: category._id,
+  const dataSource = sortUpdatedAtbrandData?.map((brand: IBrand, index: number) => ({
+    ...brand,
+    key: brand._id,
     index: index + 1
   }))
 
@@ -201,7 +208,7 @@ const ListCategory = () => {
       <div className="h-[35px] w-full my-3 flex gap-2">
         <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="text" placeholder="tìm kiếm danh mục" {...registerSearch('search')}
+            type="text" placeholder="tìm kiếm thương hiệu" {...registerSearch('search')}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
@@ -209,15 +216,15 @@ const ListCategory = () => {
           selectedRowKeys.length > 0 && <div className="w-full flex items-center  cursor-pointer">
             <Popconfirm
               title
-              description="Xóa danh mục?"
+              description="Xóa thương hiệu?"
               okText="Yes"
               cancelText="No"
               okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
               cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleDeleteCategory(selectedRowKeys as string[])}
+              onConfirm={() => handleDeleteBrand(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa danh mục</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa thương hiệu</span>
               </Tooltip>
             </Popconfirm>
           </div>
@@ -234,7 +241,7 @@ const ListCategory = () => {
         </Backdrop>
         <Modal
           title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">
-            {form.method === "update" ? "Cập nhật danh mục" : "Thêm mới danh mục"}
+            {form.method === "update" ? "Cập nhật thương hiệu" : "Thêm mới thương hiệu"}
           </div>}
           centered open={form.open}
           onCancel={() => setForm({ open: false, method: "" })}
@@ -242,14 +249,14 @@ const ListCategory = () => {
           cancelButtonProps={{ style: { display: "none" } }}
         >
           <form
-            onSubmit={handleSubmit(handleAddUpdateCategory)}
+            onSubmit={handleSubmit(handleAddUpdateBrand)}
             className="w-full px-[20px]"
           >
-            <label className="text-slate-600 font-semibold block float-left">Tên Danh mục<span className="text-red-500">*</span></label>
+            <label className="text-slate-600 font-semibold block float-left">Tên Thương hiệu<span className="text-red-500">*</span></label>
             <input
               {...register("name")} type="text"
-              autoFocus placeholder="Giày nam, Giày nữ..."
-              className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && "border-red-500"}`}
+              autoFocus placeholder="Adidas..."
+              className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && "border-red-500"}`}
             />
             {errors.name && <span className="text-red-500">{errors.name.message}</span>}
             <div className="w-full grid items-center justify-end mt-2">
@@ -269,4 +276,4 @@ const ListCategory = () => {
   );
 };
 
-export default ListCategory;
+export default ListBrand;

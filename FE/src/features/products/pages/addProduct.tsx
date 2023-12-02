@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+// /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
@@ -18,6 +20,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlineTrash, HiPlus } from "react-icons/hi2";
 import '../index.css'
 import productSchema from "@/schemas/product";
+import { useGetBrandsQuery } from "@/api/brand";
+import { IBrand } from "@/interface/brand";
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 export type ImageType = { files: File[], url: string[] } | null
@@ -25,6 +29,7 @@ export type ImageType = { files: File[], url: string[] } | null
 const AddProduct = () => {
   const [thumbnail, setThumbnail] = useState<ImageType>()
   const [image, setImage] = useState<ImageType>()
+  // const [variantsDuplicate, setVariantsDuplicate] = useState<{ index: number, sizeId?: string, colorId?: string }>({ index: 0, colorId: '', sizeId: '' })
   const navigate = useNavigate();
 
   const [api, contextHolder] = notification.useNotification();
@@ -37,6 +42,7 @@ const AddProduct = () => {
 
   const [AddProduct, { isLoading }] = useAddProductMutation();
   const { data: categoryData } = useGetCategoryesQuery();
+  const { data: brandDatas } = useGetBrandsQuery();
   const { data: productData } = useGetProductsQuery(false);
   const { data: sizeData } = useGetSizesQuery();
   const { data: colorData } = useGetColorsQuery();
@@ -48,6 +54,7 @@ const AddProduct = () => {
     control,
     reset,
     getValues,
+    watch,
     formState: { errors }
   } = useForm<IProduct>({
     defaultValues: {
@@ -129,6 +136,21 @@ const AddProduct = () => {
     }
   };
 
+  // useEffect(() => {
+  //   const getAllVariants = getValues("variants")
+  //   const { index, sizeId, colorId } = variantsDuplicate
+  //   const duplicate = getAllVariants.find((value, indexVariants) =>
+  //     sizeId
+  //     && colorId
+  //     && index !== indexVariants
+  //     && sizeId === value.sizeId
+  //     && colorId === value.colorId
+  //   )
+  //   console.log(duplicate);
+  //   duplicate ? setError(`variants.${index}.sizeId`, { type: "exist", message: "Biến thể này đã tồn tại" }) : errors.variants?.[index]?.sizeId?.type === "exist" && clearErrors(`variants.${index}.sizeId`)
+  //   console.log(errors.variants?.[index]?.sizeId);
+  // }, [variantsDuplicate])
+
   return (
     <>
       <div className="p-5">
@@ -147,15 +169,17 @@ const AddProduct = () => {
             </div>
             <div className="h-max mb-[20px]">
               <label className="text-slate-600 font-semibold">Thương hiệu<span className="text-red-500">*</span></label>
-              <input
-                {...register("brand", productSchema.brand)} type="text" placeholder="Thương hiệu*..."
-                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
-                focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
-                focus:shadow-full ${errors.brand && 'border-red-500'}`} />
-              {errors.brand && <span className="text-red-500">{errors.brand.message}</span>}
+              <select {...register("brandId", productSchema.brandId)}
+                className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors.brandId && 'border-red-500'}`}>
+                <option value="">Thương hiệu</option>
+                {
+                  brandDatas?.map((brand: IBrand) => <option key={brand._id} value={brand._id}>{brand.name}</option>)
+                }
+              </select>
+              {errors.brandId && <span className="text-red-500">{errors.brandId.message}</span>}
             </div>
             <div className="h-max mb-[20px] col-span-2 space-y-[5px]">
-              <label className="text-slate-600 font-semibold">Mô tả<span className="text-red-500">*</span></label>
+              <label className="text-slate-600 font-semibold">Mô tả sản phẩm</label>
               <div className={`border border-[#d0dbf0] rounded-[5px] min-h-[172px] ${errors.desc && 'border-red-500'}`}>
                 <Controller
                   name="desc"
@@ -251,76 +275,89 @@ const AddProduct = () => {
           </div>
           {/* biến thể */}
           <div className="h-max col-span-3 relative">
-            <label className="text-slate-600 font-semibold">Sản phẩm biến thể</label>
+            <label className="text-slate-600 font-semibold select-none">Sản phẩm biến thể</label>
             <div className="before:w-full before:h-[1px] before:bg-slate-300 before:absolute mt-2">
               {fields.map((field, index) => (
-                <div key={field.id} className="rounded-[5px] grid grid-cols-[95%_auto] gap-2 place-items-center p-2 pt-5 mb-[10px]">
-                  <div className="w-full grid grid-cols-5 gap-4">
-                    <div className="w-full h-max">
-                      <label className="text-slate-600 font-semibold">Kích cỡ<span className="text-red-500">*</span></label>
-                      <select {...register(`variants.${index}.sizeId`, productSchema.sizeId)} className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.sizeId && "border-red-500"}`}>
-                        <option value="" >Size</option>
-                        {
-                          sizeData?.map((size: ISize) => <option key={size._id} value={size._id}>{size.value}</option>)
-                        }
-                      </select>
-                      {errors?.variants?.[index]?.sizeId && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.sizeId?.message}</span>}
+                <div key={field.id} className="rounded-[5px] grid grid-cols-[95%_auto] place-items-center p-2 pt-5 mb-[10px]">
+                  <>
+                    {errors.variants?.[index]?.type === "exist" &&
+                      <span className="w-full text-red-500 text-[13px] col-span-2 justify-start select-none">
+                        {errors.variants?.[index]?.message}
+                      </span>}
+                    <div className="w-full grid grid-cols-5 gap-4">
+                      <div className="w-full h-max">
+                        <label className="text-slate-600 font-semibold">Kích cỡ<span className="text-red-500">*</span></label>
+                        <select
+                          {...register(`variants.${index}.sizeId`, productSchema.sizeId)}
+                          className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.sizeId && errors?.variants?.[index]?.sizeId?.type != "validate" && "border-red-500"}`}>
+                          <option value="" >Size</option>
+                          {
+                            sizeData?.map((size: ISize) => <option key={size._id} value={size._id}>{size.value}</option>)
+                          }
+                        </select>
+                        {errors?.variants?.[index]?.sizeId?.type != 'validate' && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.sizeId?.message}</span>}
+                      </div>
+                      <div className="w-full h-max">
+                        <label className="text-slate-600 font-semibold">Màu sắc<span className="text-red-500">*</span></label>
+                        <select
+                          disabled={watch(`variants.${index}.sizeId`) ? false : true}
+                          defaultValue={undefined}
+                          value={watch(`variants.${index}.colorId`)}
+                          {...register(`variants.${index}.colorId`, productSchema.colorId)}
+                          className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.colorId && errors?.variants?.[index]?.colorId?.type != "validate" && "border-red-500"}`}>
+                          <option value="" >Color</option>
+                          {
+                            colorData?.map((color: IColor) => <option key={color._id} value={color._id}>{color.value}</option>)
+                          }
+                        </select>
+                        {errors?.variants?.[index]?.colorId?.type != "validate" && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.colorId?.message}</span>}
+                      </div>
+                      <div className="w-full h-max">
+                        <label className="text-slate-600 font-semibold">Giá gốc<span className="text-red-500">*</span></label>
+                        <input {...register(`variants.${index}.price`, productSchema.price)} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.price && "border-red-500"}`} />
+                        {errors?.variants?.[index]?.price && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.price?.message}</span>}
+                      </div>
+                      <div className="w-full h-max">
+                        <label className="text-slate-600 font-semibold">Giá khuyến mãi</label>
+                        <input {...register(`variants.${index}.discount`, productSchema.discount(getValues, index))} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.discount && "border-red-500"}`} />
+                        {errors?.variants?.[index]?.discount && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.discount?.message}</span>}
+                      </div>
+                      <div className="w-full h-max">
+                        <label className="text-slate-600 font-semibold">Số lượng<span className="text-red-500">*</span></label>
+                        <input {...register(`variants.${index}.quantity`, productSchema.quantity)} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.quantity && "border-red-500"}`} />
+                        {errors?.variants?.[index]?.quantity && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.quantity?.message}</span>}
+                      </div>
+                      <div className="hidden">
+                        <input
+                          type="number"
+                          {...register(`variants.${index}.amountSold`)}
+                        />
+                      </div>
+                      <div className="hidden">
+                        <input
+                          type="number"
+                          {...register(`variants.${index}.status`)}
+                        />
+                      </div>
                     </div>
-                    <div className="w-full h-max">
-                      <label className="text-slate-600 font-semibold">Màu sắc<span className="text-red-500">*</span></label>
-                      <select {...register(`variants.${index}.colorId`, productSchema.colorId)} className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.colorId && "border-red-500"}`}>
-                        <option value="" >Color</option>
-                        {
-                          colorData?.map((color: IColor) => <option key={color._id} value={color._id}>{color.value}</option>)
-                        }
-                      </select>
-                      {errors?.variants?.[index]?.colorId && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.colorId?.message}</span>}
+                    <div className={`w-max min-h-full max-h-full grid place-items-center mt-[23px] ${errors?.variants?.[index] && "mt-0 mb-4"}`}>
+                      {fields.length > 1 && (
+                        <Popconfirm
+                          title
+                          description="Xóa biến thể?"
+                          okText="Yes"
+                          cancelText="No"
+                          okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+                          cancelButtonProps={{ className: "border-slate-400" }}
+                          onConfirm={() => remove(index)}
+                        >
+                          <Tooltip title="Xóa biến thể" placement="right">
+                            <HiOutlineTrash className="stroke-red-600 w-5 h-5 cursor-pointer" />
+                          </Tooltip>
+                        </Popconfirm>
+                      )}
                     </div>
-                    <div className="w-full h-max">
-                      <label className="text-slate-600 font-semibold">Giá gốc<span className="text-red-500">*</span></label>
-                      <input {...register(`variants.${index}.price`, productSchema.price)} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.price && "border-red-500"}`} />
-                      {errors?.variants?.[index]?.price && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.price?.message}</span>}
-                    </div>
-                    <div className="w-full h-max">
-                      <label className="text-slate-600 font-semibold">Giá khuyến mãi<span className="text-red-500">*</span></label>
-                      <input {...register(`variants.${index}.discount`, productSchema.discount(getValues, index))} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.discount && "border-red-500"}`} />
-                      {errors?.variants?.[index]?.discount && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.discount?.message}</span>}
-                    </div>
-                    <div className="w-full h-max">
-                      <label className="text-slate-600 font-semibold">Số lượng<span className="text-red-500">*</span></label>
-                      <input {...register(`variants.${index}.quantity`, productSchema.quantity)} type="number" placeholder="500..." className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors?.variants?.[index]?.quantity && "border-red-500"}`} />
-                      {errors?.variants?.[index]?.quantity && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.quantity?.message}</span>}
-                    </div>
-                    <div className="hidden">
-                      <input
-                        type="number"
-                        {...register(`variants.${index}.amountSold`)}
-                      />
-                    </div>
-                    <div className="hidden">
-                      <input
-                        type="number"
-                        {...register(`variants.${index}.status`)}
-                      />
-                    </div>
-                  </div>
-                  <div className={`w-max min-h-full max-h-full grid place-items-center mt-[23px] ${errors?.variants?.[index] && "mt-0 mb-4"}`}>
-                    {fields.length > 1 && (
-                      <Popconfirm
-                        title
-                        description="Xóa biến thể?"
-                        okText="Yes"
-                        cancelText="No"
-                        okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-                        cancelButtonProps={{ className: "border-slate-400" }}
-                        onConfirm={() => remove(index)}
-                      >
-                        <Tooltip title="Xóa biến thể" placement="right">
-                          <HiOutlineTrash className="stroke-red-600 w-5 h-5 cursor-pointer" />
-                        </Tooltip>
-                      </Popconfirm>
-                    )}
-                  </div>
+                  </>
                 </div >
               ))}
               <Tooltip title="Thêm biến thể" className="m-auto grid place-items-center mb-[18px]">
