@@ -38,7 +38,7 @@ const Similarproduct = () => {
           className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14"
         >
           {Similar?.map((product: IProduct) => (
-            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl" key={product.id}>
+            <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl" key={product._id}>
               <Link to={`/detail/${product._id}`}>
                 <img
                   src={product?.image}
