@@ -28,8 +28,8 @@ const productApi = createApi({
       query: (product) => {
         const data = new FormData();
         data.append("name", product.name);
-        data.append("desc", product.desc);
-        data.append("brand", product.brand);
+        product.desc && data.append("desc", product.desc);
+        data.append("brandId", product.brandId);
         data.append("categoryId", product.categoryId);
 
         data.append("variants", JSON.stringify(product.variants));
@@ -51,12 +51,12 @@ const productApi = createApi({
       invalidatesTags: ["Product"],
     }),
 
-    updateProduct: builder.mutation<IProduct, any>({
+    updateProduct: builder.mutation<IProduct, IProduct>({
       query: (product) => {
         const data = new FormData();
         data.append("name", product.name);
-        data.append("desc", product.desc);
-        data.append("brand", product.brand);
+        product.desc && data.append("desc", product.desc);
+        data.append("brandId", product.brandId);
         data.append("categoryId", product.categoryId);
         data.append("isDelete", JSON.stringify(product.isDelete));
 
