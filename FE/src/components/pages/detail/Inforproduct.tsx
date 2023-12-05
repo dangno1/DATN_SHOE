@@ -202,7 +202,6 @@ const Inforproduct = () => {
                           width="22"
                           height="22"
                           viewBox="0 0 22 22"
-                          // fill={index + 1 <= (hoverRating || rating) ? "yellow" : "none"}
                           fill="yellow"
                           stroke="black"
                           strokeWidth="1.5"
