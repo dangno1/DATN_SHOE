@@ -10,21 +10,16 @@ import { Navigation } from 'swiper/modules';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useCreateCartMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
+import { notification } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
 import { useGetRateQuery } from "@/api/rating";
-import { notification } from "antd";
-import { IProduct } from "@/interface/product";
-
 
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
-  console.log(productData);
-
-
   const variants = productData?.variants;
   const size = variants?.map((item: unknown) => {
     const sizeProduct = sizeData?.find(
@@ -32,7 +27,6 @@ const Inforproduct = () => {
     );
     return sizeProduct;
   });
-
   const color = variants?.map((item: unknown) => {
     const colorProduct = colorData?.find(
       (colorItem: IColor) => item?.colorId == colorItem._id
@@ -40,6 +34,11 @@ const Inforproduct = () => {
     return colorProduct;
   });
   console.log(color);
+  const [addCart] = useCreateCartMutation();
+  const [userData, setUserData] = useState(localStorage);
+  const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
+  const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]);
+
   type NotificationType = 'success' | 'info' | 'warning' | 'error';
   const [notificationVisible, setNotificationVisible] = useState(false);
 
@@ -52,11 +51,6 @@ const Inforproduct = () => {
     });
   };
 
-  const [addCart] = useCreateCartMutation();
-  const [userData, setUserData] = useState(localStorage);
-  const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
-  const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]);
-
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (user) {
@@ -64,7 +58,6 @@ const Inforproduct = () => {
       setUserData(userData);
     }
   }, []);
-
   //render số lượng sản phẩm trong kho theo biến thể
   const [selectedVariant, setSelectedVariant] = useState<IProduct['variants'][0] | undefined>(variants?.[0]);
   useEffect(() => {
@@ -78,7 +71,6 @@ const Inforproduct = () => {
     }
   }, [selectedSize, selectedColor, variants]);
   //hết code render số lượng sản phẩm trong kho theo biến thể
-
   //validate điều kiện add cart
   const navigate = useNavigate();
   const handleAddCar = async () => {
@@ -142,14 +134,14 @@ const Inforproduct = () => {
     }
   };
   //hết code addCart
+
   const [images, setImage] = useState<(File | File[] | undefined)[]>()
   useEffect(() => {
     const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
     setImage(listImage)
   }, [productData])
 
-
-  const [activeImgId, setActiveImageId] = useState(1); 
+  const [activeImgId, setActiveImageId] = useState(1);
 
   const handleImageClick = (id: number) => {
     setActiveImageId(id); // Update the active image ID when a thumbnail is clicked
@@ -163,13 +155,12 @@ const Inforproduct = () => {
       setAmount(amount - 1);
     }
   };
-
   //--------------------------------
   const starsData = useGetRateQuery();
   const calculateAverageStarsFromPath = (starsData, idFromPath) => {
     let totalStars = 0;
     let numberOfRatings = 0;
-    const stars = starsData?.data?.filter((item: any) => item.productID._id === id);
+    const stars = starsData?.data?.filter((item: any) => item.productID?._id === id);
     if (stars && Array.isArray(stars)) {
       stars.forEach((item) => {
         if (item && item.stars) {
@@ -189,7 +180,6 @@ const Inforproduct = () => {
   const { totalStars, averageStars } = calculateAverageStarsFromPath(saoData, id);
   console.log('Total Stars:', totalStars);
   console.log('Average Stars:', averageStars);
-
   return (
     <div>
       {notificationVisible}
@@ -201,32 +191,32 @@ const Inforproduct = () => {
             <div className="container ">
               <div className="grid grid-cols-[3fr,1fr]">
                 <div className=" px-4 max-w-6xl">
-                    <div className="image_one relative mb-6 lg:mb-10 ">
-                      <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-                        {images?.map((item: any, index: number) => (
-                          <SwiperSlide key={index}>
-                            <img
-                              src={item}
-                              alt=""
-                              onClick={() => handleImageClick(index + 1)} // Tăng ID bằng 1 để từ 1, 2, 3, ...
-                            />
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    </div>
-                    <div className="flex-wrap hidden md:flex ml-20">
+                  <div className="image_one relative mb-6 lg:mb-10 ">
+                    <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
                       {images?.map((item: any, index: number) => (
-                        <div key={item} className="w-1/2 p-2 sm:w-1/4">
-                          <a
-                            href="#"
-                            className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
-                            onClick={() => handleImageClick(index + 1)}
-                          >
-                            <img src={item} alt="" className="object-cover w-full" />
-                          </a>
-                        </div>
+                        <SwiperSlide key={index}>
+                          <img
+                            src={item}
+                            alt=""
+                            onClick={() => handleImageClick(index + 1)} // Tăng ID bằng 1 để từ 1, 2, 3, ...
+                          />
+                        </SwiperSlide>
                       ))}
-                    </div>
+                    </Swiper>
+                  </div>
+                  <div className="flex-wrap hidden md:flex ml-20">
+                    {images?.map((item: any, index: number) => (
+                      <div key={item} className="w-1/2 p-2 sm:w-1/4">
+                        <a
+                          href="#"
+                          className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
+                          onClick={() => handleImageClick(index + 1)}
+                        >
+                          <img src={item} alt="" className="object-cover w-full" />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className="w-full">
                   <div className="">
@@ -237,7 +227,7 @@ const Inforproduct = () => {
                         <span>{productData.variants[0].discount.toLocaleString("vi-VN")}VND</span>
                         <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
                       </p>
-      <div className="mr-7 flex flex-wrap items-center">
+                      <div className="mr-7 flex flex-wrap items-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="22"
@@ -269,9 +259,9 @@ const Inforproduct = () => {
                           <h2 className="text-lg font-bold text-gray-700 dark:text-gray-400">Vận chuyển</h2>
                         </div>
                         <ul>
-                            <li className="text-cyan-400 font-thin">Giao hàng nhanh</li>
-                            <li className="text-cyan-400 font-thin">Đổi trả trong 30 ngày</li>
-                          </ul>
+                          <li className="text-cyan-400 font-thin">Giao hàng nhanh</li>
+                          <li className="text-cyan-400 font-thin">Đổi trả trong 30 ngày</li>
+                        </ul>
                       </div>
                     </div>
                     <div className="flex items-center mb-5 mt-5">
@@ -302,10 +292,6 @@ const Inforproduct = () => {
                         ))}
                       </div>
                     </div>
-                    <div className="w-max mb-5 flex items-center gap-5">
-                      <div className=" w-full font-bold leading-6 text-black  font-roboto">Số Lượng:</div>
-                      <div className="relative flex flex-row w-28 h-10 mt-1 bg-transparent rounded-lg">
-
                     <div className="flex items-center mb-8">
                       <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Số Lượng Sản Phẩm Trong Kho : </h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
@@ -320,11 +306,9 @@ const Inforproduct = () => {
                         )}
                       </div>
                     </div>
-
-                    <div className="w-32 mb-8">
-                      <label htmlFor="" className="w-full text-xl font-semibold text-gray-700 dark:text-gray-400">Số Lượng</label>
-                      <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
-
+                    <div className="w-max mb-5 flex items-center gap-5">
+                      <div className=" w-full font-bold leading-6 text-black  font-roboto">Số Lượng:</div>
+                      <div className="relative flex flex-row w-28 h-10 mt-1 bg-transparent rounded-lg">
                         <button
                           className="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover-bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400"
                           onClick={decreaseAmount}
@@ -347,16 +331,16 @@ const Inforproduct = () => {
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center -mx-4">
-
-                      <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
+                      <div className="w-full px-4 mb-4  lg:mb-0">
 
                         <button
                           disabled={selectedVariant?.quantity <= 0}
-                          className={`flex items-center justify-center w-full p-4 text-blue-500 border ${selectedVariant?.quantity <= 0 ? 'border-gray-300 text-gray-300 cursor-not-allowed' : 'border-blue-500'} rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300`}
+                          className={`flex items-center justify-center w-full p-3  text-blue-500 border ${selectedVariant?.quantity <= 0 ? 'border-gray-300 text-gray-300 cursor-not-allowed' : 'border-blue-500'} rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300`}
                           onClick={() => handleAddCar()}
                         >
                           Thêm vào giỏ hàng<AiOutlineShoppingCart />
                         </button>
+
 
                       </div>
                     </div>
@@ -372,3 +356,6 @@ const Inforproduct = () => {
 };
 
 export default Inforproduct;
+
+
+
