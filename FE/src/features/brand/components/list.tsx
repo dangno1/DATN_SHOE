@@ -1,6 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useAddSizeMutation, useGetSizesQuery, useRemoveSizeMutation, useUpdateSizeMutation } from "@/api/size";
-import { ISize } from "@/interface/size";
+import {
+  useGetBrandsQuery,
+  useAddBrandMutation,
+  useUpdateBrandMutation,
+  useRemoveBrandMutation,
+} from "@/api/brand";
+import { IBrand } from "@/interface/brand";
 import { Modal, Popconfirm, Table, Tooltip, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Backdrop, Button, CircularProgress } from "@mui/material";
@@ -8,20 +12,20 @@ import { useState, useEffect, Key } from "react";
 import { useForm } from "react-hook-form";
 import { BsPencilSquare, BsPlus, BsPlusLg, BsSearch, BsTrash3 } from "react-icons/bs";
 import { joiResolver } from "@hookform/resolvers/joi";
-import sizeSchema from "@/schemas/size";
+import brandSchema from "@/schemas/brand";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
 
-const ListSize = () => {
+const ListBrand = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-  const [sizeData, setSizeData] = useState<ISize[]>()
+  const [brandData, setBrandData] = useState<IBrand[]>([]);
 
-  const [deleteSize, { isLoading: loadDelete }] = useRemoveSizeMutation();
-  const [updateSize, { isLoading: loadUpdate }] = useUpdateSizeMutation();
-  const [addSize, { isLoading: loadAdd, isSuccess: successAdd }] = useAddSizeMutation();
-  const { data: sizeDatas } = useGetSizesQuery<{ data: ISize[] }>();
+  const [deleteBrand, { isLoading: loadDelete }] = useRemoveBrandMutation();
+  const [updateBrand, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateBrandMutation();
+  const [addBrand, { isLoading: loadAdd, isSuccess: successAdd }] = useAddBrandMutation();
+  const { data: brandDatas } = useGetBrandsQuery<{ data: IBrand[] }>();
 
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (type: NotificationType, message: string) => {
@@ -35,13 +39,13 @@ const ListSize = () => {
     register,
     handleSubmit,
     reset,
+    setError,
     setValue,
     setFocus,
-    setError,
-    formState: { errors } } = useForm<ISize>({
-      resolver: joiResolver(sizeSchema)
-    })
-
+    formState: { errors }
+  } = useForm<IBrand>({
+    resolver: joiResolver(brandSchema)
+  })
   const {
     register: registerSearch,
     handleSubmit: handleSubmitSearch
@@ -49,55 +53,56 @@ const ListSize = () => {
 
   useEffect(() => {
     reset()
-  }, [reset, successAdd])
+  }, [reset, successAdd, successUpdate])
 
   useEffect(() => {
-    form.method.length && setFocus("value");
-    const updateSize = sizeData?.find((item: ISize) => item._id == form._id)?.value
-    form.method === "update" && sizeData ? setValue("value", Number(updateSize)) : reset()
-  }, [form, reset, setFocus, setValue])
+    form.method.length && setFocus("name");
+    const updateBrand = brandData?.find((item: IBrand) => item._id == form._id)?.name
+    form.method === "update" && brandData ? setValue("name", String(updateBrand)) : reset()
+  }, [brandData, form, reset, setFocus, setValue])
 
   useEffect(() => {
-    sizeDatas && setSizeData(sizeDatas)
-  }, [sizeDatas])
+    brandDatas && setBrandData(brandDatas)
+  }, [brandDatas, selectedRowKeys])
 
-  const handleDeleteSize = (listId: string[]) => {
+  const handleDeleteBrand = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteSize(id).unwrap().then(() => openNotification('success', "Xóa kích cỡ thành công"))
-    }
-    )
-
+      await deleteBrand(id).unwrap().then(() => openNotification('success', "Xóa thương hiệu thành công"))
+    })
+    setSelectedRowKeys([])
   };
 
-  const handleAddUpdateSize = async (data: ISize) => {
+  const handleAddUpdateBrand = async (data: IBrand) => {
     try {
-      const existSize = sizeDatas.find(({ value }: ISize) => value === data.value)
-
+      const existBrand = brandDatas.find((item: IBrand) => item.name.toLowerCase() === data.name.toLowerCase())
       const { method } = form
-      if (method === "add" && !existSize) {
-        const result = await addSize(data)
+
+      if (method === "add" && !existBrand) {
+        const result = await addBrand(data)
         "data" in result && "success" in result.data && result.data.success
-          ? openNotification('success', "Thêm kích cỡ thành công")
-          : openNotification('error', "Thêm kích cỡ thất bại, vui lòng thử lại")
-        return
+          ? openNotification('success', "Thêm thương hiệu thành công")
+          : openNotification('error', "Thêm thương hiệu thất bại, vui lòng thử lại")
+        return;
       }
 
-      if (method === "update" && !existSize || (existSize && existSize._id === form._id)) {
-        const result = await updateSize({ ...data, _id: form._id })
+      if (method === "update" && !existBrand || (existBrand && existBrand._id === form._id)) {
+        const result = await updateBrand({ ...data, _id: form._id })
         "data" in result && "success" in result.data && result.data.success
-          ? openNotification('success', "Cập nhật kích cỡ thành công")
-          : openNotification('error', "Cập nhật kích cỡ thất bại, vui lòng thử lại")
-        return
+          ? openNotification('success', "Cập nhật thương hiệu thành công")
+          : openNotification('error', "Cập nhật thương hiệu thất bại, vui lòng thử lại")
+        return;
       }
-      setError("value", { type: "exist", message: "Kích cỡ đã tồn tại" })
+
+      setError("name", { type: "exist", message: "Thương hiệu đã tồn tại" })
     } catch (error) {
       return error
     }
   }
 
   const handleSearch = (data: { search?: string }) => {
-    const newData = sizeDatas && sizeDatas.filter((item: ISize) => String(item.value).toLowerCase().includes(String(data.search).toLowerCase()))
-    setSizeData(newData)
+    const newData = brandDatas
+      && brandDatas.filter((item: IBrand) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
+    setBrandData(newData)
   }
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
@@ -107,12 +112,9 @@ const ListSize = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-    getCheckboxProps: (size: ISize) => ({
-      disabled: size.products?.length as number > 0,
-    }),
   };
 
-  const columns: ColumnsType<ISize> = [
+  const columns: ColumnsType<IBrand> = [
     {
       title: "STT",
       dataIndex: "index",
@@ -121,21 +123,19 @@ const ListSize = () => {
       fixed: "left",
     },
     {
-      title: "Kích cỡ",
-      dataIndex: "value",
-      key: "value",
-      sorter: (a, b) => a.value - b.value,
-      showSorterTooltip: { title: "click để sắp xếp theo kích thước" },
+      title: "Tên Thương hiệu",
+      dataIndex: "name",
+      key: "name",
       className: "w-[450px] max-w-[450px]",
-      render: (value: string, size: ISize) =>
+      render: (name: string, brand: IBrand) =>
         <div className="flex items-center gap-2">
-          <BsPencilSquare
-            className="w-3 h-3 fill-orange-600 cursor-pointer"
-            onClick={() => {
-              setFocus("value")
-              setForm({ open: true, method: "update", _id: String(size._id) })
-            }} />
-          {value}
+          {brand.name.toLowerCase() !== "chưa phân loại"
+            && < BsPencilSquare
+              className="w-3 h-3 fill-orange-600 cursor-pointer"
+              onClick={() => setForm({ open: true, method: "update", _id: String(brand._id) })}
+            />
+          }
+          {name}
         </div>
     },
     {
@@ -148,55 +148,57 @@ const ListSize = () => {
       render: (updatedAt: string) =>
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
-        </div>,
+        </div>
     },
     {
       title: "Hành động",
       dataIndex: "_id",
       key: "_id",
       align: "center",
-      className: "w-auto",
+      className: "w-auto flex justify-center",
       fixed: "right",
-      render: (_id: string, size: ISize) =>
-        _id && (
-          <div className="w-max m-auto flex gap-3 cursor-pointer">
-            {!size.products?.length ? <Popconfirm
+      render: (_id: string, brand: IBrand) =>
+        (_id && brand.name.toLowerCase() !== "chưa phân loại" && !brand.products?.length)
+        && (
+          <div className="w-full m-auto flex justify-center gap-3 cursor-pointer">
+            <Popconfirm
               title
-              description="Xóa kích cỡ?"
+              description="Xóa danh mục?"
               okText="Yes"
               cancelText="No"
               okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
               cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleDeleteSize([_id])}
+              onConfirm={() => handleDeleteBrand([_id])}
             >
               <Tooltip placement="right" title="Xóa">
                 <BsTrash3 className="fill-red-600 w-4 h-4" />
               </Tooltip>
-            </Popconfirm> : <div className="w-max h-max p-1 bg-red-500 text-white rounded-lg">Không thể xóa</div>}
-          </div >
-        ),
+            </Popconfirm>
+          </div>
+        )
     },
   ];
 
-  const sortSize = sizeData && [...sizeData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
+  const sortUpdatedAtbrandData = brandData
+    && [...brandData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
 
-  const dataSource = sortSize?.map((size: ISize, index: number) => ({
-    ...size,
-    key: size._id,
+  const dataSource = sortUpdatedAtbrandData?.map((brand: IBrand, index: number) => ({
+    ...brand,
+    key: brand._id,
     index: index + 1
   }))
 
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
-        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">
-          Tất cả Kích cỡ
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700 select-none">
+          Tất cả danh mục sản phẩm
         </div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
             onClick={() => setForm({ open: true, method: "add" })}
             variant="contained"
-            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none select-none"
             startIcon={<BsPlus className="w-6 h-6" />}
           >
             Thêm Mới
@@ -206,7 +208,7 @@ const ListSize = () => {
       <div className="h-[35px] w-full my-3 flex gap-2">
         <form onSubmit={handleSubmitSearch(handleSearch)} className="w-max h-full flex items-center relative">
           <input
-            type="number" placeholder="tìm kiếm theo kích cỡ" {...registerSearch('search')}
+            type="text" placeholder="tìm kiếm thương hiệu" {...registerSearch('search')}
             className="w-[300px] h-full px-3 pr-10 rounded-md border border-gray-300 hover:border-blue-500 focus:border-blue-500 outline-none" />
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
@@ -214,18 +216,18 @@ const ListSize = () => {
           selectedRowKeys.length > 0 && <div className="w-full flex items-center  cursor-pointer">
             <Popconfirm
               title
-              description="Xóa kích cỡ?"
+              description="Xóa thương hiệu?"
               okText="Yes"
               cancelText="No"
               okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
               cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleDeleteSize(selectedRowKeys as string[])}
+              onConfirm={() => handleDeleteBrand(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa kích cỡ</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa thương hiệu</span>
               </Tooltip>
             </Popconfirm>
-          </div >
+          </div>
         }
       </div>
       <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} pagination={{ defaultPageSize: 5 }} scroll={{ x: "auto" }} className="w-full rounded-lg" />
@@ -238,28 +240,25 @@ const ListSize = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Modal
-          title={
-            <div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">
-              {form.method === "update" ? "Cập nhật kích cỡ" : "Thêm mới kích cỡ"}
-            </div>}
+          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">
+            {form.method === "update" ? "Cập nhật thương hiệu" : "Thêm mới thương hiệu"}
+          </div>}
           centered open={form.open}
           onCancel={() => setForm({ open: false, method: "" })}
           okButtonProps={{ style: { display: "none" } }}
           cancelButtonProps={{ style: { display: "none" } }}
         >
           <form
-            onSubmit={handleSubmit(handleAddUpdateSize)}
+            onSubmit={handleSubmit(handleAddUpdateBrand)}
             className="w-full px-[20px]"
-            noValidate
           >
-            <label className="text-slate-600 font-semibold block float-left">Kích cỡ<span className="text-red-500">*</span></label>
+            <label className="text-slate-600 font-semibold block float-left">Tên Thương hiệu<span className="text-red-500">*</span></label>
             <input
-              {...register("value")} type="number"
-              placeholder="40, 45..."
-              className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 
-              focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.value && "border-red-500"}`}
+              {...register("name")} type="text"
+              autoFocus placeholder="Adidas..."
+              className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && "border-red-500"}`}
             />
-            {errors.value && <span className="text-red-500">{errors.value.message}</span>}
+            {errors.name && <span className="text-red-500">{errors.name.message}</span>}
             <div className="w-full grid items-center justify-end mt-2">
               <Button
                 type="submit"
@@ -277,4 +276,4 @@ const ListSize = () => {
   );
 };
 
-export default ListSize;
+export default ListBrand;

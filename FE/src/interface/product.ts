@@ -3,8 +3,8 @@ export interface IProduct {
   name: string;
   image: File[];
   thumbnail: File[];
-  desc: string;
-  brand: string;
+  desc?: string;
+  brandId: string;
   categoryId: string;
   isDelete: boolean;
   updatedAt?: string;

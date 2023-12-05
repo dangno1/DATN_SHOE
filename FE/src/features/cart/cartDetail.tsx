@@ -142,6 +142,7 @@ const CartDetail = () => {
       paymentMethod: selectedPaymentMethod,
       status: "Chờ Xác Nhận",
       totalPrice: totalPrice,
+      orderTime: new Date(),
     };
 
     deleteProductCart(checkedItems[0]._id);

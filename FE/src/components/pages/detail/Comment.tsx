@@ -8,28 +8,24 @@ import { IComment } from "@/interface/comment";
 const Comment = () => {
   const { id } = useParams<{ id: string }>()
   const userData = localStorage.getItem('user');
-  // console.log('userData', userData);
   const { data: allComments } = useGetCommentsQuery();
   if (allComments) {
-    // console.log(allComments);
+    
     if (allComments.length > 0) {
-      // console.log(allComments[0].ProductID._id);
-      // console.log(allComments[0].UserID._id);
     } else {
       console.log("No comments available.");
     }
   } else {
-    console.log("Loading comments..."); // or handle error condition
+    console.log("Loading comments..."); 
   }
-  // Lọc ra các bình luận có productId khớp với id sản phẩm từ URL
+ 
   const [comments, setComments] = useState([]);
-  // console.log(comments);
   useEffect(() => {
     if (allComments) {
       const filteredComments = allComments.filter((comment) => comment.ProductID?._id == id);
       console.log(filteredComments);
 
-      setComments(filteredComments); // Bật chế độ bình luận
+      setComments(filteredComments); 
     }
   }, [allComments, id]);
   const [valuecmt, setValuecmt] = useState('');
@@ -44,23 +40,17 @@ const Comment = () => {
 
     if (valuecmt) {
       const userId = JSON.parse(userData)._id;
-
-      // Add the user's comment to the local state immediately
       const newComment = {
         CommentContent: valuecmt,
         UserID: userId,
         ProductID: id,
         DatePosted: new Date().toISOString(),
-        // You may need to include other properties like DatePosted
+        
       };
 
-      // Update the state to include the new comment
+      
       setComments([...comments, newComment]);
-
-      // Send the user's comment to the server and add it to the database
       await addComment({ CommentContent: valuecmt, ProductID: id, UserID: userId });
-
-      // Clear the comment input
       setValuecmt("");
     } else {
       alert("Comment content cannot be empty.");
@@ -71,11 +61,11 @@ const Comment = () => {
   const handleDeleteComment = async (commentId: any) => {
     const shouldDelete = window.confirm('Are you sure you want to delete this comment?');
     if (!shouldDelete) {
-      return; // Không xóa nếu người dùng không xác nhận
+      return; 
     }
 
     try {
-      const response = await deleteComment(commentId); // Gọi mutation để xóa comment
+      const response = await deleteComment(commentId); 
 
       if ((response as any).error) {
         console.error('Error deleting comment:', (response as any).error);
@@ -97,7 +87,7 @@ const Comment = () => {
   return (
     <div>
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
-        <h1 className="text-center font-bold text-4xl">Đánh Gía Về Sản Phẩm</h1>
+        <h1 className="text-center font-bold text-4xl">Bình luận về sản phẩm</h1>
         <div className="2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
           <div className="mt-5 py-2 px-4 mb-4  bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-md ">
             {comments?.map((comment: any) => (

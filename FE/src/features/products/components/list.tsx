@@ -12,6 +12,8 @@ import { BsPencilSquare, BsTrash3, BsListUl, BsPlus, BsArrowCounterclockwise, Bs
 import '../index.css'
 import { Key, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useGetBrandsQuery } from "@/api/brand";
+import { IBrand } from "@/interface/brand";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
@@ -25,6 +27,7 @@ const ListProduct = () => {
 
   const { data: productDataApi } = useGetProductsQuery(trashCanState);
   const { data: dataCategory } = useGetCategoryesQuery();
+  const { data: brandDatas } = useGetBrandsQuery();
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
   const [deleteProdcut, { isLoading: isLoadingDelete }] = useRemoveProductMutation();
 
@@ -76,8 +79,8 @@ const ListProduct = () => {
   const handleSearch = (data: { search?: string }) => {
     const dataSearch = String(data.search).toLowerCase()
     const categorys = dataCategory?.find((item: ICategory) => item.name.toLowerCase().includes(dataSearch))
-    const newProduct = productDataApi?.filter(({ name, brand, categoryId }: IProduct) => {
-      return name.toLowerCase().includes(dataSearch) || brand.toLowerCase().includes(dataSearch) || (categorys && categoryId == String(categorys._id))
+    const newProduct = productDataApi?.filter(({ name, brandId, categoryId }: IProduct) => {
+      return name.toLowerCase().includes(dataSearch) || brandId.toLowerCase().includes(dataSearch) || (categorys && categoryId == String(categorys._id))
     })
     setProductData(newProduct)
   }
@@ -116,7 +119,7 @@ const ListProduct = () => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
-      className: "capitalize w-[130px] max-w-[130px] md:min-w-[200px] lg:min-w-[200px] lg:max-w-[200px]",
+      className: "w-[130px] max-w-[130px] md:min-w-[200px] lg:min-w-[200px] lg:max-w-[200px]",
       render: (name: string) =>
         <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
           {name}
@@ -136,7 +139,7 @@ const ListProduct = () => {
       title: "Danh mục",
       dataIndex: "categoryId",
       key: "categoryId",
-      className: "min-w-[100px] w-[150px] max-w-[150px] capitalize",
+      className: "min-w-[100px] w-[150px] max-w-[150px]",
       render: (categoryId) => {
         const nameCate = dataCategory?.find(
           (category: ICategory) => category._id === categoryId
@@ -146,13 +149,15 @@ const ListProduct = () => {
     },
     {
       title: "Thương hiệu",
-      dataIndex: "brand",
-      key: "brand",
-      className: "min-w-[120px] w-[150px] max-w-[150px] capitalize",
-      render: (branh: string) =>
-        <div className="truncate">
-          {branh}
-        </div>
+      dataIndex: "brandId",
+      key: "brandId",
+      className: "min-w-[120px] w-[150px] max-w-[150px]",
+      render: (brandId) => {
+        const nameBrand = brandDatas?.find(
+          (brand: IBrand) => brand._id === brandId
+        );
+        return brandId && <div className="truncate">{nameBrand?.name}</div>;
+      },
     },
     {
       title: "Hành động",
