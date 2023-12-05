@@ -10,18 +10,19 @@ import { Navigation } from 'swiper/modules';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useCreateCartMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
-import { message } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
+import { notification } from "antd";
 import { IProduct } from "@/interface/product";
+
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
   console.log(productData);
-  
-  
+
+
   const variants = productData?.variants;
   const size = variants?.map((item: unknown) => {
     const sizeProduct = sizeData?.find(
@@ -37,26 +38,18 @@ const Inforproduct = () => {
     return colorProduct;
   });
   console.log(color);
+  type NotificationType = 'success' | 'info' | 'warning' | 'error';
+  const [notificationVisible, setNotificationVisible] = useState(false);
 
-  // const priceproduct = variants?.map((item: unknown) => {
-  //   return item;
-  // });
-  // if (variants && priceproduct) {
-  //   const price = variants.map((item: unknown) => {
-  //     // Kiểm tra xem item và item?.price có tồn tại trước khi sử dụng
-  //     if (item && typeof item === 'object' && 'price' in item) {
-  //       const pricepro = priceproduct.find((priceItem: any) => {
-  //         return item['price'] === priceItem.price;
-  //       });
-  //       return pricepro;
-  //     }
-  //     return null; // Trả về giá trị mặc định nếu không tìm thấy giá trị hoặc có lỗi
-  //   });
+  const openNotification = (type: NotificationType, message: string) => {
+    setNotificationVisible(true);
+    notification[type]({
+      message: 'Thông báo',
+      description: message,
+      onClose: () => setNotificationVisible(false), // Hide notification when closed
+    });
+  };
 
-  //   console.log(price); // In ra mảng kết quả sau khi xử lý
-  // }
-  // console.log(size);
-  // console.log(color);
   const [addCart] = useCreateCartMutation();
   const [userData, setUserData] = useState(localStorage);
   const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
@@ -69,34 +62,55 @@ const Inforproduct = () => {
       setUserData(userData);
     }
   }, []);
+
+  //render số lượng sản phẩm trong kho theo biến thể
+  const [selectedVariant, setSelectedVariant] = useState<IProduct['variants'][0] | undefined>(variants?.[0]);
+  useEffect(() => {
+    if (selectedSize && selectedColor) {
+      const matchingVariant = variants?.find(
+        (variant) =>
+          variant.sizeId === selectedSize._id &&
+          variant.colorId === selectedColor._id
+      );
+      setSelectedVariant(matchingVariant);
+    }
+  }, [selectedSize, selectedColor, variants]);
+  //hết code render số lượng sản phẩm trong kho theo biến thể
+
+  //validate điều kiện add cart
   const navigate = useNavigate();
   const handleAddCar = async () => {
     if (!userData.username || !userData.email || !userData.address) {
-      message.
-        error({
-          content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
-          duration: 5,
-        });
+      openNotification('error', "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.");
       setTimeout(() => {
         navigate("/signup");
       }, 2000);
       return;
     }
     if (!selectedColor) {
-      message.error({
-        content: "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng.",
-        duration: 3,
-      });
+      openNotification('error', "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng");
       return;
     }
     if (!selectedSize) {
-      message.error({
-        content: "Vui lòng chọn size trước khi thêm vào giỏ hàng.",
-        duration: 3,
-      });
+      openNotification('error', "Vui lòng chọn size trước khi thêm vào giỏ hàng.");
       return;
     }
     if (productData && selectedColor && selectedSize) {
+      if (selectedVariant?.quantity !== undefined) {
+        if (selectedVariant.quantity <= 0) {
+          openNotification('error', "Sản phẩm đã hết hàng. Vui lòng chọn một biến thể khác.");
+          return;
+        }
+  
+       
+        if (amount > selectedVariant.quantity) {
+          openNotification('error', "Số lượng sản phẩm trong giỏ hàng vượt quá số lượng có sẵn trong kho.");
+          return;
+        }
+      } else {
+        openNotification('error', "Sản phẩm không có sẵn trong kho. Vui lòng chọn một biến thể khác.");
+        return;
+      }
       const productToAdd: ICart = {
         userName: userData.fullname,
         userEmail: userData.email,
@@ -106,24 +120,26 @@ const Inforproduct = () => {
         price: productData.variants[0].price,
         initialPrice: productData.variants[0].price,
         size: selectedSize.value,
-        totalPrice: 300000,
+        totalPrice: amount * productData.variants[0].price,
         category: productData.categoryId,
         image: String(productData.image),
         color: selectedColor.value,
         status: String(productData.variants[0].status),
         productID: String(productData?._id),
       };
+
       const data = await addCart(productToAdd);
-      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
-      data && setTimeout(() => {
+      if (data) {
+        openNotification('success', "Đã thêm sản phẩm vào giỏ hàng thành công");
         navigate("/cart");
-      }, 2000);
-      console.log(data);
+      } else {
+        console.error("Error adding to cart:", data);
+      }
     } else {
-      console.error("productData is not defined.");
+      console.error("productData or selectedColor or selectedSize is not defined.");
     }
   };
-
+  //hết code addCart
   const [images, setImage] = useState<(File | File[] | undefined)[]>()
   useEffect(() => {
     const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
@@ -146,6 +162,11 @@ const Inforproduct = () => {
   };
   return (
     <div>
+      {notificationVisible && (
+        <section className="bg-green-200 p-4 fixed top-0 right-0 m-4">
+          <p>Thông báo: Có lỗi xảy ra</p>
+        </section>
+      )}
       <section className="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800">
         {isLoading ? (
           <p>Loading...</p>
@@ -227,6 +248,21 @@ const Inforproduct = () => {
                         ))}
                       </div>
                     </div>
+                    <div className="flex items-center mb-8">
+                      <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Số Lượng Sản Phẩm Trong Kho : </h2>
+                      <div className="flex flex-wrap -mx-2 -mb-2">
+                        {selectedVariant?.quantity !== undefined ? (
+                          selectedVariant.quantity <= 0 ? (
+                            <span className="text-gray-500">Hết hàng</span>
+                          ) : (
+                            <span>{selectedVariant.quantity}</span>
+                          )
+                        ) : (
+                          <span className="text-gray-500">Sản phẩm hết hàng</span>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="w-32 mb-8">
                       <label htmlFor="" className="w-full text-xl font-semibold text-gray-700 dark:text-gray-400">Số Lượng</label>
                       <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
@@ -253,12 +289,15 @@ const Inforproduct = () => {
                     </div>
                     <div className="flex flex-wrap items-center -mx-4">
                       <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
+
                         <button
-                          className="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300"
+                          disabled={selectedVariant?.quantity <= 0}
+                          className={`flex items-center justify-center w-full p-4 text-blue-500 border ${selectedVariant?.quantity <= 0 ? 'border-gray-300 text-gray-300 cursor-not-allowed' : 'border-blue-500'} rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300`}
                           onClick={() => handleAddCar()}
                         >
                           Thêm vào giỏ hàng<AiOutlineShoppingCart />
                         </button>
+
                       </div>
                     </div>
                   </div>
@@ -273,6 +312,5 @@ const Inforproduct = () => {
 };
 
 export default Inforproduct;
-
 
 
