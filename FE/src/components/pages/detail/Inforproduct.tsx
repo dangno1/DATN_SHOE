@@ -308,5 +308,3 @@ const Inforproduct = () => {
 };
 
 export default Inforproduct;
-
-
