@@ -1,19 +1,18 @@
 .dropdown:hover .dropdown-menu {
-    display: block;
-  }
-  
-  .mySwiper{
-    width: 100%;
-    max-width: 900px;;
-  }
-  .container{
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-  
-  .image_one img{
-    width: 100%;
-    height: 680px;
-    object-fit: cover;
-  }
+  display: block;
+}
+.mySwiper{
+  width: 100%;
+  max-width: 900px;;
+}
+.container{
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.image_one img{
+  width: 100%;
+  height: 680px;
+  object-fit: cover;
+}
+

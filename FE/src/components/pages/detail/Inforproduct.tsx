@@ -12,8 +12,10 @@ import { useCreateCartMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
+import { useGetRateQuery } from "@/api/rating";
 import { notification } from "antd";
 import { IProduct } from "@/interface/product";
+
 
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
@@ -146,7 +148,8 @@ const Inforproduct = () => {
     setImage(listImage)
   }, [productData])
 
-  const [activeImgId, setActiveImageId] = useState(1); // Initialize active image ID to 1
+
+  const [activeImgId, setActiveImageId] = useState(1); 
 
   const handleImageClick = (id: number) => {
     setActiveImageId(id); // Update the active image ID when a thumbnail is clicked
@@ -160,6 +163,33 @@ const Inforproduct = () => {
       setAmount(amount - 1);
     }
   };
+
+  //--------------------------------
+  const starsData = useGetRateQuery();
+  const calculateAverageStarsFromPath = (starsData, idFromPath) => {
+    let totalStars = 0;
+    let numberOfRatings = 0;
+    const stars = starsData?.data?.filter((item: any) => item.productID._id === id);
+    if (stars && Array.isArray(stars)) {
+      stars.forEach((item) => {
+        if (item && item.stars) {
+          totalStars += item.stars;
+          numberOfRatings++;
+        }
+      });
+    }
+    const averageStars = numberOfRatings > 0 ? totalStars / numberOfRatings : 0;
+    return {
+      totalStars,
+      averageStars: averageStars.toFixed(1),
+    };
+  };
+  const saoData = starsData;
+  console.log(saoData);
+  const { totalStars, averageStars } = calculateAverageStarsFromPath(saoData, id);
+  console.log('Total Stars:', totalStars);
+  console.log('Average Stars:', averageStars);
+
   return (
     <div>
       {notificationVisible}
@@ -168,27 +198,23 @@ const Inforproduct = () => {
           <p>Loading...</p>
         ) : (
           productData && (
-            <div className="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
-              <div className="flex flex-wrap -mx-4">
-                <div className="w-full px-4 md:w-1/2">
-                  <div className="sticky top-0 z-50 overflow-hidden">
-                    <div className="relative mb-6 lg:mb-10 lg:h-2/4">
-
+            <div className="container ">
+              <div className="grid grid-cols-[3fr,1fr]">
+                <div className=" px-4 max-w-6xl">
+                    <div className="image_one relative mb-6 lg:mb-10 ">
                       <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
                         {images?.map((item: any, index: number) => (
-
                           <SwiperSlide key={index}>
                             <img
                               src={item}
                               alt=""
-                              className="object-cover w-full lg:h-full"
                               onClick={() => handleImageClick(index + 1)} // Tăng ID bằng 1 để từ 1, 2, 3, ...
                             />
                           </SwiperSlide>
                         ))}
                       </Swiper>
                     </div>
-                    <div className="flex-wrap hidden md:flex">
+                    <div className="flex-wrap hidden md:flex ml-20">
                       {images?.map((item: any, index: number) => (
                         <div key={item} className="w-1/2 p-2 sm:w-1/4">
                           <a
@@ -196,27 +222,22 @@ const Inforproduct = () => {
                             className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
                             onClick={() => handleImageClick(index + 1)}
                           >
-                            <img src={item} alt="" className="object-cover w-full lg:h-20" />
+                            <img src={item} alt="" className="object-cover w-full" />
                           </a>
                         </div>
                       ))}
                     </div>
-                  </div>
                 </div>
-                <div className="w-full px-4 md:w-1/2">
-                  <div className="lg:pl-20">
+                <div className="w-full">
+                  <div className="">
                     <div className="mb-8">
                       <span className="text-lg font-medium text-rose-500 dark:text-rose-200 uppercase">{productData.brand}</span>
                       <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl uppercase">{productData.name}</h2>
-                      <p className="max-w-md mb-8 text-gray-700 dark:text-gray-400 capitalize">
-                        {productData.desc}
-                      </p>
                       <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
                         <span>{productData.variants[0].discount.toLocaleString("vi-VN")}VND</span>
                         <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
                       </p>
-
-                      <div className="mr-7 flex flex-wrap items-center">
+      <div className="mr-7 flex flex-wrap items-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="22"
@@ -253,13 +274,13 @@ const Inforproduct = () => {
                           </ul>
                       </div>
                     </div>
-                    <div className="flex items-center mb-8">
+                    <div className="flex items-center mb-5 mt-5">
                       <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Màu Sắc : </h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
                         {color?.map((item) => (
                           <button
                             key={item?._id}
-                            className={`p-1 mb-2 mr-2 border ${selectedColor === item ? 'border-blue-400' : 'border-transparent'} hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400`}
+                            className={`p-1 mb-2 mr-2 border ${selectedColor === item ? 'border-blue-400' : 'dark:border-gray-600'} hover:border-blue-400  hover:text-blue-600  dark:hover:border-gray-300 dark:text-gray-400`}
                             onClick={() => setSelectedColor(item)}
                           >
                             <div>{item?.value}</div>
@@ -267,7 +288,7 @@ const Inforproduct = () => {
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center mb-8">
+                    <div className="flex items-center mb-5">
                       <h2 className="w-20 text-lg font-bold dark:text-gray-400">Kích Cỡ:</h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
                         {size?.map((item) => (
@@ -281,6 +302,10 @@ const Inforproduct = () => {
                         ))}
                       </div>
                     </div>
+                    <div className="w-max mb-5 flex items-center gap-5">
+                      <div className=" w-full font-bold leading-6 text-black  font-roboto">Số Lượng:</div>
+                      <div className="relative flex flex-row w-28 h-10 mt-1 bg-transparent rounded-lg">
+
                     <div className="flex items-center mb-8">
                       <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Số Lượng Sản Phẩm Trong Kho : </h2>
                       <div className="flex flex-wrap -mx-2 -mb-2">
@@ -299,6 +324,7 @@ const Inforproduct = () => {
                     <div className="w-32 mb-8">
                       <label htmlFor="" className="w-full text-xl font-semibold text-gray-700 dark:text-gray-400">Số Lượng</label>
                       <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
+
                         <button
                           className="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover-bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400"
                           onClick={decreaseAmount}
@@ -321,6 +347,7 @@ const Inforproduct = () => {
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center -mx-4">
+
                       <div className="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
 
                         <button
