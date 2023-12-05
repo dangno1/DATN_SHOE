@@ -215,6 +215,43 @@ const Inforproduct = () => {
                         <span>{productData.variants[0].discount.toLocaleString("vi-VN")}VND</span>
                         <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
                       </p>
+
+                      <div className="mr-7 flex flex-wrap items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="22"
+                          height="22"
+                          viewBox="0 0 22 22"
+                          fill="yellow"
+                          stroke="black"
+                          strokeWidth="1.5"
+                        >
+                          <path
+                            d="M9.97183 1.70846C10.4382 0.933481 11.5618 0.933482 12.0282 1.70847L14.3586 5.58087C14.5262 5.85928 14.7995 6.05784 15.116 6.13116L19.5191 7.15091C20.4002 7.35499 20.7474 8.42356 20.1545 9.10661L17.1918 12.5196C16.9788 12.765 16.8744 13.0863 16.9025 13.41L17.2932 17.9127C17.3714 18.8138 16.4625 19.4742 15.6296 19.1214L11.4681 17.3583C11.1689 17.2316 10.8311 17.2316 10.5319 17.3583L6.37038 19.1214C5.53754 19.4742 4.62856 18.8138 4.70677 17.9127L5.09754 13.41C5.12563 13.0863 5.02124 12.765 4.80823 12.5196L1.8455 9.1066C1.25257 8.42356 1.59977 7.35499 2.48095 7.15091L6.88397 6.13116C7.20053 6.05784 7.47383 5.85928 7.64138 5.58087L9.97183 1.70846Z"
+                            strokeWidth="1.5"
+                          />
+                        </svg>
+                        <p className="ml-3">{averageStars}</p>
+                      </div>
+                      <p className="max-w-md mb-8 mt-2 font-bold text-gray-700 dark:text-gray-400 border-t border-gray-300 capitalize">
+                        {productData.desc}
+                      </p>
+                    </div>
+                    <div className="border border-gray-300 p-5 mb-5 relative mt-30px font-roboto">
+                      <div className="mt-2 ">
+                        <div className="flex flex-wrap items-center">
+                          <span className="mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="w-4 h-4 text-gray-700 dark:text-gray-400 bi bi-truck" viewBox="0 0 16 16">
+                              <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path>
+                            </svg>
+                          </span>
+                          <h2 className="text-lg font-bold text-gray-700 dark:text-gray-400">Vận chuyển</h2>
+                        </div>
+                        <ul>
+                            <li className="text-cyan-400 font-thin">Giao hàng nhanh</li>
+                            <li className="text-cyan-400 font-thin">Đổi trả trong 30 ngày</li>
+                          </ul>
+                      </div>
                     </div>
                     <div className="flex items-center mb-8">
                       <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Màu Sắc : </h2>
