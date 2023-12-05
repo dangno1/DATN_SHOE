@@ -1,8 +1,8 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
 import { AiOutlineUser } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [searchInput, setSearchInput] = useState(true);
@@ -10,15 +10,21 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const { data } = useGetCategoryesQuery();
   const [userData, setUserData] = useState(localStorage);
-
+  const navigate = useNavigate();
   useEffect(() => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (user) {
       const userData = JSON.parse(user);
       setUserData(userData);
     }
   }, []);
-
+  const handleUserIconClick = () => {
+    if (userData && userData.fullname) {
+      navigate("/user");
+    } else {
+      navigate("/signin");
+    }
+  };
   return (
     <div className="dark:bg-gray-900">
       <div>
@@ -61,7 +67,7 @@ const Header = () => {
                 className="text-sm leading-none dark:text-gray-300 dark:bg-gray-900 text-gray-600 focus:outline-none"
               />
             </div>
-            
+
             <div className="space-x-6">
               <button
                 aria-label="go to cart"
@@ -123,13 +129,15 @@ const Header = () => {
                 </Link>
               </h1>
               <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8 ">
-              <Link to="/products">
+                <Link to="/products">
                   <li className="dropdown inline-block relative">
-                  <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
-                    <span className="mr-1 hover:underline font-bold uppercase">sản phẩm</span>
-                  </button>
-                </li>
-                  </Link>
+                    <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
+                      <span className="mr-1 hover:underline font-bold uppercase">
+                        sản phẩm
+                      </span>
+                    </button>
+                  </li>
+                </Link>
                 {data?.map((category: ICategory) => (
                   <li className="dropdown inline-block relative">
                     <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
@@ -141,7 +149,7 @@ const Header = () => {
                     </button>
                   </li>
                 ))}
-                  {/* <Link to="new">
+                {/* <Link to="new">
                   <li className="dropdown inline-block relative">
                   <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
                     <span className="mr-1 hover:underline font-bold uppercase">Sắp & Mới ra mắt</span>
@@ -149,14 +157,14 @@ const Header = () => {
                 </li>
                   </Link> */}
                 <Link to="/sale">
-                <li className="dropdown inline-block relative">
-                  <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
-                    <span className="mr-1 hover:underline uppercase font-bold">Giảm giá</span>
-                  </button>
-                </li>
+                  <li className="dropdown inline-block relative">
+                    <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
+                      <span className="mr-1 hover:underline uppercase font-bold">
+                        Giảm giá
+                      </span>
+                    </button>
+                  </li>
                 </Link>
-                
-                
               </ul>
 
               <div className="md:w-2/12 justify-end flex items-center space-x-4 xl:space-x-8 pr-8">
@@ -240,12 +248,13 @@ const Header = () => {
                   <button
                     aria-label="go to cart"
                     className="text-gray-800 dark:hover:text-gray-300 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800 text-2xl flex items-center space-x-2"
+                     onClick={handleUserIconClick}
                   >
                     <Link to="/user">
-                    <div className="flex items-center space-x-2">
-                   <AiOutlineUser className="text-4xl" />
-                    <div className="text-xs">{userData.fullname}</div>
-                   </div>
+                      <div className="flex items-center space-x-2">
+                        <AiOutlineUser className="text-4xl" />
+                        <div className="text-xs">{userData.fullname}</div>
+                      </div>
                     </Link>
                   </button>
                 </div>
@@ -422,7 +431,10 @@ const Header = () => {
                   </Link>
                 </li>
                 {data?.map((category: ICategory) => (
-                  <li onClick={() => setShowMenu(false)} aria-label="close menu">
+                  <li
+                    onClick={() => setShowMenu(false)}
+                    aria-label="close menu"
+                  >
                     <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
                       <Link to={`${category.slug}/${category._id}`}>
                         <span className="mr-1 hover:underline uppercase ">
@@ -432,7 +444,7 @@ const Header = () => {
                     </button>
                   </li>
                 ))}
-                
+
                 <li onClick={() => setShowMenu(false)} aria-label="close menu">
                   <Link
                     to="/kids"

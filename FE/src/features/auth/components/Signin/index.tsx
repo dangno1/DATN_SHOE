@@ -3,34 +3,56 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useSigninMutation } from "../../../../api/auth";
 import { ISignin } from "../../../../interface/signin";
+import { notification } from "antd";
+import { signinSchema } from "@/schemas/login";
+type NotificationType = "success" | "info" | "warning" | "error";
 const Signin = () => {
-  const { handleSubmit, register } = useForm<ISignin>();
-  const [signin] = useSigninMutation();
+  const { handleSubmit, register, setError, formState } = useForm<ISignin>();
   const navigate = useNavigate();
-  const onSubmit = (data: ISignin) => {
-    signin(data)
-      .unwrap()
-      .then((res) => {
-        if (res && res.user && res.user.role) {
-          // Lưu thông tin đăng nhập vào localStorage sau khi đăng nhập thành công
-          localStorage.setItem("user", JSON.stringify(res.user));
-          if (res.user.role === "member") {
-            alert("Đăng nhập thành công");
-            navigate("/");
-            console.log(res.user);
-            console.log(localStorage);
-          } else if (res.user.role === "admin") {
-            alert("Đăng nhập thành công");
-            navigate("/admin");
-            console.log(res.user);
-          } else {
-            alert("Bạn không có quyền truy cập trang này");
-          }
-        } else {
-          alert("Đăng nhập không thành công");
-        }
-      });
+  const [signin] = useSigninMutation();
+
+  const openNotification = (type: NotificationType, message: string) => {
+    notification[type]({
+      message: "Thông báo",
+      description: message,
+    });
   };
+
+  const onSubmit = async (data: ISignin) => {
+    try {
+      await signinSchema.validateAsync(data, { abortEarly: false });
+
+      const res = await signin(data).unwrap();
+
+      if (res && res.user && res.user.role) {
+        localStorage.setItem("user", JSON.stringify(res.user));
+        if (res.user.role === "member") {
+          openNotification("success", "Đăng nhập thành công");
+          navigate("/");
+          console.log(res.user);
+          console.log(localStorage);
+        } else if (res.user.role === "admin") {
+          openNotification("success", "Đăng nhập thành công");
+          navigate("/admin");
+          console.log(res.user);
+        } else {
+          openNotification("warning", "Bạn không có quyền truy cập trang này");
+        }
+      } else {
+        openNotification("error", "Đăng nhập không thành công");
+      }
+    } catch (error) {
+      if (error.details) {
+        error.details.forEach((detail: any) => {
+          setError(detail.path[0], {
+            type: "manual",
+            message: detail.message,
+          });
+        });
+      }
+    }
+  };
+
   return (
     <>
       <script
@@ -102,6 +124,11 @@ const Signin = () => {
                         {...register("email")}
                       />
                     </div>
+                    {formState.errors.email && (
+                      <p className="text-red-500">
+                        {formState.errors.email.message}
+                      </p>
+                    )}
                     <label htmlFor="" className="text-xs font-semibold px-1">
                       Mật khẩu
                     </label>
@@ -116,6 +143,11 @@ const Signin = () => {
                         {...register("password")}
                       />
                     </div>
+                    {formState.errors.password && (
+                      <p className="text-red-500">
+                        {formState.errors.password.message}
+                      </p>
+                    )}
                     <div className="flex -mx-3 mt-5">
                       <div className="w-full px-3 mb-5 text-black hover:text-blue-400">
                         <Link to="/forgotPassword">Quên mật khẩu</Link>

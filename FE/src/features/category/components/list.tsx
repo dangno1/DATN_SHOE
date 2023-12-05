@@ -15,7 +15,7 @@ type FormType = { open: boolean, method: "add" | "update" | "", _id?: string }
 const ListCategory = () => {
   const [form, setForm] = useState<FormType>({ open: false, method: "" })
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-  const [categoryData, setCategoryData] = useState<ICategory[]>()
+  const [categoryData, setCategoryData] = useState<ICategory[]>([]);
 
   const [deleteCategory, { isLoading: loadDelete }] = useRemoveCategoryMutation();
   const [updateCategory, { isLoading: loadUpdate, isSuccess: successUpdate }] = useUpdateCategoryMutation();
@@ -35,6 +35,8 @@ const ListCategory = () => {
     handleSubmit,
     reset,
     setError,
+    setValue,
+    setFocus,
     formState: { errors }
   } = useForm<ICategory>({
     resolver: joiResolver(categorySchema)
@@ -49,20 +51,20 @@ const ListCategory = () => {
   }, [reset, successAdd, successUpdate])
 
   useEffect(() => {
-    form.method === "update"
-      ? reset({ name: categoryDatas.find((item: ICategory) => item._id == form._id)?.name })
-      : reset({ name: undefined })
-  }, [categoryDatas, form, reset])
+    form.method.length && setFocus("name");
+    const updateCate = categoryData?.find((item: ICategory) => item._id == form._id)?.name
+    form.method === "update" && categoryData ? setValue("name", String(updateCate)) : reset()
+  }, [categoryData, form, reset, setFocus, setValue])
 
   useEffect(() => {
     categoryDatas && setCategoryData(categoryDatas)
-  }, [categoryDatas])
+  }, [categoryDatas, selectedRowKeys])
 
   const handleDeleteCategory = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteCategory(id)
+      await deleteCategory(id).unwrap().then(() => openNotification('success', "Xóa Danh mục thành công"))
     })
-    openNotification('success', "Xóa Danh mục thành công")
+    setSelectedRowKeys([])
   };
 
   const handleAddUpdateCategory = async (data: ICategory) => {
@@ -71,14 +73,18 @@ const ListCategory = () => {
       const { method } = form
 
       if (method === "add" && !existCategory) {
-        await addCategory(data)
-        openNotification('success', "Thêm danh mục thành công")
+        const result = await addCategory(data)
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Thêm danh mục thành công")
+          : openNotification('error', "Thêm danh mục thất bại, vui lòng thử lại")
         return;
       }
 
       if (method === "update" && !existCategory || (existCategory && existCategory._id === form._id)) {
-        await updateCategory({ ...data, _id: form._id })
-        openNotification('success', "Cập nhật danh mục thành công")
+        const result = await updateCategory({ ...data, _id: form._id })
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Cập nhật danh mục thành công")
+          : openNotification('error', "Cập nhật danh mục thất bại, vui lòng thử lại")
         return;
       }
 
@@ -89,7 +95,8 @@ const ListCategory = () => {
   }
 
   const handleSearch = (data: { search?: string }) => {
-    const newData = categoryDatas && categoryDatas.filter((item: ICategory) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
+    const newData = categoryDatas
+      && categoryDatas.filter((item: ICategory) => item.name.toLowerCase().includes(String(data.search).toLowerCase()))
     setCategoryData(newData)
   }
 
@@ -100,6 +107,9 @@ const ListCategory = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    getCheckboxProps: (category: ICategory) => ({
+      disabled: category.products?.length as number > 0 || category.name.toLowerCase() == "chưa phân loại",
+    }),
   };
 
   const columns: ColumnsType<ICategory> = [
@@ -117,7 +127,7 @@ const ListCategory = () => {
       className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
       render: (name: string, category: ICategory) =>
         <div className="flex items-center gap-2">
-          <BsPencilSquare className="w-3 h-3 fill-orange-600 cursor-pointer" onClick={() => setForm({ open: true, method: "update", _id: String(category._id) })} />
+          {category.name.toLowerCase() !== "chưa phân loại" && < BsPencilSquare className="w-3 h-3 fill-orange-600 cursor-pointer" onClick={() => setForm({ open: true, method: "update", _id: String(category._id) })} />}
           {name}
         </div>
     },
@@ -141,7 +151,7 @@ const ListCategory = () => {
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
       className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
       render: (updatedAt: string) =>
-        <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
+        <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
         </div>
     },
@@ -152,8 +162,8 @@ const ListCategory = () => {
       align: "center",
       className: "w-auto",
       fixed: "right",
-      render: (_id: string) =>
-        _id && (
+      render: (_id: string, category: ICategory) =>
+        (_id && category.name.toLowerCase() !== "chưa phân loại" && !category.products?.length) ? (
           <div className="w-max m-auto flex gap-3 cursor-pointer">
             <Popconfirm
               title
@@ -169,11 +179,12 @@ const ListCategory = () => {
               </Tooltip>
             </Popconfirm>
           </div >
-        ),
+        ) : <div className="w-max h-max p-1 bg-red-500 text-white rounded-lg">Không thể xóa</div>,
     },
   ];
 
-  const sortUpdatedAtCategoryData = categoryData && [...categoryData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
+  const sortUpdatedAtCategoryData = categoryData
+    && [...categoryData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))
 
   const dataSource = sortUpdatedAtCategoryData?.map((category: ICategory, index: number) => ({
     ...category,
@@ -184,14 +195,14 @@ const ListCategory = () => {
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
-        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700">
+        <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700 select-none">
           Tất cả danh mục sản phẩm
         </div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
             onClick={() => setForm({ open: true, method: "add" })}
             variant="contained"
-            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none select-none"
             startIcon={<BsPlus className="w-6 h-6" />}
           >
             Thêm Mới
@@ -217,7 +228,7 @@ const ListCategory = () => {
               onConfirm={() => handleDeleteCategory(selectedRowKeys as string[])}
             >
               <Tooltip placement="right" title="Xóa" className="flex place-items-center gap-1 pr-2">
-                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500">Xóa danh mục</span>
+                <BsTrash3 className="fill-red-500 w-4 h-4" /><span className="font-semibold hover:text-red-500 select-none">Xóa danh mục</span>
               </Tooltip>
             </Popconfirm>
           </div>
@@ -233,7 +244,9 @@ const ListCategory = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Modal
-          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">{form.method === "update" ? "Cập nhật danh mục" : "Thêm mới danh mục"}</div>}
+          title={<div className="text-[1.7rem] uppercase text-slate-600 text-center font-semibold mb-5">
+            {form.method === "update" ? "Cập nhật danh mục" : "Thêm mới danh mục"}
+          </div>}
           centered open={form.open}
           onCancel={() => setForm({ open: false, method: "" })}
           okButtonProps={{ style: { display: "none" } }}

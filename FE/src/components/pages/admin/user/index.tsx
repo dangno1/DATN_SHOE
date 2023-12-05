@@ -70,7 +70,7 @@ const AdminUser = () => {
   return (
     <div>
     <header className="flex items-center justify-between mb-4">
-      <h2 className="text-2xl mt-2 ml-2">Quản lý user</h2>
+      <h2 className="text-2xl mt-2 ml-2">Quản lý người dùng</h2>
       <div className="flex items-center">
         <div style={{ marginRight: '10px' }}>
           <Select

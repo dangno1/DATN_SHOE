@@ -30,7 +30,19 @@ const commentApi = createApi({
           url: `comments/${id}`, // Điều chỉnh đường dẫn endpoint
           method: 'DELETE',
         }),
-      
+      }),
+      deleteCommentAdmin: builder.mutation({
+        query: (id) => ({
+          url: `commentAdmin/${id}`,
+          method: 'DELETE',
+        }),
+      }),
+      deleteCommentsAdmin: builder.mutation({
+        query: (commentIDs) => ({
+          url: 'commentsAdmin',
+          method: 'DELETE',
+          body: { commentIDs }, // Gửi danh sách commentIDs để xóa nhiều comment
+        }),
       }),
     }),
   });
@@ -42,4 +54,6 @@ export const {
   useGetCommentQuery,
   useCreateCommentMutation,
   useDeleteCommentMutation,
+  useDeleteCommentAdminMutation,
+  useDeleteCommentsAdminMutation
 } = commentApi;

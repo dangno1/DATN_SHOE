@@ -30,10 +30,22 @@ const ListCoupons = () => {
     });
   };
 
-  const { register, handleSubmit, reset, setFocus, formState: { errors } } = useForm<ICoupons>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setFocus,
+    setValue,
+    setError,
+    formState: { errors }
+  } = useForm<ICoupons>({
     resolver: joiResolver(couponsSchema)
   })
-  const { register: registerSearch, handleSubmit: handleSubmitSearch } = useForm<{ search: string }>()
+
+  const {
+    register: registerSearch,
+    handleSubmit: handleSubmitSearch
+  } = useForm<{ search: string }>()
 
   useEffect(() => {
     reset()
@@ -43,11 +55,13 @@ const ListCoupons = () => {
     setFocus("code")
     if (form._id && form.method === "update") {
       const coupons = couponsData.find((item: ICoupons) => item._id == form._id)
-      reset({ ...coupons, createdAt: undefined, updatedAt: undefined })
+      setValue("code", String(coupons?.code))
+      setValue("discountValue", Number(coupons?.discountValue))
+      setValue("quantity", Number(coupons?.quantity))
+      return;
     }
-
     reset()
-  }, [form, reset, couponsData, setFocus])
+  }, [form, reset, couponsData, setFocus, setValue])
 
   useEffect(() => {
     couponsDatas && setCouponsData(couponsDatas)
@@ -55,25 +69,30 @@ const ListCoupons = () => {
 
   const handleDeleteCoupons = (listId: string[]) => {
     listId.map(async (id: string) => {
-      await deleteCoupons(id)
+      await deleteCoupons(id).unwrap().then(() => openNotification('success', "Xóa mã giảm giá thành công"))
     })
-    openNotification('success', "Xóa mã giảm giá thành công")
   };
 
   const handleAddUpdateCoupons = async (data: ICoupons) => {
     try {
-      const { open, method } = form
-      if (open && method === "add") {
-        await addCoupons(data)
-        openNotification('success', "Thêm mã giảm giá thành công")
+      const existCoupons = couponsDatas.find(({ code }: ICoupons) => code.toLowerCase() === data.code.toLowerCase())
+      const { method } = form
+      if (method === "add" && !existCoupons) {
+        const result = await addCoupons(data)
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Thêm mã giảm giá thành công")
+          : openNotification('success', "Thêm mã giảm giá thất bại, vui lòng thử lại sau")
         return
       }
-      if (open && method === "update" && form._id) {
-        await updateCoupons(data)
-        openNotification('success', "Cập nhật mã giảm giá thành công")
+      if (method === "update" && !existCoupons || (existCoupons && existCoupons._id === form._id)) {
+        const result = await updateCoupons({ ...data, _id: form._id })
+        "data" in result && "success" in result.data && result.data.success
+          ? openNotification('success', "Cập nhật mã giảm giá thành công")
+          : openNotification('success', "Cập nhật mã giảm giá thất bại, vui lòng thử lại sau")
         return
       }
-      reset()
+      setError("code", { type: "exist", message: "Mã giảm giá đã tồn tại" })
+
     } catch (error) {
       return error
     }
@@ -184,9 +203,6 @@ const ListCoupons = () => {
     index: index + 1
   }))
 
-  console.log(errors);
-
-
   return (
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
@@ -197,7 +213,7 @@ const ListCoupons = () => {
           <Button
             onClick={() => { setForm({ open: true, method: "add" }) }}
             variant="contained"
-            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none "
+            className="float-right !font-semibold !bg-[#58b4ff] !shadow-none"
             startIcon={<BsPlus className="w-6 h-6" />}
           >
             Thêm Mới
@@ -212,7 +228,7 @@ const ListCoupons = () => {
           <BsSearch className="w-4 h-4 fill-gray-500 absolute top-[50%] right-3 translate-y-[-50%]" />
         </form>
         {
-          selectedRowKeys.length > 0 && <div className="w-full flex items-center  cursor-pointer">
+          selectedRowKeys.length > 0 && <div className="w-full flex items-center cursor-pointer">
             <Popconfirm
               title
               description="Xóa mã giảm giá?"
