@@ -117,30 +117,17 @@ const ListCategory = () => {
       title: "STT",
       dataIndex: "index",
       key: "index",
-      className: "w-[70px] max-w-[100px]",
+      className: "w-[100px] max-w-[100px]",
       fixed: "left",
     },
     {
       title: "Tên Danh mục",
       dataIndex: "name",
       key: "name",
-      className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[300px] lg:max-w-[300px]",
-      render: (name: string, category: ICategory) =>
+      className: "w-[450px] max-w-[450px]",
+      render: (name: string) =>
         <div className="flex items-center gap-2">
-          {category.name.toLowerCase() !== "chưa phân loại" && < BsPencilSquare className="w-3 h-3 fill-orange-600 cursor-pointer" onClick={() => setForm({ open: true, method: "update", _id: String(category._id) })} />}
           {name}
-        </div>
-    },
-    {
-      title: "Số lượng sản phẩm",
-      dataIndex: "_id",
-      key: "_id",
-      sorter: (a, b) => Number(a.products?.length) - Number(b.products?.length),
-      showSorterTooltip: { title: "click để sắp xếp theo số lượng sản phẩm" },
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[200px] lg:max-w-[25 0px]",
-      render: (_, categoty: ICategory) =>
-        <div className="max-h-[45px] overflow-y-auto scroll-hiden cursor-n-resize">
-          {categoty.products?.length}
         </div>
     },
     {
@@ -149,7 +136,7 @@ const ListCategory = () => {
       key: "updatedAt",
       sorter: (a, b) => Date.parse(String(a.updatedAt)) - Date.parse(String(b.updatedAt)),
       showSorterTooltip: { title: "click để sắp xếp theo ngày cập nhật" },
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[400px] lg:max-w-[500px]",
+      className: "w-[450px] max-w-[450px]",
       render: (updatedAt: string) =>
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
@@ -163,23 +150,25 @@ const ListCategory = () => {
       className: "w-auto",
       fixed: "right",
       render: (_id: string, category: ICategory) =>
-        (_id && category.name.toLowerCase() !== "chưa phân loại" && !category.products?.length) ? (
-          <div className="w-max m-auto flex gap-3 cursor-pointer">
-            <Popconfirm
-              title
-              description="Xóa danh mục?"
-              okText="Yes"
-              cancelText="No"
-              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-              cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleDeleteCategory([_id])}
-            >
-              <Tooltip placement="right" title="Xóa">
-                <BsTrash3 className="fill-red-600 w-4 h-4" />
-              </Tooltip>
-            </Popconfirm>
-          </div >
-        ) : <div className="w-max h-max p-1 bg-red-500 text-white rounded-lg">Không thể xóa</div>,
+        <div className="w-max m-auto flex gap-3 cursor-pointer">
+          <Popconfirm
+            disabled={(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) ? true : false}
+            title
+            description="Xóa danh mục?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+            cancelButtonProps={{ className: "border-slate-400" }}
+            onConfirm={() => handleDeleteCategory([_id])}
+          >
+            <Tooltip placement="right" title={!(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) ? "Xóa" : ""}>
+              <BsTrash3 className={`fill-red-600 w-4 h-4 ${(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && "fill-slate-500 cursor-not-allowed"}`} />
+            </Tooltip>
+          </Popconfirm>
+          <BsPencilSquare
+            className={`w-4 h-4 fill-orange-600 cursor-pointer disabled:!opacity-0 ${(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && "fill-slate-500 cursor-not-allowed"}`}
+            onClick={() => !(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && setForm({ open: true, method: "update", _id: String(category._id) })} />
+        </div >
     },
   ];
 

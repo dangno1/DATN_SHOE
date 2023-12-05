@@ -18,6 +18,8 @@ import { BsArrowLeftShort, BsImage, BsPencilSquare } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlineTrash, HiPlus } from "react-icons/hi2";
 import productSchema from "@/schemas/product";
+import { IBrand } from "@/interface/brand";
+import { useGetBrandsQuery } from "@/api/brand";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 type ImageType = { files: File[], url: string[] } | null
@@ -28,6 +30,7 @@ const UpdateProduct = () => {
 
   const [UpdateProduct, { isLoading }] = useUpdateProductMutation();
   const { data: categoryData } = useGetCategoryesQuery();
+  const { data: brandDatas } = useGetBrandsQuery();
   const { data: sizeData } = useGetSizesQuery();
   const { data: colorData } = useGetColorsQuery();
   const { data: productData } = useGetProductQuery(String(id))
@@ -109,11 +112,19 @@ const UpdateProduct = () => {
   }, [productData, reset])
 
   const onSubmit = async (data: IProduct) => {
+    console.log(data);
+
     try {
       const newThumbnail = thumbnail?.files as File[];
       const newImage = image?.files as File[];
-
-      const result = await UpdateProduct({ ...data, thumbnail: newThumbnail, image: newImage, _id: id })
+      const newDesc = data.desc || "Đang cập nhật"
+      const result = await UpdateProduct({
+        ...data,
+        _id: id,
+        thumbnail: newThumbnail,
+        image: newImage,
+        desc: newDesc
+      })
       "data" in result && "success" in result.data && result.data.success
         ? openNotificationWithIcon("success", "Cập nhật sản phẩm thành công")
         : openNotificationWithIcon("error", "Cập nhật sản phẩm thất bại, vui lòng thử lại sau")
@@ -149,15 +160,17 @@ const UpdateProduct = () => {
             </div>
             <div className="h-max mb-[20px]">
               <label className="text-slate-600 font-semibold">Thương hiệu<span className="text-red-500">*</span></label>
-              <input
-                {...register("brand", productSchema.brand)} type="text" placeholder="Thương hiệu*..."
-                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
-                focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
-                focus:shadow-full ${errors.brand && 'border-red-500'}`} />
-              {errors.brand && <span className="text-red-500">{errors.brand.message}</span>}
+              <select {...register("brandId", productSchema.brandId)}
+                className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors.brandId && 'border-red-500'}`}>
+                <option value="">Thương hiệu</option>
+                {
+                  brandDatas?.map((brand: IBrand) => <option key={brand._id} value={brand._id}>{brand.name}</option>)
+                }
+              </select>
+              {errors.brandId && <span className="text-red-500">{errors.brandId.message}</span>}
             </div>
             <div className="h-max mb-[20px] col-span-2 space-y-[5px]">
-              <label className="text-slate-600 font-semibold">Mô tả<span className="text-red-500">*</span></label>
+              <label className="text-slate-600 font-semibold">Mô tả sản phẩm</label>
               <div className={`border ${errors.desc && 'border-red-500'}`}>
                 <Controller
                   name="desc"
@@ -317,7 +330,7 @@ const UpdateProduct = () => {
                       {errors?.variants?.[index]?.price && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.price?.message}</span>}
                     </div>
                     <div className="w-full h-max">
-                      <label className="text-slate-600 font-semibold">Giá khuyến mãi<span className="text-red-500">*</span></label>
+                      <label className="text-slate-600 font-semibold">Giá khuyến mãi</label>
                       <input {...register(`variants.${index}.discount`, productSchema.discount(getValues, index))} type="number" placeholder="500..."
                         className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
                        focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] 
