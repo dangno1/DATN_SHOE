@@ -12,6 +12,7 @@ import {
   AiOutlineFontColors,
   AiOutlineOrderedList,
   AiOutlineLogout,
+  AiOutlineComment,
 } from "react-icons/ai";
 import { CgAdidas } from "react-icons/cg";
 
@@ -113,6 +114,11 @@ const LayoutAdmin = () => {
                 key: 13,
                 label: <NavLink to="/admin/orders">Đơn Hàng</NavLink>,
                 icon: <AiOutlineShopping />
+              },
+              {
+                key: 13,
+                label: <NavLink to="/admin/comment">Bình luận</NavLink>,
+                icon: <AiOutlineComment />
               }
             ]
           }
