@@ -451,6 +451,7 @@ const Account = () => {
           </DialogActions>
         </form>
       </Dialog>
+      </div>
     </>
   );
 };
