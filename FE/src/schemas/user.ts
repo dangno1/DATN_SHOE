@@ -87,6 +87,7 @@ const changePasswordSchema = Joi.object({
     confirmPassword: Joi.string().required().valid(Joi.ref("newPassword")).messages({
         "any.only": "Mật khẩu bạn vừa nhập không trùng khớp hãy nhập lại",
         "any.required": "Nhập lại mật khẩu là trường bắt buộc",
+        "string.empty": "Nhập lại mật khẩu mới không được để trống",
       }).options({ abortEarly: false }),
   });
 
