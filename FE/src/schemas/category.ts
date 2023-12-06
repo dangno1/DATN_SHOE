@@ -6,6 +6,11 @@ const categorySchema = joi.object({
     "any.required": "Tên danh mục là trường bắt buộc",
     "string.min": "Vui long nhập tối thiểu 3 kí tự",
   }),
+  // slug: joi.string().required().min(3).messages({
+  //   "string.empty": "Tên url không được để trống",
+  //   "any.required": "Tên url là trường bắt buộc",
+  //   "string.min": "Vui long nhập tối thiểu 3 kí tự",
+  // }),
 });
 
 export default categorySchema;

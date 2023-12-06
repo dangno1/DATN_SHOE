@@ -3,6 +3,7 @@ import { IProduct } from "@/interface/product";
 import { useEffect, useState } from "react";
 import { BsBagPlus } from 'react-icons/bs';
 import { Link } from "react-router-dom";
+import "./outstanding products/style.css"
 
 const ProductList2 = () => {
   const { data } = useGetProductsQuery(false);
@@ -24,7 +25,7 @@ const ProductList2 = () => {
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4 uppercase">
+        <h1 className=" product__title">
           Các sản phẩm khác của Website
         </h1>
       </div>

@@ -33,22 +33,21 @@ import DetailProduct from "./features/products/pages/detailProduct";
 import Test001 from "./components/pages/admin/order/test001";
 import Statistical from "./features/statistical/statistical";
 import Test002 from "./features/statistical/statisticalDetail";
-
-
+import LayoutTest from "./components/pages/home/layoutUndefine/layoutTest";
 
 export const router = createBrowserRouter([
-
   {
     path: "/",
     element: <LayoutWebsite />,
     children: [
+      { path: "/undefined/:id", element: <LayoutTest /> },
       { index: true, element: <HomePage /> },
       { path: "detail/:id", element: <Detail /> },
       { path: "Men/:id", element: <Men /> },
       { path: "Kids/:id", element: <Kids /> },
       { path: "Women/:id", element: <Women /> },
-      {path: "products", element:<Products/>},
-      {path: "sale", element:<SaleProduct/>},
+      { path: "products", element: <Products /> },
+      { path: "sale", element: <SaleProduct /> },
       {
         path: "cart",
         element: <Cart />,

@@ -71,7 +71,7 @@ const ListCategory = () => {
       const { method } = form
 
       if (method === "add" && !existCategory) {
-        await addCategory(data)
+        await addCategory(data) 
         openNotification('success', "Thêm danh mục thành công")
         return;
       }
@@ -250,6 +250,7 @@ const ListCategory = () => {
               className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && "border-red-500"}`}
             />
             {errors.name && <span className="text-red-500">{errors.name.message}</span>}
+           
             <div className="w-full grid items-center justify-end mt-2">
               <Button
                 type="submit"
