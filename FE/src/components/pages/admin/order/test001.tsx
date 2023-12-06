@@ -24,7 +24,6 @@ const Test001 = () => {
   };
 
   const handleUpdate = () => {
-
     const openNotification = (type: NotificationType, message: string) => {
       api[type]({
         message: "Thông báo",
@@ -52,12 +51,11 @@ const Test001 = () => {
       });
       openNotification("success", "Thanh Đổi Trạng Thái Thành Công");
     }
-
   };
 
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <div className="p-5">
         <h3 className="mb-8 font-bold text-3xl uppercase text-slate-700">
           Chi Tiết Đơn Hàng
@@ -73,7 +71,9 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+               focus:shadow-full"
                 type="text"
                 placeholder="Mã Đơn Hàng"
                 value={data?.[0]?.orderCode}
@@ -86,7 +86,9 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+               focus:shadow-full"
                 type="text"
                 placeholder="Tên Sản Phẩm"
                 value={product?.[0]?.productName}
@@ -99,7 +101,9 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+               focus:shadow-full"
                 type="text"
                 placeholder="Kích Cỡ Sản Phẩm"
                 value={product?.[0]?.productSize}
@@ -127,7 +131,7 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full bg-slate-200 h-[48px] mt-[5px] border border-[#d0dbf0] ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] outline-white focus:shadow-full"
                 type="text"
                 placeholder="Màu Sản Phẩm"
                 value={product?.[0]?.productColor}
@@ -142,8 +146,8 @@ const Test001 = () => {
                 readOnly
                 type="text"
                 placeholder="Giá Sản Phẩm"
-                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
-                focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+                className={`w-full bg-slate-200 outline-white h-[48px] mt-[5px] border border-[#d0dbf0] focus:outline-0
+               font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
                 focus:shadow-full`}
                 value={product?.[0]?.productInitialPrice}
               />
@@ -157,8 +161,8 @@ const Test001 = () => {
                 readOnly
                 type="text"
                 placeholder="Số Lượng Sản Phẩm"
-                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
-                focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+                className={`w-full bg-slate-200 outline-white h-[48px] mt-[5px] border border-[#d0dbf0] focus:outline-0
+                 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
                 focus:shadow-full`}
                 value={product?.[0]?.productQuantity}
               />
@@ -172,8 +176,8 @@ const Test001 = () => {
                 readOnly
                 type="text"
                 placeholder="Tổng Giá Sản Phẩm"
-                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
-                focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
                 focus:shadow-full`}
                 value={product?.[0]?.productPrice}
               />
@@ -187,8 +191,8 @@ const Test001 = () => {
                 readOnly
                 type="text"
                 placeholder="Trạng Thái Đơn Hàng"
-                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0
-                focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+                className={`w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
                 focus:shadow-full`}
                 value={data?.[0]?.status}
               />
@@ -205,7 +209,9 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+               focus:shadow-full"
                 type="text"
                 placeholder="Tên Khách Hàng"
                 value={data?.[0]?.userName}
@@ -218,7 +224,9 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+               focus:shadow-full"
                 type="text"
                 placeholder="Email Khách Hàng"
                 value={data?.[0]?.userEmail}
@@ -231,7 +239,9 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+               focus:shadow-full"
                 type="text"
                 placeholder="Số  Điện Thoại Khách Hàng"
                 value={data?.[0]?.userPhone}
@@ -244,7 +254,9 @@ const Test001 = () => {
               </label>
               <input
                 readOnly
-                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+                className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] bg-slate-200 outline-white focus:outline-0
+                font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px]
+               focus:shadow-full"
                 type="text"
                 placeholder="Địa Chỉ Khách Hàng"
                 value={data?.[0]?.userAddress}
@@ -257,13 +269,10 @@ const Test001 = () => {
             </h3>
             <select
               onChange={handleStatusChange}
-              className="w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+              className="w-full h-[48px] mt-[5px] ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
             >
               <option value="Chưa Xác Nhận">Chưa Xác Nhận</option>
               <option value="Đã Xác Nhận">Đã Xác Nhận</option>
-              <option value="Đơn Hàng Đang Được Chuẩn Bị">
-                Đơn Hàng Đang Được Chuẩn Bị
-              </option>
               <option value="Đơn Hàng Đang Giao Đến Bạn">
                 Đơn Hàng Đang Giao Đến Bạn
               </option>

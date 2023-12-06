@@ -2,9 +2,23 @@ import { IProduct } from "@/interface/product";
 import { UseFormGetValues } from "react-hook-form";
 
 const productSchema = {
-  name: {
-    required: "Tên sản phẩm không được để trống",
-    minLength: { value: 3, message: "Vui lòng nhập tối thiểu 3 kí tự" },
+  name: (product?: IProduct[], id?: string) => {
+    return {
+      required: "Tên sản phẩm không được để trống",
+      minLength: { value: 3, message: "Vui lòng nhập tối thiểu 3 kí tự" },
+      validate: (value: string) => {
+        const productExist = product?.find(
+          (item: IProduct) =>
+            item.name.toLowerCase() == value.toLowerCase().trim()
+        );
+
+        return (
+          !productExist ||
+          (id && productExist && productExist._id == id) ||
+          "Tên sản phẩm đã tồn tại"
+        );
+      },
+    };
   },
 
   image: (value: boolean) => ({
@@ -22,12 +36,14 @@ const productSchema = {
   }),
 
   desc: {
-    required: "Mô tả sản phẩm không được để trống",
-    validate: (value: string) =>
-      value.replace(/<[^>]*>?/gm, "").length >= 10 || "Mô tả quá ngắn",
+    validate: (value?: string) =>
+      value
+        ? value.replace(/<[^>]*>?/gm, "").length >= 10 ||
+          "Vui lòng nhập tối thiểu 10 kí tự"
+        : true,
   },
 
-  brand: {
+  brandId: {
     required: "Thương hiệu không được để trống",
   },
 
@@ -35,7 +51,9 @@ const productSchema = {
     required: "Danh mục sản phẩm không được để trống",
   },
 
-  sizeId: { required: "Kích thước không được để trống" },
+  sizeId: {
+    required: "Kích thước không được để trống",
+  },
 
   colorId: { required: "Màu sắc không được để trống" },
 
@@ -45,8 +63,7 @@ const productSchema = {
   },
 
   discount: (getValues: UseFormGetValues<IProduct>, index: number) => ({
-    required: "Giá khuến mãi không được để trống",
-    min: { value: 0, message: "Giá khuến mãi phải là số dương" },
+    min: { value: 1, message: "Giá khuến mãi phải lớn hơn 0" },
     validate: (value: number) =>
       value <= Number(getValues(`variants.${index}.price`)) ||
       "Giá khuến mãi không được lớn hơn giá gốc",

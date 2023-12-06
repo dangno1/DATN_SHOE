@@ -7,16 +7,15 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useGetAllCouponsQuery } from "@/api/coupons";
-
+import { useDeleteProductCartMutation } from "@/api/cart";
 
 const CartDetail = () => {
+  // coupons
 
-// coupons
-
-const [discountCode, setDiscountCode] = useState<string>("");
-const { data: coupons =[]} = useGetAllCouponsQuery();
-const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
-
+  const [discountCode, setDiscountCode] = useState<string>("");
+  const { data: coupons = [] } = useGetAllCouponsQuery();
+  const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
+  const [deleteProductCart] = useDeleteProductCartMutation();
   const [orderedProduct] = useOrderedProductMutation();
   const { data: getOrders } = useGetOrdersQuery();
   const [updateOrder] = useUpdateorderMutation();
@@ -25,10 +24,8 @@ const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [otpValue, setOtpValue] = useState("");
-  const checkedItems = location.state.checkedItems;
-
-  console.log(getOrders);
-
+  const checkedItems = location.state?.checkedItems || [];
+  //  console.log(checkedItems);
 
   // user
   const [name, setName] = useState("");
@@ -36,6 +33,8 @@ const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+
+  const [errPaymenMethod, setErrPayMethod] = useState({});
 
   useEffect(() => {
     if (checkedItems && checkedItems.length > 0) {
@@ -48,21 +47,14 @@ const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
   }, [checkedItems]);
   let totalPrice = 0;
   let discountedAmount = 0;
-  
-checkedItems.forEach((element: { price: number }) => {
-  totalPrice += element.price;
-  if (validCoupon) {
-  
-  discountedAmount = totalPrice * (validCoupon.discountValue / 100);
-   totalPrice = totalPrice - discountedAmount;
-}
-});
 
-
-
-
- 
-
+  checkedItems.forEach((element: { price: number }) => {
+    totalPrice += element.price;
+    if (validCoupon) {
+      discountedAmount = totalPrice * (validCoupon.discountValue / 100);
+      totalPrice = totalPrice - discountedAmount;
+    }
+  });
 
   const handleOrder = async () => {
     setErrors({});
@@ -110,6 +102,12 @@ checkedItems.forEach((element: { price: number }) => {
       setErrors(newErrors);
       return;
     }
+    if (selectedPaymentMethod == "") {
+      setErrPayMethod({ errPaymenMethod: "Phải chọn phương thức thanh toán" });
+      return;
+    } else {
+      setErrPayMethod({});
+    }
 
     const productsArray = checkedItems.map(
       (item: {
@@ -121,6 +119,7 @@ checkedItems.forEach((element: { price: number }) => {
         size: unknown;
         quantity: unknown;
         otp: unknown;
+        productID: unknown;
       }) => ({
         productName: item?.productName,
         productInitialPrice: item?.initialPrice,
@@ -130,6 +129,7 @@ checkedItems.forEach((element: { price: number }) => {
         productSize: item?.size,
         productQuantity: item?.quantity,
         otp: item?.otp,
+        productID: item?.productID,
       })
     );
 
@@ -142,11 +142,11 @@ checkedItems.forEach((element: { price: number }) => {
       paymentMethod: selectedPaymentMethod,
       status: "Chờ Xác Nhận",
       totalPrice: totalPrice,
+      orderTime: new Date(),
     };
 
-    console.log(orderData.paymentMethod);
+    deleteProductCart(checkedItems[0]._id);
     // return
-
 
     if (orderData.paymentMethod == "Paymentondelivery") {
       orderedProduct(orderData);
@@ -171,7 +171,8 @@ checkedItems.forEach((element: { price: number }) => {
 
     if (lastOrder && lastOrder.otp === otpValue) {
       updateOrder(lastOrder);
-      window.location.href = "http://localhost:5173/oder&history?vnp_TransactionStatus=00"
+      window.location.href =
+        "http://localhost:5173/oder&history?vnp_TransactionStatus=00";
     } else {
       alert("Mã OTP Không Hợp Lệ");
     }
@@ -183,10 +184,9 @@ checkedItems.forEach((element: { price: number }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    window.location.href = "http://localhost:5173/oder&history?vnp_TransactionStatus=01"
+    window.location.href =
+      "http://localhost:5173/oder&history?vnp_TransactionStatus=01";
   };
-
-  
 
   return (
     <>
@@ -243,12 +243,17 @@ checkedItems.forEach((element: { price: number }) => {
               onChange={(e) => setSelectedPaymentMethod(e.target.value)}
             >
               <option value={""}>-Chọn một phương thức thanh toán-</option>
-              <option value={"Paymentondelivery"}>Thanh Toán Khi Nhận Hàng</option>
+              <option value={"Paymentondelivery"}>
+                Thanh Toán Khi Nhận Hàng
+              </option>
               <option value={"NCB"}>NCB</option>
               <option value={"VISA"}>VISA</option>
               <option value={"MasterCard"}>MasterCard</option>
               <option value={"JCB"}>JCB</option>
             </select>
+          </div>
+          <div className="text-red-500 pl-1">
+            {errPaymenMethod?.errPaymenMethod}
           </div>
           <div className="text-3xl font-semibold font-sans leading-10 pt-20">
             LỰA CHỌN HÀNG ĐẦU DÀNH CHO BẠN
@@ -262,21 +267,8 @@ checkedItems.forEach((element: { price: number }) => {
                   alt=""
                   width={"100%"}
                 />
-                <svg
-                  className="absolute top-4 right-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="27"
-                  height="27"
-                  viewBox="0 0 37 37"
-                  fill="none"
-                >
-                  <path
-                    d="M25.7266 4.625C22.742 4.625 20.1289 5.90844 18.5 8.07785C16.8711 5.90844 14.258 4.625 11.2734 4.625C8.89767 4.62768 6.61998 5.57263 4.94006 7.25256C3.26013 8.93248 2.31518 11.2102 2.3125 13.5859C2.3125 23.7031 17.3134 31.8923 17.9522 32.2305C18.1206 32.321 18.3088 32.3685 18.5 32.3685C18.6912 32.3685 18.8794 32.321 19.0478 32.2305C19.6866 31.8923 34.6875 23.7031 34.6875 13.5859C34.6848 11.2102 33.7399 8.93248 32.0599 7.25256C30.38 5.57263 28.1023 4.62768 25.7266 4.625ZM18.5 29.8891C15.8609 28.3512 4.625 21.3458 4.625 13.5859C4.62729 11.8234 5.32849 10.1336 6.57482 8.88732C7.82114 7.64099 9.51087 6.93979 11.2734 6.9375C14.0846 6.9375 16.4448 8.43484 17.4305 10.8398C17.5176 11.0519 17.6658 11.2333 17.8562 11.3609C18.0466 11.4886 18.2707 11.5568 18.5 11.5568C18.7293 11.5568 18.9534 11.4886 19.1438 11.3609C19.3342 11.2333 19.4824 11.0519 19.5695 10.8398C20.5552 8.43051 22.9154 6.9375 25.7266 6.9375C27.4891 6.93979 29.1789 7.64099 30.4252 8.88732C31.6715 10.1336 32.3727 11.8234 32.375 13.5859C32.375 21.3343 21.1362 28.3498 18.5 29.8891Z"
-                    fill="black"
-                  ></path>
-                </svg>
                 <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000₫
+                  1,050,000VND
                 </span>
                 <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
               </div>
@@ -288,21 +280,8 @@ checkedItems.forEach((element: { price: number }) => {
                   alt=""
                   width={"100%"}
                 />
-                <svg
-                  className="absolute top-4 right-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="27"
-                  height="27"
-                  viewBox="0 0 37 37"
-                  fill="none"
-                >
-                  <path
-                    d="M25.7266 4.625C22.742 4.625 20.1289 5.90844 18.5 8.07785C16.8711 5.90844 14.258 4.625 11.2734 4.625C8.89767 4.62768 6.61998 5.57263 4.94006 7.25256C3.26013 8.93248 2.31518 11.2102 2.3125 13.5859C2.3125 23.7031 17.3134 31.8923 17.9522 32.2305C18.1206 32.321 18.3088 32.3685 18.5 32.3685C18.6912 32.3685 18.8794 32.321 19.0478 32.2305C19.6866 31.8923 34.6875 23.7031 34.6875 13.5859C34.6848 11.2102 33.7399 8.93248 32.0599 7.25256C30.38 5.57263 28.1023 4.62768 25.7266 4.625ZM18.5 29.8891C15.8609 28.3512 4.625 21.3458 4.625 13.5859C4.62729 11.8234 5.32849 10.1336 6.57482 8.88732C7.82114 7.64099 9.51087 6.93979 11.2734 6.9375C14.0846 6.9375 16.4448 8.43484 17.4305 10.8398C17.5176 11.0519 17.6658 11.2333 17.8562 11.3609C18.0466 11.4886 18.2707 11.5568 18.5 11.5568C18.7293 11.5568 18.9534 11.4886 19.1438 11.3609C19.3342 11.2333 19.4824 11.0519 19.5695 10.8398C20.5552 8.43051 22.9154 6.9375 25.7266 6.9375C27.4891 6.93979 29.1789 7.64099 30.4252 8.88732C31.6715 10.1336 32.3727 11.8234 32.375 13.5859C32.375 21.3343 21.1362 28.3498 18.5 29.8891Z"
-                    fill="black"
-                  ></path>
-                </svg>
                 <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000₫
+                  1,050,000VND
                 </span>
                 <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
               </div>
@@ -314,21 +293,8 @@ checkedItems.forEach((element: { price: number }) => {
                   alt=""
                   width={"100%"}
                 />
-                <svg
-                  className="absolute top-4 right-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="27"
-                  height="27"
-                  viewBox="0 0 37 37"
-                  fill="none"
-                >
-                  <path
-                    d="M25.7266 4.625C22.742 4.625 20.1289 5.90844 18.5 8.07785C16.8711 5.90844 14.258 4.625 11.2734 4.625C8.89767 4.62768 6.61998 5.57263 4.94006 7.25256C3.26013 8.93248 2.31518 11.2102 2.3125 13.5859C2.3125 23.7031 17.3134 31.8923 17.9522 32.2305C18.1206 32.321 18.3088 32.3685 18.5 32.3685C18.6912 32.3685 18.8794 32.321 19.0478 32.2305C19.6866 31.8923 34.6875 23.7031 34.6875 13.5859C34.6848 11.2102 33.7399 8.93248 32.0599 7.25256C30.38 5.57263 28.1023 4.62768 25.7266 4.625ZM18.5 29.8891C15.8609 28.3512 4.625 21.3458 4.625 13.5859C4.62729 11.8234 5.32849 10.1336 6.57482 8.88732C7.82114 7.64099 9.51087 6.93979 11.2734 6.9375C14.0846 6.9375 16.4448 8.43484 17.4305 10.8398C17.5176 11.0519 17.6658 11.2333 17.8562 11.3609C18.0466 11.4886 18.2707 11.5568 18.5 11.5568C18.7293 11.5568 18.9534 11.4886 19.1438 11.3609C19.3342 11.2333 19.4824 11.0519 19.5695 10.8398C20.5552 8.43051 22.9154 6.9375 25.7266 6.9375C27.4891 6.93979 29.1789 7.64099 30.4252 8.88732C31.6715 10.1336 32.3727 11.8234 32.375 13.5859C32.375 21.3343 21.1362 28.3498 18.5 29.8891Z"
-                    fill="black"
-                  ></path>
-                </svg>
                 <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000₫
+                  1,050,000VND
                 </span>
                 <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
               </div>
@@ -340,21 +306,8 @@ checkedItems.forEach((element: { price: number }) => {
                   alt=""
                   width={"100%"}
                 />
-                <svg
-                  className="absolute top-4 right-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="27"
-                  height="27"
-                  viewBox="0 0 37 37"
-                  fill="none"
-                >
-                  <path
-                    d="M25.7266 4.625C22.742 4.625 20.1289 5.90844 18.5 8.07785C16.8711 5.90844 14.258 4.625 11.2734 4.625C8.89767 4.62768 6.61998 5.57263 4.94006 7.25256C3.26013 8.93248 2.31518 11.2102 2.3125 13.5859C2.3125 23.7031 17.3134 31.8923 17.9522 32.2305C18.1206 32.321 18.3088 32.3685 18.5 32.3685C18.6912 32.3685 18.8794 32.321 19.0478 32.2305C19.6866 31.8923 34.6875 23.7031 34.6875 13.5859C34.6848 11.2102 33.7399 8.93248 32.0599 7.25256C30.38 5.57263 28.1023 4.62768 25.7266 4.625ZM18.5 29.8891C15.8609 28.3512 4.625 21.3458 4.625 13.5859C4.62729 11.8234 5.32849 10.1336 6.57482 8.88732C7.82114 7.64099 9.51087 6.93979 11.2734 6.9375C14.0846 6.9375 16.4448 8.43484 17.4305 10.8398C17.5176 11.0519 17.6658 11.2333 17.8562 11.3609C18.0466 11.4886 18.2707 11.5568 18.5 11.5568C18.7293 11.5568 18.9534 11.4886 19.1438 11.3609C19.3342 11.2333 19.4824 11.0519 19.5695 10.8398C20.5552 8.43051 22.9154 6.9375 25.7266 6.9375C27.4891 6.93979 29.1789 7.64099 30.4252 8.88732C31.6715 10.1336 32.3727 11.8234 32.375 13.5859C32.375 21.3343 21.1362 28.3498 18.5 29.8891Z"
-                    fill="black"
-                  ></path>
-                </svg>
                 <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000₫
+                  1,050,000VND
                 </span>
                 <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
               </div>
@@ -373,18 +326,18 @@ checkedItems.forEach((element: { price: number }) => {
               <img src={item?.image} />
               <div>
                 <div className="text-gray-800 pb-3">
-                  Product Name: {item?.productName}
+                  Tên sản phẩm: {item?.productName}
                 </div>
                 <div className="text-gray-500 pb-3">
-                  Price: ${item.initialPrice}
+                  Giá: {item.initialPrice.toLocaleString("vi-VN")}VND
                 </div>
                 <div className="text-gray-500 pb-3">
-                  Total Price: ${item?.price}
+                  Tổng giá: {item?.price.toLocaleString("vi-VN")}VND
                 </div>
                 <div className="text-gray-500">
-                  Size: {item?.size} / Color: {item?.color}
+                  Kích cỡ: {item?.size} / Color: {item?.color}
                 </div>
-                <div className="text-gray-500">Quantity: {item?.quantity}</div>
+                <div className="text-gray-500">Số lượng: {item?.quantity}</div>
               </div>
             </div>
           ))}
@@ -393,8 +346,10 @@ checkedItems.forEach((element: { price: number }) => {
             TÓM TẮT THEO THỨ TỰ
           </div>
           <div className="flex justify-between items-center pt-5">
-            <p className="text-gray-800"> Sản phẩm</p>
-            <span className="text-gray-900">{totalPrice}VND</span>
+            <p className="text-gray-800"> Giá</p>
+            <span className="text-gray-900">
+              {totalPrice.toLocaleString("vi-VN")}VND
+            </span>
           </div>
           <div className="flex justify-between items-center pt-5 border-b pb-2">
             <p className="text-gray-800">Vận chuyển</p>
@@ -402,43 +357,40 @@ checkedItems.forEach((element: { price: number }) => {
           </div>
 
           <div className="pt-5">
-        <input
-          className={`border w-full p-4 ${validCoupon ? "" : "border-red-500"}`}
-          type="text"
-          placeholder="Mã giảm giá"
-          value={discountCode}
-          onChange={(e) => {
-            const enteredCode = e.target.value;
-            const isValidCoupon = coupons.find(
-              (coupon) => coupon.code === enteredCode
-            );
+            <input
+              className={`border w-full p-4 ${
+                validCoupon ? "" : "border-red-500"
+              }`}
+              type="text"
+              placeholder="Mã giảm giá"
+              value={discountCode}
+              onChange={(e) => {
+                const enteredCode = e.target.value;
+                const isValidCoupon = coupons.find(
+                  (coupon) => coupon.code === enteredCode
+                );
 
-            setDiscountCode(enteredCode);
+                setDiscountCode(enteredCode);
 
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              discountCode: isValidCoupon
-                ? ""
-                : "Mã giảm giá không hợp lệ",
-            }));
-          }}
-        />
-        {errors?.discountCode && (
-          <div className="text-red-500 pl-1">{errors?.discountCode}</div>
-        )}
-      </div>
+                setErrors((prevErrors) => ({
+                  ...prevErrors,
+                  discountCode: isValidCoupon ? "" : "Mã giảm giá không hợp lệ",
+                }));
+              }}
+            />
+            {errors?.discountCode && (
+              <div className="text-red-500 pl-1">{errors?.discountCode}</div>
+            )}
+          </div>
 
           <div className="flex justify-between items-center pt-5">
             <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
               Tổng Giá
             </p>
-            <span className="text-gray-900">  {totalPrice} VND</span>
-          </div>
-
-          <div className="mt-10">
-            <div className="font-semibold font-sans leading-10">
-              PHƯƠNG THỨC THANH TOÁN ĐƯỢC CHẤP NHẬN
-            </div>
+            <span className="text-gray-900">
+              {" "}
+              {totalPrice.toLocaleString("vi-VN")} VND
+            </span>
           </div>
           <button
             onClick={() => {
@@ -477,9 +429,25 @@ checkedItems.forEach((element: { price: number }) => {
               </div>
             </div>
           )}
-          <button className="rounded-md  mt-10 border w-full p-2 bg-white text-black hover:text-white hover:bg-black">
-            Đăng Nhập
-          </button>
+          <div className="mt-10">
+            <div className="font-semibold font-sans leading-10">
+              PHƯƠNG THỨC THANH TOÁN ĐƯỢC CHẤP NHẬN
+            </div>
+            <div className="flex pt-2 gap-2">
+              <img
+                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-visa.svg"
+                alt=""
+              />
+              <img
+                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-master-card.svg"
+                alt=""
+              />
+              <img
+                src="https://www.adidas.com.vn/static/checkout/react/e941f98/assets/img/payment-methods/icon-adidas-cash-on-delivery.svg"
+                alt=""
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>

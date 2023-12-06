@@ -1,4 +1,5 @@
 export interface IOrder {
+  orderTime: string | number | Date;
     _id: string | number | undefined; 
   userName: string,
   userEmail: string,
@@ -15,7 +16,6 @@ export interface IOrder {
   }[],
   orderCode: string,
   status: string,
-  timer: string;
-  totalPrice: string; 
+  totalPrice: number; 
   }
   

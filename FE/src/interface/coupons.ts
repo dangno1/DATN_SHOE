@@ -2,7 +2,7 @@ export interface ICoupons {
   _id?: string | number;
   code: string;
   discountValue: number;
-  quantity: string;
+  quantity: number;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -3,65 +3,19 @@ import { useGetColorsQuery } from "@/api/color";
 import { useGetProductQuery, useRemoveProductMutation } from "@/api/product";
 import { useGetSizesQuery } from "@/api/size";
 import { Button, Image, Popconfirm, message } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-// type ImageType = { files: File[]; url: string[] } | null;
+// import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 const DetailProduct = () => {
   const { id } = useParams(); // Giả sử bạn sử dụng React Router
   const { data: productData, isLoading } = useGetProductQuery(String(id));
   const { data: sizeData } = useGetSizesQuery();
   const { data: colorData } = useGetColorsQuery();
-  // const { data: categoryData } = useGetCategoryesQuery();
   const navigate = useNavigate();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  useEffect(() => {
-    setCurrentImageIndex(0);
-  }, [id]);
-  if (isLoading) {
-    return <div>Đang tải...</div>;
-  }
-  if (!productData) {
-    return <div>Sản phẩm không tồn tại.</div>;
-  }
-  console.log(productData);
-
-  const updatedAt = new Date(productData.updatedAt);
-  const day = updatedAt.getDate();
-  const month = updatedAt.getMonth() + 1; // Tháng bắt đầu từ 0, cộng thêm 1
-  const year = updatedAt.getFullYear();
-  const hours = updatedAt.getHours();
-  const minutes = updatedAt.getMinutes();
-  const seconds = updatedAt.getSeconds();
-  const daysOfWeek = [
-    "Chủ Nhật",
-    "Thứ Hai",
-    "Thứ Ba",
-    "Thứ Tư",
-    "Thứ Năm",
-    "Thứ Sáu",
-    "Thứ Bảy",
-  ];
-  const dayOfWeek = daysOfWeek[updatedAt.getDay()];
+  useEffect(() => {}, [id]);
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { data: categoryInfo } = useGetCategoryQuery(productData.categoryId);
-
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : productData.thumbnail.length - 1
-    );
-  };
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex < productData.thumbnail.length - 1 ? prevIndex + 1 : 0
-    );
-  };
-  const imagesToShow = productData.thumbnail.slice(
-    currentImageIndex,
-    currentImageIndex + 5
-  );
+  const { data: categoryInfo } = useGetCategoryQuery(productData?.categoryId);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [deleteProduct] = useRemoveProductMutation();
 
@@ -76,212 +30,182 @@ const DetailProduct = () => {
       message.error("Đã xảy ra lỗi khi xóa sản phẩm");
     }
   };
-
+  if (isLoading) {
+    return <div>Đang tải...</div>;
+  }
+  if (!productData) {
+    return <div>Sản phẩm không tồn tại.</div>;
+  }
+  console.log(productData);
   return (
+
     <>
-      <div className="p-5">
-        <h4 className="mb-8 font-bold text-3xl uppercase text-slate-700 ">
+      <div className="p-5 rounded-lg">
+        <h4 className="mb-8 font-bold text-3xl uppercase text-slate-700">
           Thông tin chi tiết sản phẩm
         </h4>
-        <div className="overflow-x-auto bg-white rounded-lg">
-          <table className="min-w-full">
-            <thead>
-              <tr>
-                <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Hình ảnh</div>
-                </th>
-                <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Tên sản phẩm</div>
-                </th>
-                <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Loại sản phẩm</div>
-                </th>
-                <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Thương hiệu</div>
-                </th>
-                <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Mô tả</div>
-                </th>
-                <th className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">Ngày cập nhật</div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="text-center">
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2 overflow-hidden">
-                    <Image
-                      className="rounded-[10px] bg-slate-300 w-full max-w-[68px] !h-[68px] max-h-[68px] object-cover"
-                      src={String(productData.image)}
-                      alt="image"
-                    />
-                  </div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">{productData.name}</div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">
-                    <div className="p-2">{categoryInfo?.name}</div>
-                  </div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">{productData.brand}</div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2 min-w-[100px] w-max max-w-[500px]">{productData.desc}</div>
-                </td>
-                <td className="w-auto border-b border-r border-gray-300">
-                  <div className="p-2">
-                    {dayOfWeek}, {day}/{month}/{year} {hours}:{minutes}:
-                    {seconds}
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div className="relative overflow-hidden">
-          <h2 className="text-center text-2xl lg:text-3xl xl:text-2xl font-bold mb-4 mt-4">
-            Ảnh sản phẩm
-          </h2>
-
-          <div className="flex space-x-3 w-full relative overflow-x-auto">
-            {imagesToShow.length > 0 && (
-              <button
-                onClick={handlePrevImage}
-                className="absolute top-1/2 transform -translate-y-1/2 right-0 flex items-center justify-center w-10 bg-gray-200"
-              >
-                <BsChevronLeft />
-              </button>
-            )}
-
-            {imagesToShow.map((item, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 w-full max-w-[215px] h-[215px] flex items-center justify-center relative"
-              >
-                <Image
-                  className="rounded-[10px] bg-slate-300 w-full h-full object-cover"
-                  src={String(item)}
-                  alt={`image-${index}`}
-                />
+        <div className="bg-white rounded-lg">
+          <div className="grid grid-cols-3 gap-[20px]  ml-5 rounded-lg ">
+            {/* Bên trái màn hình */}
+            <div className="col-span-2  ">
+              <div className="h-max mb-[20px] mt-5">
+                <label className="text-slate-600 font-semibold">
+                  Tên sản phẩm
+                </label>
+                <div className="flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]">
+                 <div className="ml-3">
+                 {productData.name}
+                 </div>
+                </div>
               </div>
-            ))}
+              <div className=" h-max mb-[20px]">
+                <label className="text-slate-600 font-semibold">
+                  Thương hiệu
+                </label>
+                <div className="flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]">
+                <div className="ml-3">
+                  {productData.brand}
+                  </div>
+                </div>
+              </div>
+              <div className="h-max mb-[20px] space-y-2 ">
+                <label className="text-slate-600 font-semibold">Mô tả</label>
+                <div className="w-full h-[100px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] overflow-x-hidden">
+                <div className="ml-3">
+                  {productData.desc}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            {imagesToShow.length > 0 && (
-              <button
-                onClick={handleNextImage}
-                className="absolute top-1/2 transform -translate-y-1/2 right-0 flex items-center justify-center w-10 bg-gray-200"
+            {/* Bên phải màn hình*/}
+            <div className="col-span-1 mr-5">
+              <div className="mb-4 mt-5">
+                <label className="text-slate-600 font-semibold">
+                  Ngày cập nhật
+                </label>
+                <div className="flex items-center  w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] ">
+                  {/* {dayOfWeek}, {day}/{month}/{year} {hours}:{minutes}:{seconds} */}
+                  <div className="ml-3">
+                  {categoryInfo?.name}
+                  </div>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="text-slate-600 font-semibold">Hình ảnh</label>
+                <div className="w-full h-[100px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] flex items-center justify-center">
+                  <Image
+                    className="rounded-[10px] bg-slate-300  w-full max-w-[130px] !h-[130px] max-h-[90px] object-cover"
+                    src={String(productData.image)}
+                    alt="image"
+                  />
+                </div>
+              </div>
+              <label className="text-slate-600 font-semibold">Album ảnh</label>
+              <div
+                className={`min-h-[300px] h-max border  border-slate-300 p-4 rounded-md mt-[5px]`}
               >
-                <BsChevronRight />
-              </button>
-            )}
+                <div className="w-full max-h-[250px] grid grid-cols-2 gap-3 overflow-auto mt-[10px]">
+                  {productData.thumbnail.map((image, index) => (
+                    <div
+                      key={index}
+                      className="w-full max-w-[200px] h-[120px] grid grid-cols-[85%_auto] border  justify-center border-slate-300 rounded-md overflow-hidden"
+                    >
+                      <Image
+                        className="w-full h-full object-cover rounded-l-md"
+                        src={String(image)}
+                        alt={`image-${index}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="relative overflow-hidden w-full">
-          <h2 className="text-center text-2xl lg:text-3xl xl:text-2xl font-bold mb-4 mt-4">
-            Biến thể
-          </h2>
-          <div className="bg-white rounded-lg w-full">
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">STT</div>
-                  </th>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">Màu</div>
-                  </th>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">Kích cỡ</div>
-                  </th>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">Giá gốc</div>
-                  </th>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">Giá bán</div>
-                  </th>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">Số lượng</div>
-                  </th>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">Số lượng đã bán</div>
-                  </th>
-                  <th className="w-auto border-b border-r border-gray-300">
-                    <div className="p-2">Trạng thái</div>
-                  </th>
-                </tr>
-              </thead>
-              {productData.variants.map((variant, index) => (
-                <tbody>
-                  <tr className="text-center">
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">{index + 1}</div>
-                    </td>
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">
+          {/* Biến thể  */}
+          <div className="h-max col-span-3 relative mt-10">
+            <label className="text-slate-600 font-semibold ml-5">
+              Sản phẩm biến thể
+            </label>
+            <div className="before:w-full before:h-[1px] before:bg-slate-300 before:absolute mt-2">
+              {productData.variants.map((variant) => (
+                <div className="rounded-[5px] grid grid-cols-[95%_auto] gap-2 place-items-center p-2 pt-5 mb-[10px] ml-4">
+                  <div className="w-full grid grid-cols-5 gap-4">
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">
+                        Kích cỡ
+                      </label>
+                      <div
+                        className={`flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full`}
+                      >
+                        {sizeData?.find((s) => s._id === variant.sizeId)?.value}
+                      </div>
+                    </div>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">
+                        Màu sắc
+                      </label>
+                      <div
+                        className={`flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full`}
+                      >
                         {
                           colorData?.find((c) => c._id === variant.colorId)
                             ?.value
                         }
                       </div>
-                    </td>
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">
-                        {sizeData?.find((s) => s._id === variant.sizeId)?.value}
+                    </div>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">
+                        Giá gốc
+                      </label>
+                      <div
+                        className={`flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full`}
+                      >
+                        {variant.price}
                       </div>
-                    </td>
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">{variant.discount}</div>
-                    </td>
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">
-                        <div className="p-2">{variant.price}</div>
+                    </div>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">
+                        Giá khuyến mãi
+                      </label>
+                      <div
+                        className={`flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full`}
+                      >
+                        {variant.discount}
                       </div>
-                    </td>
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">
-                        <div className="p-2">{variant.quantity}</div>
+                    </div>
+                    <div className="w-full h-max">
+                      <label className="text-slate-600 font-semibold">
+                        Số lượng
+                      </label>
+                      <div
+                        className={`flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full`}
+                      >
+                        {variant.quantity}
                       </div>
-                    </td>
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">
-                        <div className="p-2">{variant.amountSold}</div>
-                      </div>
-                    </td>
-                    <td className="w-auto border-b border-r border-gray-300">
-                      <div className="p-2">
-                        {variant.status === 0 ? (
-                          <div className="text-red-500">Hết hàng</div>
-                        ) : (
-                          <div className="text-green-500">Còn hàng</div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </table>
+            </div>
           </div>
-        </div>
+          <div className="flex justify-end mt-3">
+            <Popconfirm
+              title="Bạn có chắc muốn xóa sản phẩm này?"
+              onConfirm={handleDeleteProduct}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button danger>Xóa</Button>
+            </Popconfirm>
 
-        <div className="flex justify-end mt-3">
-          <Popconfirm
-            title="Bạn có chắc muốn xóa sản phẩm này?"
-            onConfirm={handleDeleteProduct}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button danger>Xóa</Button>
-          </Popconfirm>
-
-          <Button className="bg-black text-white" style={{ marginLeft: "8px" }}>
-            <Link to={`/admin/product/update/${id}`}>Cập nhật</Link>
-          </Button>
+            <Button
+              className="bg-black text-white mb-3 mr-4"
+              style={{ marginLeft: "8px" }}
+            >
+              <Link to={`/admin/product/update/${id}`}>Cập nhật</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </>
