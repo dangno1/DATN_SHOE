@@ -26,7 +26,6 @@ const DetailProduct = () => {
       message.success("Xóa sản phẩm thành công");
       navigate("/admin/product");
     } catch (error) {
-      console.error("Lỗi khi xóa sản phẩm", error);
       message.error("Đã xảy ra lỗi khi xóa sản phẩm");
     }
   };
@@ -38,7 +37,6 @@ const DetailProduct = () => {
   }
   console.log(productData);
   return (
-
     <>
       <div className="p-5 rounded-lg">
         <h4 className="mb-8 font-bold text-3xl uppercase text-slate-700">
@@ -53,9 +51,7 @@ const DetailProduct = () => {
                   Tên sản phẩm
                 </label>
                 <div className="flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]">
-                 <div className="ml-3">
-                 {productData.name}
-                 </div>
+                  <div className="ml-3">{productData.name}</div>
                 </div>
               </div>
               <div className=" h-max mb-[20px]">
@@ -63,17 +59,13 @@ const DetailProduct = () => {
                   Thương hiệu
                 </label>
                 <div className="flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]">
-                <div className="ml-3">
-                  {productData.brand}
-                  </div>
+                  <div className="ml-3">{productData.brand}</div>
                 </div>
               </div>
               <div className="h-max mb-[20px] space-y-2 ">
                 <label className="text-slate-600 font-semibold">Mô tả</label>
                 <div className="w-full h-[100px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] overflow-x-hidden">
-                <div className="ml-3">
-                  {productData.desc}
-                  </div>
+                  <div className="ml-3">{productData.desc}</div>
                 </div>
               </div>
             </div>
@@ -86,16 +78,15 @@ const DetailProduct = () => {
                 </label>
                 <div className="flex items-center  w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] ">
                   {/* {dayOfWeek}, {day}/{month}/{year} {hours}:{minutes}:{seconds} */}
-                  <div className="ml-3">
-                  {categoryInfo?.name}
-                  </div>
+                  <div className="ml-3">{categoryInfo?.name}</div>
                 </div>
               </div>
               <div className="mb-4">
                 <label className="text-slate-600 font-semibold">Hình ảnh</label>
                 <div className="w-full h-[100px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] flex items-center justify-center">
                   <Image
-                    className="rounded-[10px] bg-slate-300  w-full max-w-[130px] !h-[130px] max-h-[90px] object-cover"
+                    className="rounded-[10px] bg-slate-300 w-full h-full object-cover"
+                    style={{ maxHeight: "90px" }} // Tối đa chiều cao cho ảnh
                     src={String(productData.image)}
                     alt="image"
                   />
@@ -109,7 +100,8 @@ const DetailProduct = () => {
                   {productData.thumbnail.map((image, index) => (
                     <div
                       key={index}
-                      className="w-full max-w-[200px] h-[120px] grid grid-cols-[85%_auto] border  justify-center border-slate-300 rounded-md overflow-hidden"
+                      className="w-full max-w-[200px] h-[120px] grid grid-cols-[85%_auto] border justify-center border-slate-300 rounded-md overflow-hidden"
+                      style={{ display: "flex", alignItems: "center" }} // Thêm style này để căn giữa hình ảnh
                     >
                       <Image
                         className="w-full h-full object-cover rounded-l-md"

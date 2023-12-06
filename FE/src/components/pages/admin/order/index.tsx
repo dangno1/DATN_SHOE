@@ -200,7 +200,7 @@ const Index = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                    {filteredOrders?.map((order, index) => (
+                    {filteredOrders?.reverse().map((order, index) => (
                       <tr key={order._id}>
                         <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                           <div className="inline-flex items-center gap-x-3">
