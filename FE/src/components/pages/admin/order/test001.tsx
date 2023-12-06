@@ -1,5 +1,6 @@
 import {
   useGetOrdersQuery,
+  useSendEmailMutation,
   useUpdateOrderAdminMutation,
 } from "@/api/orderedProduct";
 import { SetStateAction, useState } from "react";
@@ -8,6 +9,7 @@ import { notification } from "antd";
 type NotificationType = "success" | "info" | "warning" | "error";
 
 const Test001 = () => {
+  const [ sendEmail ] = useSendEmailMutation();
   const { data: orders } = useGetOrdersQuery();
   const { id } = useParams();
   const [updateOrder] = useUpdateOrderAdminMutation();
@@ -23,35 +25,47 @@ const Test001 = () => {
     setSelectedStatus(e.target.value);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const openNotification = (type: NotificationType, message: string) => {
       api[type]({
         message: "Thông báo",
         description: message,
       });
     };
-
-    if (selectedStatus == data?.[0]?.status) {
+  
+    if (selectedStatus === data?.[0]?.status) {
       openNotification("error", "Bạn Chưa Thay Đổi Trạng Thái");
     } else {
-      updateOrder({
-        _id: id,
-        status: selectedStatus,
-        userName: data?.[0]?.userName,
-        userEmail: data?.[0]?.userEmail,
-        userAddress: data?.[0]?.userAddress,
-        productName: "",
-        quantity: 0,
-        price: 0,
-        initialPrice: 0,
-        totalPrice: 0,
-        category: "",
-        image: "",
-        color: "",
-      });
-      openNotification("success", "Thanh Đổi Trạng Thái Thành Công");
+      try {
+        // Update order
+        await updateOrder({
+          _id: id,
+          status: selectedStatus,
+          userName: data?.[0]?.userName,
+          userEmail: data?.[0]?.userEmail,
+          userAddress: data?.[0]?.userAddress,
+          productName: "",
+          quantity: 0,
+          price: 0,
+          initialPrice: 0,
+          totalPrice: 0,
+          category: "",
+          image: "",
+          color: "",
+        });
+  
+        await sendEmail({
+          userEmail: data?.[0]?.userEmail,
+          status: selectedStatus,
+        }).unwrap();
+        openNotification("success", "Thanh Đổi Trạng Thái Thành Công");
+      } catch (error) {
+        console.error("Error updating order:", error);
+        openNotification("error", "Error updating order");
+      }
     }
   };
+  
 
   return (
     <>
