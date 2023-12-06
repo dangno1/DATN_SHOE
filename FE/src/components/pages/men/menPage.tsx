@@ -1,10 +1,8 @@
 import { useGetCategoryQuery } from "@/api/category";
 import { IProduct } from "@/interface/product";
 import { useEffect, useState } from "react";
-import { BsBagPlus } from "react-icons/bs";
 import { useParams } from "react-router-dom";
-import Social from "../home/social";
-import Blog from "../home/blog";
+import Blog from "../home/Blog/index";
 import { Link } from "react-router-dom";
 const Men = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,8 +11,6 @@ const Men = () => {
   const { data } = useGetCategoryQuery(id || "");
   console.log(data);
   
-
-
   const images = [
     "https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2018%2F03%2Fsneakersnstuff-adidas-originals-eqt-adv-pack-3.jpg",
     "https://images.complex.com/complex/images/c_crop,h_1661,w_2952,x_0,y_241/c_fill,dpr_auto,f_auto,q_90,w_1400/fl_lossy,pg_1/ykecu4gwvrpyc5ylrdhf/jalen-green-eric-emanuel-adidas",
@@ -130,16 +126,12 @@ const Men = () => {
                     {product?.variants[0].price.toLocaleString('vi-VN')} VND
                     </p>
                   </del>
-                  <div className="ml-auto font-bold text-2xl">
-                    <BsBagPlus />
-                  </div>
                 </div>
               </div>
             </Link>
           </div>
         ))}
       </section>
-      <Social/>
       <Blog/>
     </>
   );

@@ -1,20 +1,22 @@
 import Slider from "./banner";
-import ProductList from "./productList";
-import Social from "./social";
-import Seller from "./sellers";
-import Banner1 from "./banner1";
+// import ProductList from "./productList";
+import Social from "./social products/index";
+// import Seller from "./sellers";
+import Banner1 from "./banner1/banner1";
 import ProductList2 from "./productList2";
-import Blog from "./blog";
+import Blog from "./Blog/index";
+import Seller from "./outstanding products";
 
 const HomePage = () => {
   return (
     <div>
       <Slider />
       <Seller />
-      <ProductList />
-      <Banner1 />
+      <Social/>
+      {/* <ProductList /> */}
       <ProductList2 />
-      <Social />
+      <Banner1 />
+      {/* <Social /> */}
       <Blog />
     </div>
   );

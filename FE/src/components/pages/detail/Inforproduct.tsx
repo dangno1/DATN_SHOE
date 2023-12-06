@@ -10,7 +10,7 @@ import { Navigation } from 'swiper/modules';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useCreateCartMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
-import { message } from "antd";
+import { notification } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
 import { useGetRateQuery } from "@/api/rating";
@@ -39,6 +39,18 @@ const Inforproduct = () => {
   const [selectedColor, setSelectedColor] = useState<IColor | undefined>();
   const [selectedSize, setSelectedSize] = useState<ISize | undefined>(sizeData?.[0]);
 
+  type NotificationType = 'success' | 'info' | 'warning' | 'error';
+  const [notificationVisible, setNotificationVisible] = useState(false);
+
+  const openNotification = (type: NotificationType, message: string) => {
+    setNotificationVisible(true);
+    notification[type]({
+      message: 'Thông báo',
+      description: message,
+      onClose: () => setNotificationVisible(false), // Hide notification when closed
+    });
+  };
+
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (user) {
@@ -46,34 +58,53 @@ const Inforproduct = () => {
       setUserData(userData);
     }
   }, []);
+  //render số lượng sản phẩm trong kho theo biến thể
+  const [selectedVariant, setSelectedVariant] = useState<IProduct['variants'][0] | undefined>(variants?.[0]);
+  useEffect(() => {
+    if (selectedSize && selectedColor) {
+      const matchingVariant = variants?.find(
+        (variant) =>
+          variant.sizeId === selectedSize._id &&
+          variant.colorId === selectedColor._id
+      );
+      setSelectedVariant(matchingVariant);
+    }
+  }, [selectedSize, selectedColor, variants]);
+  //hết code render số lượng sản phẩm trong kho theo biến thể
+  //validate điều kiện add cart
   const navigate = useNavigate();
   const handleAddCar = async () => {
     if (!userData.username || !userData.email || !userData.address) {
-      message.
-        error({
-          content: "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.",
-          duration: 5,
-        });
+      openNotification('error', "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.");
       setTimeout(() => {
         navigate("/signup");
       }, 2000);
       return;
     }
     if (!selectedColor) {
-      message.error({
-        content: "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng.",
-        duration: 3,
-      });
+      openNotification('error', "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng");
       return;
     }
     if (!selectedSize) {
-      message.error({
-        content: "Vui lòng chọn size trước khi thêm vào giỏ hàng.",
-        duration: 3,
-      });
+      openNotification('error', "Vui lòng chọn size trước khi thêm vào giỏ hàng.");
       return;
     }
     if (productData && selectedColor && selectedSize) {
+      if (selectedVariant?.quantity !== undefined) {
+        if (selectedVariant.quantity <= 0) {
+          openNotification('error', "Sản phẩm đã hết hàng. Vui lòng chọn một biến thể khác.");
+          return;
+        }
+
+
+        if (amount > selectedVariant.quantity) {
+          openNotification('error', "Số lượng sản phẩm trong giỏ hàng vượt quá số lượng có sẵn trong kho.");
+          return;
+        }
+      } else {
+        openNotification('error', "Sản phẩm không có sẵn trong kho. Vui lòng chọn một biến thể khác.");
+        return;
+      }
       const productToAdd: ICart = {
         userName: userData.fullname,
         userEmail: userData.email,
@@ -83,25 +114,26 @@ const Inforproduct = () => {
         price: productData.variants[0].price,
         initialPrice: productData.variants[0].price,
         size: selectedSize.value,
-        totalPrice: 300000,
+        totalPrice: amount * productData.variants[0].price,
         category: productData.categoryId,
         image: String(productData.image),
         color: selectedColor.value,
         status: String(productData.variants[0].status),
-
         productID: String(productData?._id),
-
       };
+
       const data = await addCart(productToAdd);
-      message.info("Đã thêm sản phẩm vào giỏ hàng thành công")
-      data && setTimeout(() => {
+      if (data) {
+        openNotification('success', "Đã thêm sản phẩm vào giỏ hàng thành công");
         navigate("/cart");
-      }, 2000);
-      console.log(data);
+      } else {
+        console.error("Error adding to cart:", data);
+      }
     } else {
       console.error("productData is not defined.");
     }
   };
+  //hết code addCart
 
   const [images, setImage] = useState<(File | File[] | undefined)[]>()
   useEffect(() => {
@@ -128,9 +160,7 @@ const Inforproduct = () => {
   const calculateAverageStarsFromPath = (starsData, idFromPath) => {
     let totalStars = 0;
     let numberOfRatings = 0;
-
-    const stars = starsData?.data?.filter((item: any) => item.productID._id === id);
-
+    const stars = starsData?.data?.filter((item: any) => item.productID?._id === id);
     if (stars && Array.isArray(stars)) {
       stars.forEach((item) => {
         if (item && item.stars) {
@@ -152,6 +182,7 @@ const Inforproduct = () => {
   console.log('Average Stars:', averageStars);
   return (
     <div>
+      {notificationVisible}
       <section className="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800">
         {isLoading ? (
           <p>Loading...</p>
@@ -160,32 +191,32 @@ const Inforproduct = () => {
             <div className="container ">
               <div className="grid grid-cols-[3fr,1fr]">
                 <div className=" px-4 max-w-6xl">
-                    <div className="image_one relative mb-6 lg:mb-10 ">
-                      <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-                        {images?.map((item: any, index: number) => (
-                          <SwiperSlide key={index}>
-                            <img
-                              src={item}
-                              alt=""
-                              onClick={() => handleImageClick(index + 1)} // Tăng ID bằng 1 để từ 1, 2, 3, ...
-                            />
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    </div>
-                    <div className="flex-wrap hidden md:flex ml-20">
+                  <div className="image_one relative mb-6 lg:mb-10 ">
+                    <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
                       {images?.map((item: any, index: number) => (
-                        <div key={item} className="w-1/2 p-2 sm:w-1/4">
-                          <a
-                            href="#"
-                            className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
-                            onClick={() => handleImageClick(index + 1)}
-                          >
-                            <img src={item} alt="" className="object-cover w-full" />
-                          </a>
-                        </div>
+                        <SwiperSlide key={index}>
+                          <img
+                            src={item}
+                            alt=""
+                            onClick={() => handleImageClick(index + 1)} // Tăng ID bằng 1 để từ 1, 2, 3, ...
+                          />
+                        </SwiperSlide>
                       ))}
-                    </div>
+                    </Swiper>
+                  </div>
+                  <div className="flex-wrap hidden md:flex ml-20">
+                    {images?.map((item: any, index: number) => (
+                      <div key={item} className="w-1/2 p-2 sm:w-1/4">
+                        <a
+                          href="#"
+                          className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
+                          onClick={() => handleImageClick(index + 1)}
+                        >
+                          <img src={item} alt="" className="object-cover w-full" />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className="w-full">
                   <div className="">
@@ -202,7 +233,6 @@ const Inforproduct = () => {
                           width="22"
                           height="22"
                           viewBox="0 0 22 22"
-                          // fill={index + 1 <= (hoverRating || rating) ? "yellow" : "none"}
                           fill="yellow"
                           stroke="black"
                           strokeWidth="1.5"
@@ -229,9 +259,9 @@ const Inforproduct = () => {
                           <h2 className="text-lg font-bold text-gray-700 dark:text-gray-400">Vận chuyển</h2>
                         </div>
                         <ul>
-                            <li className="text-cyan-400 font-thin">Giao hàng nhanh</li>
-                            <li className="text-cyan-400 font-thin">Đổi trả trong 30 ngày</li>
-                          </ul>
+                          <li className="text-cyan-400 font-thin">Giao hàng nhanh</li>
+                          <li className="text-cyan-400 font-thin">Đổi trả trong 30 ngày</li>
+                        </ul>
                       </div>
                     </div>
                     <div className="flex items-center mb-5 mt-5">
@@ -262,6 +292,20 @@ const Inforproduct = () => {
                         ))}
                       </div>
                     </div>
+                    <div className="flex items-center mb-8">
+                      <h2 className="w-18 mr-6 text-lg font-bold dark:text-gray-400">Số Lượng Sản Phẩm Trong Kho : </h2>
+                      <div className="flex flex-wrap -mx-2 -mb-2">
+                        {selectedVariant?.quantity !== undefined ? (
+                          selectedVariant.quantity <= 0 ? (
+                            <span className="text-gray-500">Hết hàng</span>
+                          ) : (
+                            <span>{selectedVariant.quantity}</span>
+                          )
+                        ) : (
+                          <span className="text-gray-500">Sản phẩm hết hàng</span>
+                        )}
+                      </div>
+                    </div>
                     <div className="w-max mb-5 flex items-center gap-5">
                       <div className=" w-full font-bold leading-6 text-black  font-roboto">Số Lượng:</div>
                       <div className="relative flex flex-row w-28 h-10 mt-1 bg-transparent rounded-lg">
@@ -288,12 +332,16 @@ const Inforproduct = () => {
                     </div>
                     <div className="flex flex-wrap items-center -mx-4">
                       <div className="w-full px-4 mb-4  lg:mb-0">
+
                         <button
-                          className="flex items-center justify-center w-full p-4 text-white  bg-cyan-400  rounded-md dark:text-gray-200 dark:border-black hover:bg-black hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300"
+                          disabled={selectedVariant?.quantity <= 0}
+                          className={`flex items-center justify-center w-full p-3  text-blue-500 border ${selectedVariant?.quantity <= 0 ? 'border-gray-300 text-gray-300 cursor-not-allowed' : 'border-blue-500'} rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover-bg-blue-700 dark:hover-border-blue-700 dark:hover-text-gray-300`}
                           onClick={() => handleAddCar()}
                         >
                           Thêm vào giỏ hàng<AiOutlineShoppingCart />
                         </button>
+
+
                       </div>
                     </div>
                   </div>

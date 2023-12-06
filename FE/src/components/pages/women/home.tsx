@@ -1,7 +1,7 @@
 import Slider from "./banner";
 import WomenList from "./womenList";
-import Blog from "../home/blog";
-import Social from "../home/social";
+import Blog from "../home/Blog/index";
+// import Social from "../home/social";
 import Socials from "./socials";
 
 const Women = () => {
@@ -10,7 +10,7 @@ const Women = () => {
       <Slider />
       <Socials />
       <WomenList />
-      <Social/>
+      {/* <Social/> */}
       <Blog/>
     </div>
   );

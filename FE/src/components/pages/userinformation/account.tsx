@@ -13,6 +13,7 @@ import { useChangePasswordMutation, useUpdateUserMutation } from "@/api/auth";
 import { IUser } from "@/interface/auth";
 import { changePasswordSchema, updateUserSchema } from "@/schemas/user";
 import { notification } from "antd";
+import { CiLogin } from 'react-icons/ci';
 type NotificationType = "success" | "info" | "warning" | "error";
 const Account = () => {
   const [updateUser] = useUpdateUserMutation();
@@ -136,46 +137,37 @@ const Account = () => {
 
   return (
     <>
-      <div>
-        <div className="max-w-screen-2xl mx-auto p-14 ">
-          <h4 className="font-bold text-2xl align-items-center pb-5">
-            THÔNG TIN CỦA TÔI
+    <div>
+      <div className="max-w-screen-2xl mx-auto p-14 ">
+        <div className="col-s-12">
+          <h4 className="customSpacing___7RI69 gl-heading-font-set-standard-14___1p8HS font-bold text-xl pb-5 pt-3">
+            THÔNG TIN CHI TIẾT
           </h4>
-          <p className="col-s-12">
-            Hãy chỉnh sửa bất kỳ thông tin chi tiết nào bên dưới để tài khoản
-            của bạn luôn được cập nhật.
-          </p>
+          {userData ? (
+          <div className="info-item align-items-center">
+            {/* <label>Fullname</label> */}
+            <div className='flex'><h2 className='px-2 font-bold '>Họ và Tên: </h2>{userData.fullname}</div>
+            {/* <label>Username</label> */}
+            <div className='flex'><h2 className='px-2 font-bold'>Tên Tài Khoản:</h2>{userData.username}</div>
+            {/* <label>Phone</label> */}
+            <div className='flex'> <h2 className='px-2 font-bold'>Số Điện Thoại:</h2>{userData.phone}</div>
+            {/* <label>Address</label> */}
+            <div className='flex'> <h2 className='px-2 font-bold'>Địa Chỉ:</h2>{userData.address}</div>
+            <Button className="text-blue-500 cursor-pointer" onClick={()=> {
+              setOpenDialog(true)
+              setOpenForm("infor")
+            }}>
+            Chỉnh sửa
+            </Button>
+          </div>
+          ):(
+            <p>Không có thông tin người dùng để hiển thị.</p>
+          )}
           <br />
           <hr />
-          <div className="col-s-12">
-            <h4 className="customSpacing___7RI69 gl-heading-font-set-standard-14___1p8HS font-bold text-xl pb-5 pt-3">
-              THÔNG TIN CHI TIẾT
-            </h4>
-            {userData ? (
-              <div className="info-item align-items-center">
-                {/* <label>Fullname</label> */}
-                <div>{userData.fullname}</div>
-                {/* <label>Username</label> */}
-                <div>{userData.username}</div>
-                {/* <label>Phone</label> */}
-                <div>{userData.phone}</div>
-                {/* <label>Address</label> */}
-                <div>{userData.address}</div>
-                <Button
-                  className="text-blue-500 cursor-pointer"
-                  onClick={() => {
-                    setOpenDialog(true);
-                    setOpenForm("infor");
-                  }}
-                >
-                  Chỉnh sửa
-                </Button>
-              </div>
-            ) : (
-              <p>Không có thông tin người dùng để hiển thị.</p>
-            )}
-            <br />
-            <hr />
+          <div>
+            <h4 className="font-bold text-xl pt-5 pb-3">CHI TIẾT ĐĂNG NHẬP</h4>
+            <div className='flex'> <h2 className='px-2 font-bold'>Email:</h2>{userData?.email}</div>
             <div>
               <h4 className="font-bold text-xl pt-5 pb-3">
                 CHI TIẾT ĐĂNG NHẬP
@@ -236,6 +228,25 @@ const Account = () => {
               </span>
             </button>
           </div>
+
+          <br /> <br />
+          <hr />
+          <div>
+            <h5 className="font-bold text-xl pt-5 pb-3">
+              Đăng xuất khỏi trình duyệt web
+            </h5>
+            <span>
+              Thao tác này sẽ giúp bạn đăng xuất khỏi tất cả các trình duyệt web
+              mà bạn đã sử dụng để truy cập vào trang web của adidas
+            </span>
+ 
+            <span>
+              . Để đăng nhập lại, bạn sẽ phải nhập thông tin đăng nhập của mình.
+            </span>
+          </div>
+          <button className="col-s-12 col-m-6">
+            <span onClick={handleLogout} className=" flex items-center gl-icon__wrapper text-red-500 cursor-pointer font-bold"> <CiLogin /> Đăng xuất </span>
+          </button>
         </div>
         <br /> <br />
         <br />

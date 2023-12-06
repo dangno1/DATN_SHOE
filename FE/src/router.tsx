@@ -32,17 +32,19 @@ import Test001 from "./components/pages/admin/order/test001";
 import CommentAdmin from "./features/comment/components/list";
 import Statistical from "./features/statistical/statistical";
 import Test002 from "./features/statistical/statisticalDetail";
+import LayoutTest from "./components/pages/home/layoutUndefine/layoutTest";
 import ListBrand from "./features/brand/components/list";
 
 
 
 
-export const router = createBrowserRouter([
 
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <LayoutWebsite />,
     children: [
+      { path: "/undefined/:id", element: <LayoutTest /> },
       { index: true, element: <HomePage /> },
       { path: "detail/:id", element: <Detail /> },
       { path: "Men/:id", element: <Men /> },
