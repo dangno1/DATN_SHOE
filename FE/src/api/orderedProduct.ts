@@ -42,7 +42,6 @@ const orderedProductApi = createApi({
         return response.data;
       },
     }),
-
     updateOrderAdmin: builder.mutation<ICart, ICart>({
       query: (orderProduct) => {
         return {
@@ -51,6 +50,14 @@ const orderedProductApi = createApi({
           body: { ...orderProduct, _id: undefined },
         };
       },
+      invalidatesTags: ["OrderedProduct"],
+    }),
+    sendEmail: builder.mutation<void, void>({
+      query: (dataSend) => ({
+        url: `/sendEmail`,
+        method: "POST",
+        body: dataSend,
+      }),
       invalidatesTags: ["OrderedProduct"],
     }),
   }),
@@ -64,4 +71,5 @@ export const {
   useUpdateorderMutation,
   useCheckoutMutation,
   useUpdateOrderAdminMutation,
+  useSendEmailMutation
 } = orderedProductApi;
