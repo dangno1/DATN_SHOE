@@ -15,6 +15,7 @@ import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
 import { useGetRateQuery } from "@/api/rating";
 
+
 const Inforproduct = () => {
   const { id } = useParams<{ id: string }>();
   const { data: sizeData } = useGetSizesQuery()
@@ -102,7 +103,7 @@ const Inforproduct = () => {
           return;
         }
       } else {
-        openNotification('error', "Sản phẩm không có sẵn trong kho. Vui lòng chọn một biến thể khác.");
+        openNotification('error', "Sản phẩm không có sẵn trong kho. Vui lòng chọn sản phẩm khác.");
         return;
       }
       const productToAdd: ICart = {
@@ -135,11 +136,12 @@ const Inforproduct = () => {
   };
   //hết code addCart
 
-  const [images, setImage] = useState<(File | File[] | undefined)[]>()
+  const [images, setImages] = useState<string[]>([]);
+
   useEffect(() => {
-    const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])]
-    setImage(listImage)
-  }, [productData])
+    const listImage = [productData?.image, ...(productData?.thumbnail ? productData.thumbnail : [])].filter(Boolean);
+    setImages(listImage.map(String));
+  }, [productData]);
 
   const [activeImgId, setActiveImageId] = useState(1);
 
@@ -193,7 +195,7 @@ const Inforproduct = () => {
                 <div className=" px-4 max-w-6xl">
                   <div className="image_one relative mb-6 lg:mb-10 ">
                     <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-                      {images?.map((item: any, index: number) => (
+                      {images?.map((item, index: number) => (
                         <SwiperSlide key={index}>
                           <img
                             src={item}
@@ -204,28 +206,38 @@ const Inforproduct = () => {
                       ))}
                     </Swiper>
                   </div>
-                  <div className="flex-wrap hidden md:flex ml-20">
-                    {images?.map((item: any, index: number) => (
-                      <div key={item} className="w-1/2 p-2 sm:w-1/4">
+                  <div className="flex-wrap hidden md:flex ml-14">
+                    {images?.map((item, index: number) => (
+                      <div key={item} className=" p-8 ">
                         <a
                           href="#"
-                          className="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
+                          className="block border-box border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300"
                           onClick={() => handleImageClick(index + 1)}
                         >
-                          <img src={item} alt="" className="object-cover w-full" />
+                          <img
+                            src={item}
+                            alt=""
+                            className="object-cover w-full"
+                            style={{ height: '180px', width: '180px' }}
+                          />
                         </a>
                       </div>
                     ))}
                   </div>
+
+
+
                 </div>
                 <div className="w-full">
                   <div className="">
                     <div className="mb-8">
-                      <span className="text-lg font-medium text-rose-500 dark:text-rose-200 uppercase">{productData.brand}</span>
+                      {/* <span className="text-lg font-medium text-rose-500 dark:text-rose-200 uppercase">{productData.brandId}</span> */}
                       <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl uppercase">{productData.name}</h2>
                       <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
-                        <span>{productData.variants[0].discount.toLocaleString("vi-VN")}VND</span>
-                        <span className="text-base font-normal text-red-500 line-through dark:text-gray-400">{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
+                        <span>{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
+                        <span className="ml-2 text-base font-normal text-red-500 line-through dark:text-gray-400">
+                          {productData.variants[0].discount.toLocaleString("vi-VN")}VND
+                        </span>
                       </p>
                       <div className="mr-7 flex flex-wrap items-center">
                         <svg
