@@ -1,16 +1,16 @@
 import { useGetProductsQuery } from "@/api/product";
 import { useEffect, useState } from "react";
 import Slider from "./banner";
-import Social from "./social";
-import Blog from "./blog";
-import { useGetColorQuery, useGetColorsQuery } from "@/api/color";
-import { useGetSizeQuery, useGetSizesQuery } from "@/api/size";
-import { BsBagPlus } from "react-icons/bs";
+import {  useGetColorsQuery } from "@/api/color";
+import {  useGetSizesQuery } from "@/api/size";
 import { useGetCategoryesQuery } from "@/api/category";
 import { Link } from "react-router-dom";
 import { IProduct } from "@/interface/product";
+import Blog from "./Blog/index";
+import "./outstanding products/style.css"
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
+  // console.log(data); 
   const { data: Color } = useGetColorsQuery();
   const { data: Size } = useGetSizesQuery();
   const [productData, setProductData] = useState<IProduct[]>(data); //dùng chung
@@ -89,54 +89,7 @@ const Products = () => {
       setProductData(sortedArray);
     }
   };
-  // const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchQuery(event.target.value);
-  // };
-
-  // const filteredProducts = (productData || []).filter((product) => product.name.toLowerCase().includes(searchQuery.toLowerCase())).sort((a, b) => {
-  //     if (sortOrder === "asc") {
-  //       return a.variants[0].price - b.variants[0].price;
-  //     } else {
-  //       return b.variants[0].price - a.variants[0].price;
-  //     }
-  //   });
-  // const [filter, setFilter] = useState({
-  //   price: "",
-  //   color: "",
-  //   size: "",
-  //   search: "",
-  // });
-  // const [filteredProducts, setFilteredProducts] = useState([]);
-
-  // useEffect(() => {
-  //   if (data) {
-  //     // Áp dụng bộ lọc vào danh sách sản phẩm
-  //     let filtered = [...data];
-  //     if (filter.search) {
-  //       filtered = filtered.filter((product) =>
-  //         product.name.toLowerCase().includes(filter.search.toLowerCase())
-  //       );
-  //     setFilteredProducts(filtered);
-  //     }
-  //   }
-  // }, [data, filter]);
-
-  // const handleFilterChange = (event: any) => {
-  //   const { name, value } = event.target;
-  //   setFilter({
-  //     ...filter,
-  //     [name]: value,
-  //   });
-  // };
-
-  // const clearFilters = () => {
-  //   setFilter({
-  //     price: "",
-  //     color: "",
-  //     size: "",
-  //     search: "",
-  //   });
-  // };
+ 
 
   return (
     <>
@@ -144,7 +97,7 @@ const Products = () => {
       <div className="2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
         <div className="lg:flex lg:items-center lg:justify-between md:flex md:items-center md:justify-between flex flex-col items-center justify-center">
           <div className="lg:items-center lg:text-center lg:gap-12 md:mb-4 lg:mb-0 mb-4">
-            <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl uppercase mb-3">
+            <h2 className="text-2xl  text-gray-800 lg:text-3xl uppercase mb-3 underline">
               Tất cả sản phẩm
             </h2>
           </div>
@@ -219,18 +172,14 @@ const Products = () => {
                     {product?.name}
                   </p>
                   <div className="flex items-center">
-                    <p className="text-lg font-semibold text-black cursor-auto my-3 text-red-500">
+                    <p className="text-lg font-semibold cursor-auto my-3 text-red-500">
                     {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                     </p>
                     <del>
                       <p className="text-sm text-gray-600 cursor-auto ml-2">
                       {product?.variants[0].price.toLocaleString('vi-VN')} VND
-
                       </p>
-                    </del>
-                    <div className="ml-auto font-bold text-2xl">
-                      <BsBagPlus />
-                    </div>
+                    </del>  
                   </div>
                 </div>
               </Link>
@@ -238,7 +187,6 @@ const Products = () => {
           ))}
         </div>
       </div>
-      <Social />
       <Blog />
     </>
   );

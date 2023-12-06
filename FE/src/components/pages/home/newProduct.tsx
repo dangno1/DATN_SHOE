@@ -1,11 +1,8 @@
 import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
-// import React, { useEffect, useState } from 'react'
-// import { Link } from "react-router-dom";
-import Social from "./social";
-import Blog from "./blog";
+import Blog from "./Blog/index";
 import Slider from "./banner";
-import { BsBagPlus } from "react-icons/bs";
+import "./outstanding products/style.css";
 
 const SaleProduct = () => {
   const { data } = useGetProductsQuery(false);
@@ -16,8 +13,8 @@ const SaleProduct = () => {
       <div className=" 2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
         <div className="flex items-center justify-center">
           <div className="text-center gap-12">
-            <h2 className="text-3xl font-bold text-gray-800 lg:text-3xl uppercase">
-              Sản phẩm sale
+            <h2 className=" text-gray-800 lg:text-3xl uppercase">
+              <span className="border-b-2 border-cyan-500 ">Sản phẩm sale</span>
             </h2>
           </div>
         </div>
@@ -37,7 +34,7 @@ const SaleProduct = () => {
               {product.variants[0].discount !== undefined &&
                 product.variants[0].price !== undefined &&
                 product.variants[0].price !== 0 && (
-                  <div className="absolute top-0 right-0 bg-yellow-200 text-red-500 py-1 px-2 rounded-bl-xl rounded-tr-xl">
+                  <div className="absolute top-0 right-0 bg-red-600 text-white rounded-bl-lg py-1 px-2   ">
                     -
                     {Math.round(
                       ((product.variants[0].price -
@@ -64,16 +61,12 @@ const SaleProduct = () => {
                       {product?.variants[0].price.toLocaleString("vi-VN")} VND
                     </p>
                   </del>
-                  <div className="ml-auto font-bold text-2xl">
-                    <BsBagPlus />
-                  </div>
                 </div>
               </div>
             </a>
           </div>
         ))}
       </section>
-      <Social />
       <Blog />
     </>
   );

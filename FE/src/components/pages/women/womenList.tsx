@@ -1,6 +1,5 @@
 import { useGetCategoryQuery } from "@/api/category";
 import { IProduct } from "@/interface/product";
-import { BsBagPlus } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 const WomenList = () => {
@@ -43,9 +42,7 @@ const WomenList = () => {
                     {product?.variants[0].price.toLocaleString('vi-VN')} VND
                     </p>
                   </del>
-                  <div className="ml-auto font-bold text-2xl">
-                    <BsBagPlus />
-                  </div>
+          
                 </div>
               </div>
             </Link>
