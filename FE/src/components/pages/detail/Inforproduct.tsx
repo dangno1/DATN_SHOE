@@ -112,15 +112,16 @@ const Inforproduct = () => {
         userAddress: userData.address,
         productName: productData.name,
         quantity: amount,
-        price: productData.variants[0].price,
-        initialPrice: productData.variants[0].price,
+        price: selectedVariant.price,
+        initialPrice: selectedVariant.price,
         size: selectedSize.value,
-        totalPrice: amount * productData.variants[0].price,
+        totalPrice: amount * selectedVariant?.discount,
         category: productData.categoryId,
         image: String(productData.image),
         color: selectedColor.value,
         status: String(productData.variants[0].status),
         productID: String(productData?._id),
+        variantsId: String(selectedVariant?._id),
         quantityAvailable: selectedVariant?.quantity || 0,
       };
 
@@ -235,9 +236,9 @@ const Inforproduct = () => {
                       {/* <span className="text-lg font-medium text-rose-500 dark:text-rose-200 uppercase">{productData.brandId}</span> */}
                       <h2 className="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl uppercase">{productData.name}</h2>
                       <p className="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400">
-                        <span>{productData.variants[0].price.toLocaleString("vi-VN")}VND</span>
+                        <span> {selectedVariant?.discount.toLocaleString("vi-VN")}VND</span>
                         <span className="ml-2 text-base font-normal text-red-500 line-through dark:text-gray-400">
-                          {productData.variants[0].discount.toLocaleString("vi-VN")}VND
+                          {selectedVariant?.price.toLocaleString("vi-VN")}VND
                         </span>
                       </p>
                       <div className="mr-7 flex flex-wrap items-center">
@@ -369,6 +370,5 @@ const Inforproduct = () => {
 };
 
 export default Inforproduct;
-
 
 
