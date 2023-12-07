@@ -1,0 +1,119 @@
+.blog {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 30px;
+    width: 1440px;
+    margin: 0 auto;
+    margin-bottom: 70px;
+    margin-top: 20px;
+  }
+  
+  .blog__img {
+    position: relative;
+  }
+  
+  .blog__time {
+    font-family: roboto;
+    position: absolute;
+    box-shadow: 0 3px 10px #00000014;
+    width: 68px;
+    height: 68px;
+    background-color: #fff;
+    color: #000;
+    font-weight: 600;
+    text-transform: uppercase;
+    top: 36px;
+    left: 36px;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .blog__day::after {
+    content: "";
+    background-color: #000;
+    width: 27px;
+    height: 1px;
+    display: block;
+    margin: 4px auto 0;
+  }
+  
+  .blog__day {
+    font-size: 14px;
+    display: block;
+    letter-spacing: 0.3em;
+  }
+  
+  .blog__month {
+    font-size: 10px;
+    display: block;
+    padding-top: 10px;
+    letter-spacing: 0.3em;
+  }
+  
+  .blog__img img {
+    width: 100%;
+  }
+  
+  .blog__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    /* font-family: roboto; */
+  }
+  
+  .blog__new {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: #83868c;
+    text-transform: uppercase;
+    /* font-family: Jost; */
+  }
+  
+  .blog__title {
+    font-size: 22px;
+    color: #000;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    /* font-family: Jost; */
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .blog__title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
+    height: 1px;
+    width: 50px;
+    background: #51adcd;
+  }
+  
+  .blog__title:hover {
+    color: #51adcd;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  
+  .blog__subtitle {
+    font-family: Jost;
+    font-size: 16px;
+    font-weight: 400;
+    color: #83868c;
+    text-align: center;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }

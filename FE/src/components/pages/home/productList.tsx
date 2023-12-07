@@ -11,23 +11,24 @@ const ProductList = () => {
   if (!data) {
     return <div>Loading...</div>;
   }
-// Calculate the date four days ago
-const currentDate = new Date();
-currentDate.setHours(0, 0, 0, 0);
-const startOfDay = currentDate.getTime();
-const fourDaysAgo = startOfDay - 4 * 24 * 60 * 60 * 1000;
 
-  // Sắp xếp danh sách sản phẩm theo thời gian tạo giảm dần
-  const sortedProducts = data  ? [...data].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())  : [];
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  const startOfDay = currentDate.getTime();
+  const fourDaysAgo = startOfDay - 4 * 24 * 60 * 60 * 1000;
 
-  // Lọc ra 4 sản phẩm đầu tiên trong danh sách
+  const sortedProducts = data
+    ? [...data].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+    : [];
+
   const latestProducts = sortedProducts.slice(0, 4);
   return (
     <>
       <div className="text-center p-10">
-        <h1 className="font-bold text-4xl mb-4 uppercase">
-          Sản phẩm mới nhất
-        </h1>
+        <h1 className="font-bold text-4xl mb-4 uppercase">Sản phẩm mới nhất</h1>
       </div>
 
       <section

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from 'react';
+import { FaRegHandPeace } from "react-icons/fa6";
 const Banner = () => {
   const [userData, setUserData] = useState(localStorage);
 
@@ -18,21 +19,20 @@ return (
             className="md:w-2/12 cursor-pointer text-gray-800 dark:text-white"
             aria-label="the Crib."
           >
-            <h1 className="font-bold text-xl ml-3">Chào {userData.fullname}</h1>
-            <p className="ml-3">50 điểm</p>
+            <h1 className=" flex items-center font-bold text-xl ml-3">Chào {userData.username} <FaRegHandPeace/></h1>
           </h1>
           <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8">
             <li className="dropdown inline-block relative">
-              <button className="  text-gray-700 font-semibold rounded inline-flex items-center">
-                <span className="mr-1">
+              <button className=" text-gray-700 font-semibold rounded inline-flex items-center">
+                <span className="mr-1 hover:underline">
                   <Link to="/user">Tài Khoản</Link>
                 </span>
               </button>
             </li>
 
             <li className="dropdown inline-block relative">
-              <button className="  text-gray-700 font-semibold  rounded inline-flex items-center">
-                <span className="mr-1">
+              <button className=" text-gray-700 font-semibold  rounded inline-flex items-center">
+                <span className="mr-1 hover:underline">
                   {" "}
                   <Link to="/oder&history">Đơn hàng Đã Đặt</Link>
                 </span>

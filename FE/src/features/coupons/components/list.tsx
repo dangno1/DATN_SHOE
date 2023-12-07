@@ -146,7 +146,7 @@ const ListCoupons = () => {
       key: "quantity",
       sorter: (a, b) => Number(a.quantity) - Number(b.quantity),
       showSorterTooltip: { title: "click để sắp xếp theo số lượng mã giảm giá" },
-      className: "capitalize w-[150px] max-w-[150px] md:min-w-[200px] lg:min-w-[250px] lg:max-w-[250px]",
+      className: "w-[150px] max-w-[150px] md:min-w-[200px] lg:min-w-[250px] lg:max-w-[250px]",
       render: (quantity: number) =>
         <div className="max-h-[45px]">
           {quantity}
@@ -162,7 +162,7 @@ const ListCoupons = () => {
         <div className="max-h-[45px]">
           {new Date(updatedAt).toLocaleString()}
         </div>,
-      className: "capitalize w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[250px] lg:max-w-[250px]",
+      className: "w-[250px] max-w-[250px] md:min-w-[350px] lg:min-w-[250px] lg:max-w-[250px]",
     },
     {
       title: "Hành động",
