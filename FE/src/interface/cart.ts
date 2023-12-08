@@ -16,5 +16,7 @@ export interface ICart {
   status: string,
   otp?: string,
   productID: string | number | undefined;
+  quantityAvailable: number ;
+  variantsId: string | number | undefined;
   quantityStock: number,
 }
