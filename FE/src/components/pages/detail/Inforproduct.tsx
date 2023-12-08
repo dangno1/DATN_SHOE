@@ -121,6 +121,7 @@ const Inforproduct = () => {
         color: selectedColor.value,
         status: String(productData.variants[0].status),
         productID: String(productData?._id),
+        quantityStock: selectedVariant?.quantity,
       };
 
       const data = await addCart(productToAdd);

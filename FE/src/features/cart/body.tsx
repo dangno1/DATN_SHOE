@@ -33,14 +33,16 @@ const BodyCart = () => {
   const dataCart = carts?.data.filter(
     (item) => item?.userEmail == userData.email
   );
+  console.log(dataCart);
+  
 
   const handleCheckboxChange = (checked: boolean, item: ICart) => {
     let itemPrice;
     if (checked) {
-      itemPrice = item.price;
+      itemPrice = item.totalPrice;
       setCheckedItems([...checkedItems, item]);
     } else {
-      itemPrice = -item.price;
+      itemPrice = -item.totalPrice;
       setCheckedItems(
         checkedItems.filter((checkedItem) => checkedItem !== item)
       );
@@ -94,14 +96,14 @@ const BodyCart = () => {
                   <div className="flex justify-between">
                     <p>Tên sản phẩm: {item?.productName}</p>
                     <span className="text-red-500">
-                      {item?.price.toLocaleString("vi-VN")}VND
+                      {item?.totalPrice.toLocaleString("vi-VN")}VND
                     </span>
                   </div>
                   <div className="pt-2">Màu: {item?.color}</div>
                   <div className="pt-5">Khích cỡ: {item?.size}</div>
                   <div className="pt-2">
                     Số lượng hàng trong kho:
-                    <span className="font-medium text-lg">20</span>
+                    <span className="font-medium text-lg">{item?.quantityStock}</span>
                   </div>
                   <div className="flex items-center pt-14">
                     <button

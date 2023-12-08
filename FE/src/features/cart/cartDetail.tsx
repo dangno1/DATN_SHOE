@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useGetAllCouponsQuery } from "@/api/coupons";
 import { useDeleteProductCartMutation } from "@/api/cart";
+import { useGetProductQuery, useUpdateProductMutation } from "@/api/product";
 
 const CartDetail = () => {
   // coupons
@@ -17,6 +18,7 @@ const CartDetail = () => {
   const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
   const [deleteProductCart] = useDeleteProductCartMutation();
   const [orderedProduct] = useOrderedProductMutation();
+  const [UpdateProduct] = useUpdateProductMutation();
   const { data: getOrders } = useGetOrdersQuery();
   const [updateOrder] = useUpdateorderMutation();
   const [checkOut] = useCheckoutMutation();
@@ -25,6 +27,9 @@ const CartDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [otpValue, setOtpValue] = useState("");
   const checkedItems = location.state?.checkedItems || [];
+
+  const { data: productData } = useGetProductQuery(id || '');
+
   //  console.log(checkedItems);
 
   // user
@@ -120,6 +125,7 @@ const CartDetail = () => {
         quantity: unknown;
         otp: unknown;
         productID: unknown;
+        quantityStock: unknown;
       }) => ({
         productName: item?.productName,
         productInitialPrice: item?.initialPrice,
@@ -130,8 +136,11 @@ const CartDetail = () => {
         productQuantity: item?.quantity,
         otp: item?.otp,
         productID: item?.productID,
+        quantityStock: item?.quantityStock,
       })
     );
+    console.log(productsArray);
+    console.log(parseFloat(productsArray[0].quantityStock) - parseFloat(productsArray[0].productQuantity));
 
     const orderData = {
       userName: name,
@@ -144,7 +153,7 @@ const CartDetail = () => {
       totalPrice: totalPrice,
       orderTime: new Date(),
     };
-
+    // UpdateProduct()
     deleteProductCart(checkedItems[0]._id);
     // return
 
@@ -167,7 +176,7 @@ const CartDetail = () => {
   const checOTP = () => {
     const orders = getOrders || [];
     const lastOrder = orders[orders.length - 1];
-    console.log(lastOrder);
+    // console.log(lastOrder);
 
     if (lastOrder && lastOrder.otp === otpValue) {
       updateOrder(lastOrder);
