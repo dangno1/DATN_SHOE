@@ -149,23 +149,25 @@ const ListColor = () => {
       className: "w-auto",
       fixed: "right",
       render: (_id: string, color: IColor) =>
-        _id && (
-          <div className="w-max m-auto flex gap-3 cursor-pointer">
-            {!color.products?.length ? <Popconfirm
-              title
-              description="Xóa kích thước?"
-              okText="Yes"
-              cancelText="No"
-              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-              cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleDeleteColor([_id])}
-            >
-              <Tooltip placement="right" title="Xóa">
-                <BsTrash3 className="fill-red-600 w-4 h-4" />
-              </Tooltip>
-            </Popconfirm> : <div className="w-max h-max p-1 bg-red-500 text-white rounded-lg">Không thể xóa</div>}
-          </div >
-        ),
+        <div className="w-max m-auto flex gap-3 cursor-pointer">
+          <Popconfirm
+            disabled={color.products?.length ? true : false}
+            title
+            description="Xóa danh mục?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+            cancelButtonProps={{ className: "border-slate-400" }}
+            onConfirm={() => handleDeleteColor([_id])}
+          >
+            <Tooltip placement="right" title={!color.products?.length ? "Xóa" : ""}>
+              <BsTrash3 className={`fill-red-600 w-4 h-4 ${color.products?.length && "fill-slate-500 cursor-not-allowed"}`} />
+            </Tooltip>
+          </Popconfirm>
+          <BsPencilSquare
+            className={`w-4 h-4 fill-orange-600 cursor-pointer disabled:!opacity-0`}
+            onClick={() => setForm({ open: true, method: "update", _id: String(color._id) })} />
+        </div >
     },
   ];
   const sortColor = colorData && [...colorData].sort((a, b) => Date.parse(String(b.updatedAt)) - Date.parse(String(a.updatedAt)))

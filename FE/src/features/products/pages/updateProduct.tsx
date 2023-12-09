@@ -98,6 +98,7 @@ const UpdateProduct = () => {
     control,
     reset,
     getValues,
+    watch,
     formState: { errors }
   } = useForm<IProduct>({
   })
@@ -296,30 +297,54 @@ const UpdateProduct = () => {
                   <div className="w-full grid grid-cols-5 gap-4">
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Kích cỡ<span className="text-red-500">*</span></label>
-                      <select {...register(`variants.${index}.sizeId`, productSchema.sizeId)}
-                        className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 
-                        focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 
-                        focus:shadow-full ${errors?.variants?.[index]?.sizeId && "border-red-500"}`}
-                      >
-                        <option value="" >Size</option>
+                      <select
+                        {...register(`variants.${index}.sizeId`, productSchema.sizeId)}
+                        className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.sizeId && errors?.variants?.[index]?.sizeId?.type != "validate" && "border-red-500"}`}>
+                        <option value="" selected={true} > Size</option>
                         {
-                          sizeData?.map((size: ISize) => <option key={size._id} value={size._id}>{size.value}</option>)
+                          sizeData?.map((size: ISize, maxIndex) => {
+                            const variants = watch("variants").map((item, indexVariants) => {
+                              if (index !== indexVariants && item.sizeId && item.colorId && item.colorId === watch(`variants.${index}.colorId`)) {
+                                return item.sizeId
+                              }
+                            })
+                            if (!variants.includes(String(size._id))) {
+                              return <option key={size._id} value={size._id}>{size.value}</option>
+                            }
+                            if (maxIndex == sizeData.length - 1) {
+                              return <option key={maxIndex} value="">Vui lòng chọn Màu sắc khác</option>
+                            }
+
+                          })
                         }
                       </select>
-                      {errors?.variants?.[index]?.sizeId && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.sizeId?.message}</span>}
+                      {errors?.variants?.[index]?.sizeId?.type != 'validate' && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.sizeId?.message}</span>}
                     </div>
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Màu sắc<span className="text-red-500">*</span></label>
-                      <select {...register(`variants.${index}.colorId`, productSchema.colorId)}
-                        className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 
-                        focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 
-                        focus:shadow-full ${errors?.variants?.[index]?.colorId && "border-red-500"}`}>
+                      <select
+                        {...register(`variants.${index}.colorId`, productSchema.colorId)}
+                        className={`w-full h-[48px] px-[10px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-[#557dff] font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 focus:shadow-full ${errors?.variants?.[index]?.colorId && errors?.variants?.[index]?.colorId?.type != "validate" && "border-red-500"}`}>
                         <option value="" >Color</option>
                         {
-                          colorData?.map((color: IColor) => <option key={color._id} value={color._id}>{color.value}</option>)
+                          colorData?.map((color: IColor, maxIndex) => {
+                            const variants = watch("variants").map((item, indexVariants) => {
+                              if (index !== indexVariants && item.sizeId && item.colorId && item.sizeId === watch(`variants.${index}.sizeId`)) {
+                                return item.colorId
+                              }
+                            })
+                            if (!variants.includes(String(color._id))) {
+                              return <option key={color._id} value={color._id}>{color.value}</option>
+                            }
+
+                            if (maxIndex == colorData.length - 1) {
+                              return <option key={maxIndex} value="">Vui lòng chọn kích cỡ khác</option>
+                            }
+
+                          })
                         }
                       </select>
-                      {errors?.variants?.[index]?.colorId && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.colorId?.message}</span>}
+                      {errors?.variants?.[index]?.colorId?.type != "validate" && <span className="text-red-500 text-[13px]">{errors?.variants?.[index]?.colorId?.message}</span>}
                     </div>
                     <div className="w-full h-max">
                       <label className="text-slate-600 font-semibold">Giá gốc<span className="text-red-500">*</span></label>
@@ -377,24 +402,25 @@ const UpdateProduct = () => {
                   </div>
                 </div >
               ))}
-              <Tooltip title="Thêm biến thể" className="m-auto grid place-items-center mb-[18px]">
-                <div className="w-8 h-8 rounded-[50%] bg-gray-300">
-                  <HiPlus
-                    onClick={() =>
-                      append({
-                        sizeId: "",
-                        colorId: "",
-                        price: null,
-                        quantity: null,
-                        discount: null,
-                        amountSold: 0,
-                        status: 1,
-                      } as never)
-                    }
-                    className="w-4 h-4 cursor-pointer"
-                  />
-                </div>
-              </Tooltip>
+              {(Number(sizeData?.length) * Number(colorData?.length)) > fields.length
+                && <Tooltip title="Thêm biến thể" className="m-auto grid place-items-center mb-[18px]">
+                  <div className="w-8 h-8 rounded-[50%] bg-gray-300">
+                    <HiPlus
+                      onClick={() =>
+                        append({
+                          sizeId: "",
+                          colorId: "",
+                          price: null,
+                          quantity: null,
+                          discount: null,
+                          amountSold: 0,
+                          status: 1,
+                        } as never)
+                      }
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                  </div>
+                </Tooltip>}
             </div >
           </div >
           {/* button */}

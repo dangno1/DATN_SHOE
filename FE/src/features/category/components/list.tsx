@@ -166,8 +166,8 @@ const ListCategory = () => {
             </Tooltip>
           </Popconfirm>
           <BsPencilSquare
-            className={`w-4 h-4 fill-orange-600 cursor-pointer disabled:!opacity-0 ${(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && "fill-slate-500 cursor-not-allowed"}`}
-            onClick={() => !(category.name.toLowerCase() == "chưa phân loại" || category.products?.length) && setForm({ open: true, method: "update", _id: String(category._id) })} />
+            className={`w-4 h-4 fill-orange-600 cursor-pointer disabled:!opacity-0 ${category.name.toLowerCase() == "chưa phân loại" && "fill-slate-500 !cursor-not-allowed"}`}
+            onClick={() => category.name.toLowerCase() !== "chưa phân loại" && setForm({ open: true, method: "update", _id: String(category._id) })} />
         </div >
     },
   ];
@@ -252,7 +252,7 @@ const ListCategory = () => {
               className={`w-full h-[40px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500  focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full ${errors.name && "border-red-500"}`}
             />
             {errors.name && <span className="text-red-500">{errors.name.message}</span>}
-           
+
             <div className="w-full grid items-center justify-end mt-2">
               <Button
                 type="submit"

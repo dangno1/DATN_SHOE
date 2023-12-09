@@ -158,23 +158,25 @@ const ListSize = () => {
       className: "w-auto",
       fixed: "right",
       render: (_id: string, size: ISize) =>
-        _id && (
-          <div className="w-max m-auto flex gap-3 cursor-pointer">
-            {!size.products?.length ? <Popconfirm
-              title
-              description="Xóa kích cỡ?"
-              okText="Yes"
-              cancelText="No"
-              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-              cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleDeleteSize([_id])}
-            >
-              <Tooltip placement="right" title="Xóa">
-                <BsTrash3 className="fill-red-600 w-4 h-4" />
-              </Tooltip>
-            </Popconfirm> : <div className="w-max h-max p-1 bg-red-500 text-white rounded-lg">Không thể xóa</div>}
-          </div >
-        ),
+        <div className="w-max m-auto flex gap-3 cursor-pointer">
+          <Popconfirm
+            disabled={size.products?.length ? true : false}
+            title
+            description="Xóa danh mục?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+            cancelButtonProps={{ className: "border-slate-400" }}
+            onConfirm={() => handleDeleteSize([_id])}
+          >
+            <Tooltip placement="right" title={!size.products?.length ? "Xóa" : ""}>
+              <BsTrash3 className={`fill-red-600 w-4 h-4 ${size.products?.length && "fill-slate-500 cursor-not-allowed"}`} />
+            </Tooltip>
+          </Popconfirm>
+          <BsPencilSquare
+            className={`w-4 h-4 fill-orange-600 cursor-pointer disabled:!opacity-0`}
+            onClick={() => setForm({ open: true, method: "update", _id: String(size._id) })} />
+        </div >
     },
   ];
 

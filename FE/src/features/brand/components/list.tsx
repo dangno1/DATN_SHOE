@@ -112,6 +112,9 @@ const ListBrand = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    getCheckboxProps: (brand: IBrand) => ({
+      disabled: brand.products?.length as number > 0,
+    }),
   };
 
   const columns: ColumnsType<IBrand> = [
@@ -155,27 +158,28 @@ const ListBrand = () => {
       dataIndex: "_id",
       key: "_id",
       align: "center",
-      className: "w-auto flex justify-center",
+      className: "w-auto",
       fixed: "right",
       render: (_id: string, brand: IBrand) =>
-        (_id && brand.name.toLowerCase() !== "chưa phân loại" && !brand.products?.length)
-        && (
-          <div className="w-full m-auto flex justify-center gap-3 cursor-pointer">
-            <Popconfirm
-              title
-              description="Xóa danh mục?"
-              okText="Yes"
-              cancelText="No"
-              okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
-              cancelButtonProps={{ className: "border-slate-400" }}
-              onConfirm={() => handleDeleteBrand([_id])}
-            >
-              <Tooltip placement="right" title="Xóa">
-                <BsTrash3 className="fill-red-600 w-4 h-4" />
-              </Tooltip>
-            </Popconfirm>
-          </div>
-        )
+        <div className="w-max m-auto flex gap-3 cursor-pointer">
+          <Popconfirm
+            disabled={brand.products?.length ? true : false}
+            title
+            description="Xóa danh mục?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{ className: "bg-red-500 hover:!bg-red-500 active:!bg-red-700" }}
+            cancelButtonProps={{ className: "border-slate-400" }}
+            onConfirm={() => handleDeleteBrand([_id])}
+          >
+            <Tooltip placement="right" title={!brand.products?.length ? "Xóa" : ""}>
+              <BsTrash3 className={`fill-red-600 w-4 h-4 ${brand.products?.length && "fill-slate-500 cursor-not-allowed"}`} />
+            </Tooltip>
+          </Popconfirm>
+          <BsPencilSquare
+            className={`w-4 h-4 fill-orange-600 cursor-pointer disabled:!opacity-0`}
+            onClick={() => setForm({ open: true, method: "update", _id: String(brand._id) })} />
+        </div >
     },
   ];
 
@@ -192,7 +196,7 @@ const ListBrand = () => {
     <>
       <div className='h-[80px] min-h-[80px] max-h-[90px] grid grid-cols-2 items-center' >
         <div className="h-full w-max grid items-center font-bold uppercase text-base md:text-xl lg:text-3xl ml-2 text-slate-700 select-none">
-          Tất cả danh mục sản phẩm
+          Tất cả thương hiệu
         </div>
         <div className="grid grid-cols-[max-content_max-content] gap-2 justify-end place-items-center">
           <Button
