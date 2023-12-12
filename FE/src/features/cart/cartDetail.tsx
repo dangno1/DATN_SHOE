@@ -2,6 +2,7 @@ import {
   useCheckoutMutation,
   useGetOrdersQuery,
   useOrderedProductMutation,
+  useUpdateQyMutation,
   useUpdateorderMutation,
 } from "@/api/orderedProduct";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ const CartDetail = () => {
   const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
   const [deleteProductCart] = useDeleteProductCartMutation();
   const [orderedProduct] = useOrderedProductMutation();
+  const [updateQy] = useUpdateQyMutation();
   const { data: getOrders } = useGetOrdersQuery();
   const [updateOrder] = useUpdateorderMutation();
   const [checkOut] = useCheckoutMutation();
@@ -25,7 +27,8 @@ const CartDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [otpValue, setOtpValue] = useState("");
   const checkedItems = location.state?.checkedItems || [];
-  //  console.log(checkedItems);
+
+  console.log(checkedItems);
 
   // user
   const [name, setName] = useState("");
@@ -120,6 +123,7 @@ const CartDetail = () => {
         quantity: unknown;
         otp: unknown;
         productID: unknown;
+        quantityStock: unknown;
       }) => ({
         productName: item?.productName,
         productInitialPrice: item?.initialPrice,
@@ -130,8 +134,24 @@ const CartDetail = () => {
         productQuantity: item?.quantity,
         otp: item?.otp,
         productID: item?.productID,
+        quantityStock: item?.quantityStock,
       })
     );
+    console.log(productsArray);
+    console.log(
+      parseFloat(productsArray[0].quantityStock) -
+        parseFloat(productsArray[0].productQuantity)
+    );
+    const testQy = {
+      productId: productsArray[0].productID,
+      variantsId: checkedItems[0].variantsId,
+      newQuantity:
+        parseFloat(productsArray[0].quantityStock) -
+        parseFloat(productsArray[0].productQuantity),
+    };
+
+    console.log(testQy);
+    
 
     const orderData = {
       userName: name,
@@ -140,11 +160,11 @@ const CartDetail = () => {
       userAddress: address,
       products: productsArray,
       paymentMethod: selectedPaymentMethod,
-      status: "Chờ Xác Nhận",
+      status: "Đã Xác Nhận",
       totalPrice: totalPrice,
       orderTime: new Date(),
     };
-
+    updateQy(testQy);
     deleteProductCart(checkedItems[0]._id);
     // return
 
@@ -167,7 +187,7 @@ const CartDetail = () => {
   const checOTP = () => {
     const orders = getOrders || [];
     const lastOrder = orders[orders.length - 1];
-    console.log(lastOrder);
+    // console.log(lastOrder);
 
     if (lastOrder && lastOrder.otp === otpValue) {
       updateOrder(lastOrder);
@@ -329,10 +349,10 @@ const CartDetail = () => {
                   Tên sản phẩm: {item?.productName}
                 </div>
                 <div className="text-gray-500 pb-3">
-                  Giá: {item.initialPrice.toLocaleString("vi-VN")}VND
+                  Giá: {item.price.toLocaleString("vi-VN")}VND
                 </div>
                 <div className="text-gray-500 pb-3">
-                  Tổng giá: {item?.price.toLocaleString("vi-VN")}VND
+                  Tổng giá: {item?.totalPrice.toLocaleString("vi-VN")}VND
                 </div>
                 <div className="text-gray-500">
                   Kích cỡ: {item?.size} / Color: {item?.color}

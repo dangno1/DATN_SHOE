@@ -60,6 +60,15 @@ const orderedProductApi = createApi({
       }),
       invalidatesTags: ["OrderedProduct"],
     }),
+
+    updateQy: builder.mutation<void, void>({
+      query: (orderProduct) => ({
+        url: `/updateQuantity`,
+        method: "POST",
+        body: orderProduct,
+      }),
+      invalidatesTags: ["OrderedProduct"],
+    }),
   }),
 });
 
@@ -71,5 +80,6 @@ export const {
   useUpdateorderMutation,
   useCheckoutMutation,
   useUpdateOrderAdminMutation,
-  useSendEmailMutation
+  useSendEmailMutation,
+  useUpdateQyMutation
 } = orderedProductApi;

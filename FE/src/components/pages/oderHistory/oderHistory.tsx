@@ -66,7 +66,6 @@ const OderHistory = () => {
     });
   };
 
-
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
@@ -96,11 +95,11 @@ const OderHistory = () => {
         UserId: userData?._id,
       };
 
-  await addReview(newrate).unwrap().then(() => alert('Đánh giá thành công'));
-
+      await addReview(newrate)
+        .unwrap()
+        .then(() => alert("Đánh giá thành công"));
 
       setRating(0);
-
 
       console.log(`Rating ${rating} has been submitted.`);
     } catch (error) {
@@ -108,7 +107,6 @@ const OderHistory = () => {
       alert("An error occurred while submitting the rating. Please try again.");
     }
   };
-
 
   return (
     <>
@@ -119,7 +117,7 @@ const OderHistory = () => {
         <div key={orderItem._id} className="pt-7 container mx-auto p-12">
           {orderItem?.products.map((product: any) => (
             <div key={product.productId}>
-              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[3fr,5fr,4fr,6fr,4fr]">
+              <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[3fr,6fr,4fr,6fr,4fr]">
                 <img
                   className="border rounded-xl w-full h-full"
                   alt=""
@@ -134,7 +132,7 @@ const OderHistory = () => {
                   <div className="font-medium text-lg">
                     Giá sản phẩm:{" "}
                     <span className="text-red-500">
-                      {product.productInitialPrice.toLocaleString("vi-VN")}VND
+                      {product.productPrice?.toLocaleString("vi-VN")}VND
                     </span>
                   </div>
                   <div className="font-medium text-lg">
@@ -154,7 +152,7 @@ const OderHistory = () => {
                   <div className="font-medium text-lg">
                     Tổng giá Sản Phẩm:{" "}
                     <span className="pt-5 text-red-500">
-                      {orderItem?.totalPrice.toLocaleString("vi-VN")}VND
+                      {(product?.productPrice * product?.productQuantity)?.toLocaleString("vi-VN")}VND
                     </span>
                   </div>
                 </div>
@@ -176,7 +174,11 @@ const OderHistory = () => {
                           width="22"
                           height="22"
                           viewBox="0 0 22 22"
-                          fill={index + 1 <= (hoverRating || rating) ? "yellow" : "none"}
+                          fill={
+                            index + 1 <= (hoverRating || rating)
+                              ? "yellow"
+                              : "none"
+                          }
                           stroke="black"
                           strokeWidth="1.5"
                         >
@@ -188,8 +190,10 @@ const OderHistory = () => {
                       </div>
                     ))}
                   </div>
-                  <button onClick={() => handleRatingSubmit(product.productID)}
-                    className="mt-10 bg-blue-500 h-12 text-white rounded-xl hover:bg-blue-700">
+                  <button
+                    onClick={() => handleRatingSubmit(product.productID)}
+                    className="mt-10 bg-blue-500 h-12 text-white rounded-xl hover:bg-blue-700"
+                  >
                     Lưu Đánh Giá
                   </button>
                   {/* <button onClick={handleRatingSubmit}
@@ -233,7 +237,7 @@ const OderHistory = () => {
                   <div className="flex gap-10 justify-center">
                     <Link
                       to={{
-                        pathname: "/cartDetail",
+                        pathname: "/cart",
                         state: {
                           category: product?.category,
                           color: product?.productColor,
