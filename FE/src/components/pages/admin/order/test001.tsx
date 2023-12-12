@@ -9,7 +9,7 @@ import { notification } from "antd";
 type NotificationType = "success" | "info" | "warning" | "error";
 
 const Test001 = () => {
-  const [ sendEmail ] = useSendEmailMutation();
+  const [sendEmail] = useSendEmailMutation();
   const { data: orders } = useGetOrdersQuery();
   const { id } = useParams();
   const [updateOrder] = useUpdateOrderAdminMutation();
@@ -18,12 +18,15 @@ const Test001 = () => {
 
   const data = orders?.filter((item) => item?._id == id);
   const product = data?.[0]?.products;
+  // console.log(data?.[0].userEmail);
 
   const handleStatusChange = (e: {
     target: { value: SetStateAction<string> };
   }) => {
     setSelectedStatus(e.target.value);
   };
+
+  console.log(selectedStatus);
 
   const handleUpdate = async () => {
     const openNotification = (type: NotificationType, message: string) => {
@@ -32,30 +35,33 @@ const Test001 = () => {
         description: message,
       });
     };
-  
-    if (selectedStatus === data?.[0]?.status) {
+    if (selectedStatus == data?.[0].status) {
       openNotification("error", "Bạn Chưa Thay Đổi Trạng Thái");
     } else {
       try {
-        // Update order
         await updateOrder({
           _id: id,
           status: selectedStatus,
-          userName: data?.[0]?.userName,
-          userEmail: data?.[0]?.userEmail,
-          userAddress: data?.[0]?.userAddress,
+          userName: "",
+          userEmail: "",
+          userAddress: "",
           productName: "",
           quantity: 0,
           price: 0,
           initialPrice: 0,
+          size: 0,
           totalPrice: 0,
           category: "",
           image: "",
           color: "",
+          productID: undefined,
+          quantityStock: 0,
+          quantityAvailable: 0,
+          variantsId: undefined,
         });
-  
+
         await sendEmail({
-          userEmail: data?.[0]?.userEmail,
+          userEmail: data?.[0].userEmail,
           status: selectedStatus,
         }).unwrap();
         openNotification("success", "Thanh Đổi Trạng Thái Thành Công");
@@ -65,7 +71,6 @@ const Test001 = () => {
       }
     }
   };
-  
 
   return (
     <>

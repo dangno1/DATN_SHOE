@@ -7,6 +7,8 @@ import {
 } from "../../api/cart";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { notification } from "antd";
+type NotificationType = "success" | "info" | "warning" | "error";
 
 const BodyCart = () => {
   const { data: carts } = useGetAllProductCartsQuery();
@@ -16,6 +18,7 @@ const BodyCart = () => {
 
   const [checkedItems, setCheckedItems] = useState<ICart[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [api, contextHolder] = notification.useNotification();
   console.log(carts?.data);
 
   const [userData, setUserData] = useState(localStorage);
@@ -27,20 +30,40 @@ const BodyCart = () => {
       setUserData(userData);
     }
   }, []);
-
-  console.log(userData.email);
-
   const dataCart = carts?.data.filter(
     (item) => item?.userEmail == userData.email
   );
+  const openNotification = (type: NotificationType, message: string) => {
+    api[type]({
+      message: "Thông báo",
+      description: message,
+    });
+  };
+
+  const updateQuantityPlusHandler = async (item: ICart) => {
+    if (item.quantity < item.quantityStock) {
+      await updateQuantityPlus(item);
+    } else {
+      console.log("Cannot increase quantity, already at maximum.");
+      openNotification("warning", "Số lượng đã lớn nhất không thể thêm");
+    }
+  };
+
+  const updateQuantityMinusHandler = async (item: ICart) => {
+    if (item.quantity > 1) {
+      await updateQuantityMutation(item);
+    } else {
+      openNotification("warning", "Số lượng đã nhỏ nhất không thể giảm");
+    }
+  };
 
   const handleCheckboxChange = (checked: boolean, item: ICart) => {
     let itemPrice;
     if (checked) {
-      itemPrice = item.price;
+      itemPrice = item.totalPrice;
       setCheckedItems([...checkedItems, item]);
     } else {
-      itemPrice = -item.price;
+      itemPrice = -item.totalPrice;
       setCheckedItems(
         checkedItems.filter((checkedItem) => checkedItem !== item)
       );
@@ -50,11 +73,12 @@ const BodyCart = () => {
 
   const deleteCart = (id: ICart) => {
     deleteProductCart(id);
-    console.log("Xoa Thanh Cong");
+    openNotification("error", "Xóa thành công");
   };
 
   return (
     <>
+      {contextHolder}
       <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr] gap-10 pb-32">
         <div className="pt-20 lg:pl-36">
           <h2 className="text-4xl font-semibold font-sans leading-10">
@@ -80,7 +104,7 @@ const BodyCart = () => {
             </div>
           </div>
 
-          {dataCart?.map((item: ICart) => (
+          {dataCart?.reverse().map((item: ICart) => (
             <div className="pt-7" key={item._id}>
               <div className="shadow-slate-800 border rounded-xl gap-3 grid grid-cols-1 lg:grid-cols-[5fr,10fr,1fr]">
                 <img
@@ -94,20 +118,23 @@ const BodyCart = () => {
                   <div className="flex justify-between">
                     <p>Tên sản phẩm: {item?.productName}</p>
                     <span className="text-red-500">
-                      {item?.price.toLocaleString("vi-VN")}VND
+                      {item?.totalPrice.toLocaleString("vi-VN")}VND
                     </span>
                   </div>
                   <div className="pt-2">Màu: {item?.color}</div>
                   <div className="pt-5">Khích cỡ: {item?.size}</div>
                   <div className="pt-2">
                     Số lượng hàng trong kho:
-                    <span className="font-medium text-lg">20</span>
+                    <span className="font-medium text-lg">
+                      {item?.quantityStock}
+                    </span>
                   </div>
                   <div className="flex items-center pt-14">
                     <button
                       className="border border-gray-400 text-black px-2"
                       id="decrement"
-                      onClick={() => updateQuantityMutation(item)}
+                      // onClick={() => updateQuantityMutation(item)}
+                      onClick={() => updateQuantityMinusHandler(item)}
                     >
                       -
                     </button>
@@ -120,7 +147,8 @@ const BodyCart = () => {
                     <button
                       className="border border-gray-400 text-black px-2"
                       id="increment"
-                      onClick={() => updateQuantityPlus(item)}
+                      // onClick={() => updateQuantityPlus(item)}
+                      onClick={() => updateQuantityPlusHandler(item)}
                     >
                       +
                     </button>
@@ -299,7 +327,9 @@ const BodyCart = () => {
           <div>
             <div className="flex justify-between items-center pt-5">
               <p className="text-gray-800">Giá sản phẩm </p>
-              <span className="text-gray-900">{totalPrice.toLocaleString("vi-VN")}₫</span>
+              <span className="text-gray-900">
+                {totalPrice.toLocaleString("vi-VN")}₫
+              </span>
             </div>
             <div className="flex justify-between items-center pt-5 border-b pb-2">
               <p className="text-gray-800">Delivery</p>

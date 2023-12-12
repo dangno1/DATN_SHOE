@@ -11,7 +11,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { data } = useGetCategoryesQuery();
-  console.log(data);
 
   const [userData, setUserData] = useState(localStorage);
   const navigate = useNavigate();

@@ -112,7 +112,7 @@ const Inforproduct = () => {
         userAddress: userData.address,
         productName: productData.name,
         quantity: amount,
-        price: selectedVariant.price,
+        price: selectedVariant?.discount,
         initialPrice: selectedVariant.price,
         size: selectedSize.value,
         totalPrice: amount * selectedVariant?.discount,
@@ -121,6 +121,7 @@ const Inforproduct = () => {
         color: selectedColor.value,
         status: String(productData.variants[0].status),
         productID: String(productData?._id),
+        quantityStock: selectedVariant?.quantity,
         variantsId: String(selectedVariant?._id),
         quantityAvailable: selectedVariant?.quantity || 0,
       };
@@ -180,10 +181,10 @@ const Inforproduct = () => {
     };
   };
   const saoData = starsData;
-  console.log(saoData);
+  // console.log(saoData);
   const { totalStars, averageStars } = calculateAverageStarsFromPath(saoData, id);
-  console.log('Total Stars:', totalStars);
-  console.log('Average Stars:', averageStars);
+  // console.log('Total Stars:', totalStars);
+  // console.log('Average Stars:', averageStars);
   return (
     <div>
       {notificationVisible}

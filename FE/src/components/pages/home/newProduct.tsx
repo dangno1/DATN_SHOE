@@ -37,10 +37,7 @@ const SaleProduct = () => {
                   <div className="absolute top-0 right-0 bg-red-600 text-white rounded-bl-lg py-1 px-2   ">
                     -
                     {Math.round(
-                      ((product.variants[0].price -
-                        product.variants[0].discount) /
-                        product.variants[0].price) *
-                        100
+                      ((product.variants[0].price - product.variants[0].discount) /  product.variants[0].price) *100
                     )}
                     %
                   </div>
