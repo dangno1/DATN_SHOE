@@ -2,7 +2,7 @@ import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
 import Blog from "./Blog/index";
 import Slider from "./banner";
-import "./outstanding products/style.css";
+import "./featuredProducts/style.css"
 
 const SaleProduct = () => {
   const { data } = useGetProductsQuery(false);
@@ -37,7 +37,7 @@ const SaleProduct = () => {
                   <div className="absolute top-0 right-0 bg-red-600 text-white rounded-bl-lg py-1 px-2   ">
                     -
                     {Math.round(
-                      ((product.variants[0].price - product.variants[0].discount) /  product.variants[0].price) *100
+                      ((product.variants[0].price - product.variants[0].discount) / product.variants[0].price) * 100
                     )}
                     %
                   </div>

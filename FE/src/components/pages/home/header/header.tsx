@@ -73,7 +73,7 @@ const Header = () => {
                       Tất cả các sản phẩm
                     </Link>
                   </li>
-                  
+
                   {data?.map((cate: ICategory) => (
                     <li className="text-black font-semibold uppercase hover:underline">
                       <Link
