@@ -8,12 +8,11 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { useCreateCartMutation } from "@/api/cart";
+import { useCreateCartMutation, useGetAllProductCartsQuery, useQuantityPlusMutation } from "@/api/cart";
 import { ICart } from "@/interface/cart";
 import { notification } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
-// import { useGetRateQuery } from "@/api/rating";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { Divider, Rating } from "@mui/material";
 import { IProduct } from "@/interface/product";
@@ -29,6 +28,8 @@ const Inforproduct = () => {
   const { data: colorData } = useGetColorsQuery()
   const { data: productData, isLoading } = useGetProductQuery(id || '');
   const [addCart] = useCreateCartMutation();
+  const { data: cartData } = useGetAllProductCartsQuery()
+  const [updateCart] = useQuantityPlusMutation()
 
   const [amount, setAmount] = useState(1);
   const [notificationVisible, setNotificationVisible] = useState(false);
@@ -83,7 +84,6 @@ const Inforproduct = () => {
 
   useEffect(() => {
     if (selectedVariant?.color?._id && selectedVariant?.size?._id) {
-      console.log("cvbhjkl;'");
       const matchingVariant = productData?.variants?.find(
         (variant) =>
           variant.sizeId === selectedVariant?.size?._id &&
@@ -98,36 +98,21 @@ const Inforproduct = () => {
   const navigate = useNavigate();
   const handleAddCar = async () => {
     if (!userData.username || !userData.email || !userData.address) {
-      openNotification('error', "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.");
+      openNotification('warning', "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.");
       setTimeout(() => {
         navigate("/signup");
-      }, 2000);
+      }, 1500);
       return;
     }
     if (!selectedVariant?.color?._id) {
-      openNotification('error', "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng");
+      openNotification('warning', "Vui lòng chọn màu sắc trước khi thêm vào giỏ hàng");
       return;
     }
     if (!selectedVariant.size?._id) {
-      openNotification('error', "Vui lòng chọn size trước khi thêm vào giỏ hàng.");
+      openNotification('warning', "Vui lòng chọn size trước khi thêm vào giỏ hàng.");
       return;
     }
     if (productData && selectedVariant?.color?._id && selectedVariant?.size?._id) {
-      // if (selectedVariant?.quantity !== undefined) {
-      //   if (selectedVariant.quantity <= 0) {
-      //     openNotification('error', "Sản phẩm đã hết hàng. Vui lòng chọn một biến thể khác.");
-      //     return;
-      //   }
-
-
-      //   if (amount > selectedVariant.quantity) {
-      //     openNotification('error', "Số lượng sản phẩm trong giỏ hàng vượt quá số lượng có sẵn trong kho.");
-      //     return;
-      //   }
-      // } else {
-      //   openNotification('error', "Sản phẩm không có sẵn trong kho. Vui lòng chọn sản phẩm khác.");
-      //   return;
-      // }
       const productToAdd: ICart = {
         userName: userData.fullname,
         userEmail: userData.email,
@@ -148,15 +133,21 @@ const Inforproduct = () => {
         quantityAvailable: variants?.quantity || 0,
       };
 
-      const data = await addCart(productToAdd);
-      if (data) {
+      const duplicateCart = cartData?.data?.find((cart) =>
+        cart.productID == productData._id
+        && cart.color == selectedVariant.color?.value
+        && cart.size == selectedVariant.size?.value)
+
+      if (duplicateCart?._id) {
+        console.log(variants?.quantity);
+        const quantityCart = (duplicateCart.quantity + amount > Number(variants?.quantity) ? Number(variants?.quantity) : (duplicateCart.quantity + amount))
+        await updateCart({ ...duplicateCart, quantity: quantityCart })
         openNotification('success', "Đã thêm sản phẩm vào giỏ hàng thành công");
-        navigate("/cart");
-      } else {
-        console.error("Error adding to cart:", data);
+        return
       }
-    } else {
-      console.error("productData is not defined.");
+      const data = await addCart(productToAdd);
+      data && openNotification('success', "Đã thêm sản phẩm vào giỏ hàng thành công");
+
     }
   };
 

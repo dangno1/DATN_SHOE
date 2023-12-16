@@ -5,7 +5,6 @@ const Detail = () => {
   return (
     <div>
       <Inforproduct />
-      {/* <Comment /> */}
     </div>
   );
 };
