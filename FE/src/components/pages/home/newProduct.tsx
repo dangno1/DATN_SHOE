@@ -64,7 +64,6 @@ const SaleProduct = () => {
           </div>
         ))}
       </section>
-      <Blog />
     </>
   );
 };

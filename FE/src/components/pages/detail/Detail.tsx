@@ -1,13 +1,11 @@
 import Inforproduct from "./Inforproduct";
-import Similarproduct from "./Similarproduct";
-import Comment from "./Comment";
+// import Comment from "./Comment";
 
 const Detail = () => {
   return (
     <div>
       <Inforproduct />
-      <Similarproduct />
-      <Comment />
+      {/* <Comment /> */}
     </div>
   );
 };

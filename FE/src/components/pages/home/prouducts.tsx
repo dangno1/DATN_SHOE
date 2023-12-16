@@ -187,7 +187,6 @@ const Products = () => {
           ))}
         </div>
       </div>
-      <Blog />
     </>
   );
 };

@@ -27,7 +27,7 @@ const Featured = () => {
           {productFeatured?.map((product) => (
             <div key={product?._id} className="product__list--item shadow-md rounded-xl">
               <div className="product__list--img">
-                <Link to={`/detail/${product?._idProduct}`}>
+                <Link to={`/detail/${product?._idProduct}`} onClick={() => window.scrollTo(0, 0)}>
                   <img className="h-[250px] object-cover " src={product?.image} alt="" />
                 </Link>
                 {product?.discount &&
@@ -54,9 +54,6 @@ const Featured = () => {
                     ? product?.discount.toLocaleString('vi-VN')
                     : product?.price.toLocaleString('vi-VN')} VND
                 </span>
-                {product?.discount && <s className="product__list--old">
-                  {product?.price.toLocaleString('vi-VN')} VND
-                </s>}
               </div>
               <div className="p-3 inline-block float-right text-sm">
                 Đã bán {product?.amountSold}

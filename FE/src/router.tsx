@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <LayoutWebsite />,
     children: [
-      { path: "/undefined/:id", element: <LayoutTest /> },
+      { path: "/:categoryName/:id", element: <LayoutTest /> },
       { index: true, element: <HomePage /> },
       { path: "detail/:id", element: <Detail /> },
       { path: "Men/:id", element: <Men /> },
@@ -151,10 +151,10 @@ export const router = createBrowserRouter([
         element: <AddAdmin />,
       },
       {
-        path:"comment",
-        element:<CommentAdmin/>
+        path: "comment",
+        element: <CommentAdmin />
       }
-      
+
     ],
   },
 ]);
