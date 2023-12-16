@@ -25,40 +25,40 @@ const Featured = () => {
         </div>
         <div className="product__list">
           {productFeatured?.map((product) => (
-            <div key={product?._id} className="product__list--item shadow-md rounded-xl">
-              <div className="product__list--img">
-                <Link to={`/detail/${product?._idProduct}`} onClick={() => window.scrollTo(0, 0)}>
-                  <img className="h-[250px] object-cover " src={product?.image} alt="" />
-                </Link>
-                {product?.discount &&
-                  product?.price && (
-                    <div className="product__item--sale">
-                      -
-                      {Math.round(
-                        ((product?.price -
-                          product?.discount) /
-                          product?.price) *
-                        100
-                      )}
-                      %
-                    </div>
-                  )}
+            <Link key={product?._id} to={`/detail/${product?._idProduct}`} onClick={() => window.scrollTo(0, 0)}>
+              <div className="product__list--item shadow-md rounded-xl duration-500 hover:scale-105">
+                <div className="product__list--img">
+                  <img className="h-[250px] w-full object-cover " src={product?.image} alt="" />
+                  {product?.discount &&
+                    product?.price && (
+                      <div className="product__item--sale">
+                        -
+                        {Math.floor(
+                          ((product?.price -
+                            product?.discount) /
+                            product?.price) *
+                          100
+                        )}
+                        %
+                      </div>
+                    )}
+                </div>
+                <div className="px-4 my-4 h-[40px] max-h-[40px] text-sm text-back line-clamp-2 hover:underline cursor-pointer font-sans">
+                  {product?.name}
+                </div>
+                <div className="px-3 text-orange-500 font-bold">Kích cỡ: {sizeData?.find(size => size._id == product?.sizeId)?.value}, Màu: {colorData?.find(color => color._id == product?.colorId)?.value}</div>
+                <div className="p-3 product__list--price text-left space-x-2 inline-block">
+                  <span className="product__list--initlprice">
+                    {product?.discount
+                      ? product?.discount.toLocaleString('vi-VN')
+                      : product?.price.toLocaleString('vi-VN')} VND
+                  </span>
+                </div>
+                <div className="p-3 inline-block float-right text-sm">
+                  Đã bán {product?.amountSold}
+                </div>
               </div>
-              <div className="px-4 my-4 h-[40px] max-h-[40px] text-sm text-back line-clamp-2 hover:underline cursor-pointer font-sans">
-                {product?.name}
-              </div>
-              <div className="px-3 text-orange-500 font-bold">Kích cỡ: {sizeData?.find(size => size._id == product?.sizeId)?.value}, Màu: {colorData?.find(color => color._id == product?.colorId)?.value}</div>
-              <div className="p-3 product__list--price text-left space-x-2 inline-block">
-                <span className="product__list--initlprice">
-                  {product?.discount
-                    ? product?.discount.toLocaleString('vi-VN')
-                    : product?.price.toLocaleString('vi-VN')} VND
-                </span>
-              </div>
-              <div className="p-3 inline-block float-right text-sm">
-                Đã bán {product?.amountSold}
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
