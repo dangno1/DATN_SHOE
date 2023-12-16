@@ -124,6 +124,7 @@ const Inforproduct = () => {
         quantityStock: selectedVariant?.quantity,
         variantsId: String(selectedVariant?._id),
         quantityAvailable: selectedVariant?.quantity || 0,
+        amountSold: selectedVariant?.amountSold
       };
 
       const data = await addCart(productToAdd);

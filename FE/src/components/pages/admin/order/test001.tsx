@@ -38,26 +38,21 @@ const Test001 = () => {
     if (selectedStatus == data?.[0].status) {
       openNotification("error", "Bạn Chưa Thay Đổi Trạng Thái");
     } else {
-      try {
+      // try {
         await updateOrder({
           _id: id,
           status: selectedStatus,
-          userName: "",
-          userEmail: "",
-          userAddress: "",
+          userName: data?.[0]?.userName,
+          userEmail: data?.[0]?.userEmail,
+          userAddress: data?.[0]?.userAddress,
           productName: "",
           quantity: 0,
           price: 0,
           initialPrice: 0,
-          size: 0,
           totalPrice: 0,
           category: "",
           image: "",
           color: "",
-          productID: undefined,
-          quantityStock: 0,
-          quantityAvailable: 0,
-          variantsId: undefined,
         });
 
         await sendEmail({
@@ -65,10 +60,10 @@ const Test001 = () => {
           status: selectedStatus,
         }).unwrap();
         openNotification("success", "Thanh Đổi Trạng Thái Thành Công");
-      } catch (error) {
-        console.error("Error updating order:", error);
-        openNotification("error", "Error updating order");
-      }
+      // } catch (error) {
+      //   console.error("Error updating order:", error);
+      //   openNotification("error", "Error updating order");
+      // }
     }
   };
 
