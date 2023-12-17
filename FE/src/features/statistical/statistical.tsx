@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Statistic, Table, Space, Tabs } from "antd";
+import { Statistic, Table, Space, Tabs, DatePicker } from "antd";
 import { useGetOrdersQuery } from "@/api/orderedProduct";
 import { valueType } from "antd/es/statistic/utils";
 import ReactApexChart from "react-apexcharts";
@@ -28,7 +28,16 @@ const Statistical = () => {
   const [test1, setTest1] = useState([]);
   const [testCount1, setTestCount1] = useState(0);
   const [testPrice1, setTestPrice1] = useState(0);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    console.log("Ngày bắt đầu:", start);
+    console.log("Ngày kết thúc:", end);
+    setStartDate(start);
+    setEndDate(end);
+  };
   const extractMonthYear = (orderTime) => {
     // const dateParts = orderTime.split("T")[0].split("-");
     // const year = dateParts[0];
@@ -318,7 +327,7 @@ const Statistical = () => {
           );
         }, 0);
 
-        const testPrice1 = orderProduct
+      const testPrice1 = orderProduct
         .filter((order) => order.status === "Đơn Hàng Đang Giao Đến Bạn")
         .reduce((acc, order) => {
           return (
@@ -433,7 +442,7 @@ const Statistical = () => {
       setTest(test);
       setTest1(test1);
     }
-  }, [orderProduct]);
+  }, [orderProduct, startDate, endDate]);
 
   // Kiểm tra nếu orderProduct không tồn tại
   if (!orderProduct) {
@@ -452,6 +461,10 @@ const Statistical = () => {
     );
   }, 0);
 
+
+  // console.log(orderProduct);
+  
+
   // Tính toán dữ liệu thống kê hàng được đặt nhiều nhất
   const mostOrderedProducts = orderProduct.reduce((acc, order) => {
     order.products.forEach((product) => {
@@ -467,12 +480,40 @@ const Statistical = () => {
           productImage: product.productImage,
           productPrice: product.productPrice,
           productQuantity: product.productQuantity,
+          orderDate: Date(order.timer)
         });
       }
     });
     return acc;
-  }, []);
+  }, []);  
+  console.log(mostOrderedProducts);
+  
 
+  const mostOrderedProductsInRange = mostOrderedProducts.filter((product) => {
+    const orderDate = new Date(product.orderDate);
+    const isWithinRange =
+      (!startDate || orderDate >= new Date(startDate)) &&
+      (!endDate || orderDate <= new Date(endDate));
+  
+    return isWithinRange;
+  });
+
+  const sortedMostOrderedProductsInRange = mostOrderedProductsInRange.sort(
+    (a, b) => b.count - a.count
+  );
+
+  const mostOrderedDataInRange = sortedMostOrderedProductsInRange.map(
+    (product) => ({
+      key: product._id,
+      productName: product.productName,
+      count: product.count,
+      productImage: product.productImage,
+      totalValue: product.productPrice * product.count,
+      priceProduct: product.productPrice,
+    })
+  );
+
+  console.log(mostOrderedProductsInRange);
   // Sắp xếp theo số lượng giảm dần
   const sortedMostOrderedProducts = mostOrderedProducts.sort(
     (a, b) => b.count - a.count
@@ -584,6 +625,9 @@ const Statistical = () => {
     totalValue: product.productPrice * product.count,
     priceProduct: product.productPrice,
   }));
+
+  // console.log(mostOrderedData);
+  
 
   // Hàm xử lý khi chọn tab
   const handleTabChange = (key: React.SetStateAction<string>) => {
@@ -761,7 +805,11 @@ const Statistical = () => {
           <Table columns={columns} dataSource={data} />
         </TabPane>
         <TabPane tab="Hàng Được Đặt Nhiều Nhất" key="mostOrdered">
-          <Table columns={mostOrderedColumns} dataSource={mostOrderedData} />
+          <DatePicker.RangePicker onChange={handleDateChange} />
+          <Table
+            columns={mostOrderedColumns}
+            dataSource={mostOrderedDataInRange}
+          />
         </TabPane>
         <TabPane tab="Thống Kê Theo Ngày" key="byDay">
           <div>

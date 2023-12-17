@@ -28,7 +28,17 @@ const CartDetail = () => {
   const [otpValue, setOtpValue] = useState("");
   const checkedItems = location.state?.checkedItems || [];
 
-  console.log(checkedItems);
+  // console.log(checkedItems);
+
+  console.log(parseFloat(checkedItems[0].amountSold) + parseFloat(checkedItems[0].quantity));
+  
+
+  let tolPrice = 0;
+  for (let i = 0; i < checkedItems.length; i++) {
+    tolPrice = tolPrice + checkedItems[i].totalPrice;
+  }
+  console.log(tolPrice);
+  
 
   // user
   const [name, setName] = useState("");
@@ -137,21 +147,12 @@ const CartDetail = () => {
         quantityStock: item?.quantityStock,
       })
     );
-    console.log(productsArray);
-    console.log(
-      parseFloat(productsArray[0].quantityStock) -
-        parseFloat(productsArray[0].productQuantity)
-    );
     const testQy = {
       productId: productsArray[0].productID,
       variantsId: checkedItems[0].variantsId,
-      newQuantity:
-        parseFloat(productsArray[0].quantityStock) -
-        parseFloat(productsArray[0].productQuantity),
-    };
-
-    console.log(testQy);
-    
+      newQuantity: parseFloat(productsArray[0].quantityStock) - parseFloat(productsArray[0].productQuantity),
+      amountSold: parseFloat(checkedItems[0].amountSold) + parseFloat(checkedItems[0].quantity),
+    };    
 
     const orderData = {
       userName: name,
@@ -368,7 +369,7 @@ const CartDetail = () => {
           <div className="flex justify-between items-center pt-5">
             <p className="text-gray-800"> Giá</p>
             <span className="text-gray-900">
-              {totalPrice.toLocaleString("vi-VN")}VND
+              {tolPrice.toLocaleString("vi-VN")}VND
             </span>
           </div>
           <div className="flex justify-between items-center pt-5 border-b pb-2">

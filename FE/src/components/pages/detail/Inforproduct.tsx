@@ -128,9 +128,10 @@ const Inforproduct = () => {
         color: selectedVariant.color.value,
         status: String(productData.variants[0].status),
         productID: String(productData?._id),
-        quantityStock: Number(variants?.quantity),
-        variantsId: String(variants?._id),
-        quantityAvailable: variants?.quantity || 0,
+        quantityStock: selectedVariant?.quantity,
+        variantsId: String(selectedVariant?._id),
+        quantityAvailable: selectedVariant?.quantity || 0,
+        amountSold: selectedVariant?.amountSold
       };
 
       const duplicateCart = cartData?.data?.find((cart) =>

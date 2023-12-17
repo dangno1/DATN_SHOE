@@ -19,4 +19,5 @@ export interface ICart {
   quantityStock: number,
   quantityAvailable: number ;
   variantsId: string | number | undefined;
+  amountSold: number
 }
