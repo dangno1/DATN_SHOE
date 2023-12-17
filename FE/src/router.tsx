@@ -25,7 +25,7 @@ import ListCategory from "./features/category/components/list";
 import ListCoupons from "./features/coupons/components/list";
 import Products from "./components/pages/home/prouducts";
 import ListProduct from "./features/products/components/list";
-import SaleProduct from "./components/pages/home/newProduct";
+import SaleProduct from "./components/pages/home/saleProduct";
 import ForgotPassword from "./features/auth/components/ForgotPassword";
 import DetailProduct from "./features/products/pages/detailProduct";
 import Test001 from "./components/pages/admin/order/test001";
@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <LayoutWebsite />,
     children: [
-      { path: "/undefined/:id", element: <LayoutTest /> },
+      { path: "/:categoryName/:id", element: <LayoutTest /> },
       { index: true, element: <HomePage /> },
       { path: "detail/:id", element: <Detail /> },
       { path: "Men/:id", element: <Men /> },
@@ -151,10 +151,10 @@ export const router = createBrowserRouter([
         element: <AddAdmin />,
       },
       {
-        path:"comment",
-        element:<CommentAdmin/>
+        path: "comment",
+        element: <CommentAdmin />
       }
-      
+
     ],
   },
 ]);

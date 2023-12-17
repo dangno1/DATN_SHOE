@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { CiSearch } from "react-icons/ci";
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { AiOutlineUser } from "react-icons/ai";
 import "./style.css";
 
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
-// import { AiOutlineUser } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
@@ -59,6 +57,14 @@ const Header = () => {
                 Trang Chủ
               </Link>
             </li>
+            <li>
+              <Link
+                to="/products"
+                className="text-black text-lg font-semibold uppercase hover:underline"
+              >
+                Sản phẩm
+              </Link>
+            </li>
             <li className="relative group">
               <span
                 className="cursor-pointer text-black text-lg font-semibold uppercase hover:underline"
@@ -73,11 +79,11 @@ const Header = () => {
                       Tất cả các sản phẩm
                     </Link>
                   </li>
-                  
+
                   {data?.map((cate: ICategory) => (
-                    <li className="text-black font-semibold uppercase hover:underline">
+                    <li key={cate._id} className="text-black font-semibold uppercase hover:underline">
                       <Link
-                        to={`/${cate?.slug}/${cate?._id}`}
+                        to={`/${cate?.name}/${cate?._id}`}
                         onClick={handleCategoryClick}
                       >
                         {cate?.name}
@@ -107,11 +113,6 @@ const Header = () => {
         </div>
         <div>
           <ul className="flex items-center space-x-6 list-none ">
-            <li>
-              <a href="#" className="text-3xl">
-                <CiSearch />
-              </a>
-            </li>
             <li>
               <Link to="/cart" className="text-3xl">
                 <LiaShoppingBagSolid />

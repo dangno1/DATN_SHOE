@@ -42,7 +42,7 @@ const BodyCart = () => {
 
   const updateQuantityPlusHandler = async (item: ICart) => {
     if (item.quantity < item.quantityStock) {
-      await updateQuantityPlus(item);
+      await updateQuantityPlus({ ...item, quantity: item.quantity + 1 });
     } else {
       console.log("Cannot increase quantity, already at maximum.");
       openNotification("warning", "Số lượng đã lớn nhất không thể thêm");

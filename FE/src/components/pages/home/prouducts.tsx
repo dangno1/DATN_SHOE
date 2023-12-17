@@ -1,13 +1,13 @@
 import { useGetProductsQuery } from "@/api/product";
 import { useEffect, useState } from "react";
 import Slider from "./banner";
-import {  useGetColorsQuery } from "@/api/color";
-import {  useGetSizesQuery } from "@/api/size";
+import { useGetColorsQuery } from "@/api/color";
+import { useGetSizesQuery } from "@/api/size";
 import { useGetCategoryesQuery } from "@/api/category";
 import { Link } from "react-router-dom";
 import { IProduct } from "@/interface/product";
 import Blog from "./Blog/index";
-import "./outstanding products/style.css"
+import "./featuredProducts/style.css"
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
   // console.log(data); 
@@ -16,11 +16,11 @@ const Products = () => {
   const [productData, setProductData] = useState<IProduct[]>(data); //dùng chung
   const [sortOrder, setSortOrder] = useState("asc");
   const { data: Cate } = useGetCategoryesQuery();
-  
+
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const test = (event:any) => {
-    const selectedId = event.target.value; 
-    const selectedName = event.target.options[event.target.selectedIndex].text; 
+  const test = (event: any) => {
+    const selectedId = event.target.value;
+    const selectedName = event.target.options[event.target.selectedIndex].text;
     console.log(`Selected Category Id: ${selectedId}`);
     console.log(`Selected Category Name: ${selectedName}`);
     setSelectedSubcategory(selectedId);
@@ -37,7 +37,7 @@ const Products = () => {
         item.categoryId == selectedSubcategory
       );
       console.log(newProduct);
-      
+
       setProductData(newProduct);
     } else {
       setProductData(data || []);
@@ -89,7 +89,7 @@ const Products = () => {
       setProductData(sortedArray);
     }
   };
- 
+
 
   return (
     <>
@@ -130,7 +130,7 @@ const Products = () => {
             >
               <option value="">Tất cả kích thước</option>
               {Size?.map((sizeItem: any) => (
-                <option  value={sizeItem?._id} key={sizeItem?._id}>
+                <option value={sizeItem?._id} key={sizeItem?._id}>
                   {sizeItem?.value}
                 </option>
               ))}
@@ -143,7 +143,7 @@ const Products = () => {
             >
               <option value="">Danh mục</option>
               {Cate?.map((cateitem: any) => (
-                <option                  
+                <option
                   value={cateitem?._id}
                   key={cateitem?._id}
                 >
@@ -158,7 +158,7 @@ const Products = () => {
         <div className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14">
           {productData?.map((product: IProduct) => (
             <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-               <Link to={`/detail/${product._id}`}>
+              <Link to={`/detail/${product._id}`}>
                 <img
                   src={product?.image}
                   alt="Product"
@@ -173,13 +173,13 @@ const Products = () => {
                   </p>
                   <div className="flex items-center">
                     <p className="text-lg font-semibold cursor-auto my-3 text-red-500">
-                    {product?.variants[0].discount.toLocaleString('vi-VN')} VND
+                      {product?.variants[0].discount.toLocaleString('vi-VN')} VND
                     </p>
                     <del>
                       <p className="text-sm text-gray-600 cursor-auto ml-2">
-                      {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                        {product?.variants[0].price.toLocaleString('vi-VN')} VND
                       </p>
-                    </del>  
+                    </del>
                   </div>
                 </div>
               </Link>
@@ -187,7 +187,6 @@ const Products = () => {
           ))}
         </div>
       </div>
-      <Blog />
     </>
   );
 };
