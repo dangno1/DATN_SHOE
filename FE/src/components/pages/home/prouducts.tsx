@@ -6,11 +6,12 @@ import { useGetSizesQuery } from "@/api/size";
 import { useGetCategoryesQuery } from "@/api/category";
 import { Link } from "react-router-dom";
 import { IProduct } from "@/interface/product";
-import Blog from "./Blog/index";
 import "./featuredProducts/style.css"
+import { IColor } from "@/interface/color";
+import { ISize } from "@/interface/size";
+import { ICategory } from "@/interface/category";
 const Products = () => {
   const { data } = useGetProductsQuery<{ data: IProduct[] }>(false);
-  // console.log(data); 
   const { data: Color } = useGetColorsQuery();
   const { data: Size } = useGetSizesQuery();
   const [productData, setProductData] = useState<IProduct[]>(data); //dùng chung
@@ -18,11 +19,8 @@ const Products = () => {
   const { data: Cate } = useGetCategoryesQuery();
 
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const test = (event: any) => {
+  const test = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = event.target.value;
-    const selectedName = event.target.options[event.target.selectedIndex].text;
-    console.log(`Selected Category Id: ${selectedId}`);
-    console.log(`Selected Category Name: ${selectedName}`);
     setSelectedSubcategory(selectedId);
   };
 
@@ -90,6 +88,20 @@ const Products = () => {
     }
   };
 
+  const priceMin = (variants: IProduct['variants'][0][]) => {
+    return Math.min(...[...new Set(variants.flatMap((variants: IProduct['variants'][0]) => {
+      if (variants.discount) {
+        return variants.discount
+      } else return variants.price
+    }))])
+  }
+  const priceMax = (variants: IProduct['variants'][0][]) => {
+    return Math.max(...[...new Set(variants.flatMap((variants: IProduct['variants'][0]) => {
+      if (variants.discount) {
+        return variants.discount
+      } else return variants.price
+    }))])
+  }
 
   return (
     <>
@@ -117,7 +129,7 @@ const Products = () => {
               className="border border-gray-300 rounded-md p-2 ml-2"
             >
               <option value="">Tất cả màu</option>
-              {Color?.map((colorItem: any) => (
+              {Color?.map((colorItem: IColor) => (
                 <option value={colorItem?._id} key={colorItem?._id}>
                   {colorItem?.value}
                 </option>
@@ -129,7 +141,7 @@ const Products = () => {
               className="border border-gray-300 rounded-md p-2 ml-2"
             >
               <option value="">Tất cả kích thước</option>
-              {Size?.map((sizeItem: any) => (
+              {Size?.map((sizeItem: ISize) => (
                 <option value={sizeItem?._id} key={sizeItem?._id}>
                   {sizeItem?.value}
                 </option>
@@ -142,7 +154,7 @@ const Products = () => {
               className="border border-gray-300 rounded-md p-2 ml-2"
             >
               <option value="">Danh mục</option>
-              {Cate?.map((cateitem: any) => (
+              {Cate?.map((cateitem: ICategory) => (
                 <option
                   value={cateitem?._id}
                   key={cateitem?._id}
@@ -158,28 +170,29 @@ const Products = () => {
         <div className="w-fit mx-auto grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-14">
           {productData?.map((product: IProduct) => (
             <div className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-              <Link to={`/detail/${product._id}`}>
+              <Link to={`/detail/${product._id}`} onClick={() => window.scrollTo(0, 0)}>
                 <img
-                  src={product?.image}
+                  src={String(product?.image)}
                   alt="Product"
                   className="h-80 w-72 object-cover rounded-t-xl"
                 />
                 <div className="px-4 py-3 w-72">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">
-                    {product?.brand}
-                  </span>
                   <p className="text-lg font-bold text-black truncate block hover:underline uppercase">
                     {product?.name}
                   </p>
                   <div className="flex items-center">
-                    <p className="text-lg font-semibold cursor-auto my-3 text-red-500">
-                      {product?.variants[0].discount.toLocaleString('vi-VN')} VND
-                    </p>
-                    <del>
+                    {<p className="text-lg font-semibold cursor-auto my-3 text-red-500">
+                      {
+                        priceMin(product.variants).toLocaleString("vi-VN")
+                      } VND
+                    </p>}
+                    {(priceMax(product.variants) > priceMin(product.variants)) && <del>
                       <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        {product?.variants[0].price.toLocaleString('vi-VN')} VND
+                        {
+                          priceMax(product.variants).toLocaleString("vi-VN")
+                        } VND
                       </p>
-                    </del>
+                    </del>}
                   </div>
                 </div>
               </Link>
