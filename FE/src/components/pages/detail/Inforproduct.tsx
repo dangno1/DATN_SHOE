@@ -23,6 +23,7 @@ type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 const Inforproduct = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data: sizeData } = useGetSizesQuery()
   const { data: colorData } = useGetColorsQuery()
@@ -95,7 +96,8 @@ const Inforproduct = () => {
     }
   }, [productData?.variants, selectedVariant]);
 
-  const navigate = useNavigate();
+  console.log(amount);
+
   const handleAddCar = async () => {
     if (!userData.username || !userData.email || !userData.address) {
       openNotification('warning', "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.");
@@ -122,7 +124,7 @@ const Inforproduct = () => {
         price: Number(variants?.discount),
         initialPrice: Number(variants?.price),
         size: selectedVariant.size.value,
-        totalPrice: amount * Number(variants?.discount) || Number(variants?.price),
+        totalPrice: amount * (Number(variants?.discount) ? Number(variants?.discount) : Number(variants?.price)),
         category: productData.categoryId,
         image: String(productData.image),
         color: selectedVariant.color.value,
@@ -133,6 +135,7 @@ const Inforproduct = () => {
         quantityAvailable: Number(variants?.quantity) || 0,
         amountSold: Number(variants?.amountSold)
       };
+
 
       const duplicateCart = cartData?.data?.find((cart) =>
         cart.productID == productData._id
