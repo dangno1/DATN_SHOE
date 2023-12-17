@@ -128,10 +128,10 @@ const Inforproduct = () => {
         color: selectedVariant.color.value,
         status: String(productData.variants[0].status),
         productID: String(productData?._id),
-        quantityStock: selectedVariant?.quantity,
-        variantsId: String(selectedVariant?._id),
-        quantityAvailable: selectedVariant?.quantity || 0,
-        amountSold: selectedVariant?.amountSold
+        quantityStock: Number(variants?.quantity),
+        variantsId: String(variants?._id),
+        quantityAvailable: Number(variants?.quantity) || 0,
+        amountSold: Number(variants?.amountSold)
       };
 
       const duplicateCart = cartData?.data?.find((cart) =>
@@ -167,31 +167,6 @@ const Inforproduct = () => {
       setAmount(amount - 1);
     }
   };
-  //--------------------------------
-  // const starsData = useGetRateQuery();
-  // const calculateAverageStarsFromPath = (starsData, idFromPath) => {
-  //   let totalStars = 0;
-  //   let numberOfRatings = 0;
-  //   const stars = starsData?.data?.filter((item: any) => item.productID?._id === id);
-  //   if (stars && Array.isArray(stars)) {
-  //     stars.forEach((item) => {
-  //       if (item && item.stars) {
-  //         totalStars += item.stars;
-  //         numberOfRatings++;
-  //       }
-  //     });
-  //   }
-  //   const averageStars = numberOfRatings > 0 ? totalStars / numberOfRatings : 0;
-  //   return {
-  //     totalStars,
-  //     averageStars: averageStars.toFixed(1),
-  //   };
-  // };
-  // const saoData = starsData;
-  // console.log(saoData);
-  // const { totalStars, averageStars } = calculateAverageStarsFromPath(saoData, id);
-  // console.log('Total Stars:', totalStars);
-  // console.log('Average Stars:', averageStars);
   return (
     <div>
       {notificationVisible}
