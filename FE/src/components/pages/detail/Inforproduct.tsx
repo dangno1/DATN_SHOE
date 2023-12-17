@@ -122,7 +122,7 @@ const Inforproduct = () => {
         price: Number(variants?.discount),
         initialPrice: Number(variants?.price),
         size: selectedVariant.size.value,
-        totalPrice: amount * Number(variants?.discount),
+        totalPrice: amount * Number(variants?.discount) || Number(variants?.price),
         category: productData.categoryId,
         image: String(productData.image),
         color: selectedVariant.color.value,
@@ -241,8 +241,8 @@ const Inforproduct = () => {
                       <div className="flex items-center gap-2 text-[27px] font-bold text-red-500 bg-orange-50 px-5">
                         {variants
                           ? <>
-                            <span> {variants?.discount.toLocaleString("vi-VN")} VND</span>
-                            <span className="ml-2 text-base font-normal text-gray-500 line-through">
+                            {variants.discount && <span> {variants?.discount?.toLocaleString("vi-VN")} VND</span>}
+                            <span className={`${variants.discount && "ml-2 text-base font-normal text-gray-500 line-through"}`}>
                               {variants?.price.toLocaleString("vi-VN")} VND
                             </span>
                           </>

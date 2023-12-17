@@ -1,6 +1,5 @@
 import { useGetProductsQuery } from "@/api/product";
 import { IProduct } from "@/interface/product";
-import Blog from "./Blog/index";
 import Slider from "./banner";
 import "./featuredProducts/style.css"
 
