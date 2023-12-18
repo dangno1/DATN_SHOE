@@ -1,4 +1,3 @@
-import { useRateProductMutation } from "@/api/rating";
 import Banner from "../userinformation/banner";
 import { useEffect, useState } from "react";
 import { notification } from "antd";
@@ -69,7 +68,6 @@ const OderHistory = () => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
-  const [addReview] = useRateProductMutation(); // Sử dụng mutation để thêm đánh giá
 
   const handleMouseOver = (index: any) => {
     setHoverRating(index);

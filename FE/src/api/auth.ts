@@ -9,11 +9,11 @@ const userApi = createApi({
     baseUrl: `http://localhost:8000`,
   }),
   endpoints: (builder) => ({
-    getUser: builder.query<IUser[], void>({
+    getUser: builder.query<{ datas: IUser[]; message: string }, void>({
       query: () => `/api/users/`,
       providesTags: ["User"],
     }),
-    
+
     getUserById: builder.query<IUser, number | string>({
       query: (id) => `/api/user/${id}`,
       providesTags: ["User"],
@@ -53,10 +53,7 @@ const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    addUser: builder.mutation<
-      IUser,
-      IUser
-    >({
+    addUser: builder.mutation<IUser, IUser>({
       query: (user) => ({
         url: `/api/user/addUser`,
         method: "POST",
@@ -65,52 +62,42 @@ const userApi = createApi({
       invalidatesTags: ["User"],
     }),
 
-    updateUser: builder.mutation<
-     IUser,
-    IUser
-    >({
+    updateUser: builder.mutation<IUser, IUser>({
       query: (user) => ({
         url: `/api/user/updateUser/${user._id}`,
         method: "PATCH",
-        body: {...user,_id:undefined},
+        body: { ...user, _id: undefined },
       }),
       invalidatesTags: ["User"],
     }),
 
-    changePassword: builder.mutation<
-     IUser,
-    IUser
-    >({
+    changePassword: builder.mutation<IUser, IUser>({
       query: (user) => ({
         url: `/api/user/changePassword/${user._id}`,
         method: "PATCH",
-        body: {...user,_id:undefined},
+        body: { ...user, _id: undefined },
       }),
       invalidatesTags: ["User"],
     }),
 
-    forgotPassword: builder.mutation<
-    { message: string },
-    { email: string }
-  >({
-    query: (email) => ({
-      url: `/api/auth/forgotpassword`, 
-      method: "POST",
-      body: { email },
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
+      query: (email) => ({
+        url: `/api/auth/forgotpassword`,
+        method: "POST",
+        body: { email },
+      }),
     }),
-  }),
 
-  resetPassword: builder.mutation<
-    { message: string },
-    { email: string, otp: number, newPassword: string }
-  >({
-    query: (data) => ({
-      url: `/api/auth/resetpassword`,
-      method: "POST",
-      body: data,
+    resetPassword: builder.mutation<
+      { message: string },
+      { email: string; otp: number; newPassword: string }
+    >({
+      query: (data) => ({
+        url: `/api/auth/resetpassword`,
+        method: "POST",
+        body: data,
+      }),
     }),
-  }),
-
   }),
 });
 export const {
@@ -122,7 +109,7 @@ export const {
   useUpdateUserMutation,
   useChangePasswordMutation,
   useForgotPasswordMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
 } = userApi;
 export const authReducer = userApi.reducer;
 export default userApi;

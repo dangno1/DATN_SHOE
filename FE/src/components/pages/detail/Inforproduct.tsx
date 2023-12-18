@@ -14,9 +14,10 @@ import { notification } from "antd";
 import { IColor } from "@/interface/color";
 import { ISize } from "@/interface/size";
 import { LiaShippingFastSolid } from "react-icons/lia";
-import { Divider, Rating } from "@mui/material";
+import { Divider } from "@mui/material";
 import { IProduct } from "@/interface/product";
 import Similarproduct from "./Similarproduct";
+import Review from "@/components/review/review";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
@@ -96,8 +97,6 @@ const Inforproduct = () => {
     }
   }, [productData?.variants, selectedVariant]);
 
-  console.log(amount);
-
   const handleAddCar = async () => {
     if (!userData.username || !userData.email || !userData.address) {
       openNotification('warning', "Bạn chưa có tài khoản. Vui lòng đăng nhập hoặc đăng ký để thêm sản phẩm vào giỏ hàng.");
@@ -143,13 +142,14 @@ const Inforproduct = () => {
         && cart.size == selectedVariant.size?.value)
 
       if (duplicateCart?._id) {
-        console.log(variants?.quantity);
         const quantityCart = (duplicateCart.quantity + amount > Number(variants?.quantity) ? Number(variants?.quantity) : (duplicateCart.quantity + amount))
         await updateCart({ ...duplicateCart, quantity: quantityCart })
         openNotification('success', "Đã thêm sản phẩm vào giỏ hàng thành công");
+        console.log(duplicateCart);
         return
       }
       const data = await addCart(productToAdd);
+
       data && openNotification('success', "Đã thêm sản phẩm vào giỏ hàng thành công");
 
     }
@@ -211,11 +211,7 @@ const Inforproduct = () => {
                     <div>
                       <h2 className="mt-2 text-xl line-clamp-3">{productData.name}</h2>
                       <div className="h-[50px] flex items-center text-base text-slate-700">
-                        {<span className="pr-5 border-r border-r-slate-500 text-red-500 text-lg flex items-center gap-x-2 underline">
-                          0.0 <Rating name="size-small" value={0} disabled size="medium" />
-                        </span>}
-                        <span className="px-5 border-r border-r-slate-500">Chưa có đánh giá</span>
-                        <span className="px-5">Đã bán {totalAmountSold}</span>
+                        <span className="">Đã bán {totalAmountSold}</span>
                       </div>
                       <div className="flex items-center gap-2 text-[27px] font-bold text-red-500 bg-orange-50 px-5">
                         {variants
@@ -345,6 +341,10 @@ const Inforproduct = () => {
               <div className="w-full overflow-hidden">
                 <Divider key={1} textAlign="center" className="!mt-[40px] text-[24px] font-semibold uppercase">Mô tả sản phẩm</Divider>
                 <div dangerouslySetInnerHTML={{ __html: String(productData.desc) }} className="text-lg mt-[20px]" />
+              </div>
+              <div className="w-full overflow-hidden">
+                <Divider key={2} textAlign="center" className="!mt-[40px] text-[24px] font-semibold uppercase">Đánh giá sản phẩm</Divider>
+                <Review data={{ productId: String(productData._id), user: userData }} />
               </div>
             </div>
           )
