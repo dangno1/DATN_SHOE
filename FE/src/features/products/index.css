@@ -1,0 +1,23 @@
+.scroll-hiden::-webkit-scrollbar {
+  display: none;
+}
+
+.ck-file-dialog-button {
+  display: none !important;
+}
+
+.ck-toolbar_grouping,
+.ck-editor__editable_inline {
+  border: none !important;
+  border-radius: 5px !important;
+}
+
+.ck-toolbar_grouping {
+  border-bottom: 1px solid #d0dbf0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.ck-editor__editable_inline {
+  box-shadow: none !important;
+}
