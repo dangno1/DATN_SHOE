@@ -54,6 +54,7 @@ const OderHistory = () => {
       message: "Thông báo",
       description: "Bạn đã xác nhận đã nhận được hàng.",
     });
+    updateOrder({ _id: orderId, status: "Đã Nhận Được Hàng" })
   };
 
   const handleCancel = (orderId) => {
@@ -161,7 +162,7 @@ const OderHistory = () => {
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  {orderItem.status !== "Hủy Đơn Hàng" && (
+                  {orderItem.status !== "Hủy Đơn Hàng" && orderItem.status !== "Chưa Xác Nhận" && orderItem.status !== "Đơn Hàng Đang Giao Đến Bạn" && orderItem.status !== "Đã Xác Nhận" && (
                     <>
                       <div className="pt-5 flex justify-center items-center font-medium text-lg">
                         Đánh giá sản phẩm
