@@ -79,7 +79,7 @@ const BodyCart = () => {
       {contextHolder}
       <div className="container mx-auto lg:grid lg:grid-cols-[2fr,1fr] gap-10 pb-32">
         <div className="pt-20 lg:pl-36">
-          <h2 className="text-4xl text-center font-semibold font-sans leading-10 pb-5 text-slate-700">
+          <h2 className="text-4xl font-semibold font-sans leading-10 pb-5 text-slate-700">
             GIỎ HÀNG CỦA BẠN
           </h2>
           {dataCart?.length

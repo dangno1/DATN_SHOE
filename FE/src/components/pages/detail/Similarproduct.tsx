@@ -16,6 +16,7 @@ const Similarproduct = (props: { categoryId: string, productId: string }) => {
         </div>
         <section
           id="Projects"
+          className="flex flex-wrap gap-16 mt-10"
         >
           {productData?.length
             ? productData.map((product: IProduct) => (

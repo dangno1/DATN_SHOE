@@ -1,4 +1,5 @@
 export interface IOrder {
+  timer: string;
   orderTime: string | number | Date;
   _id: string | number | undefined;
   userName: string;

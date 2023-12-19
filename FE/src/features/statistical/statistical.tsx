@@ -4,6 +4,7 @@ import { useGetOrdersQuery } from "@/api/orderedProduct";
 import { valueType } from "antd/es/statistic/utils";
 import ReactApexChart from "react-apexcharts";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
 const { TabPane } = Tabs;
 
@@ -21,7 +22,6 @@ const Statistical = () => {
   const [canceledCount, setCanceledCount] = useState(0);
   const [canceledTotal, setCanceledTotal] = useState(0);
   const [monthlyChartData, setMonthlyChartData] = useState({});
-  const [dailyChartData, setDailyChartData] = useState({});
   const [test, setTest] = useState([]);
   const [testCount, setTestCount] = useState(0);
   const [testPrice, setTestPrice] = useState(0);
@@ -33,27 +33,40 @@ const Statistical = () => {
 
   const handleDateChange = (dates) => {
     const [start, end] = dates;
-    console.log("Ngày bắt đầu:", start);
-    console.log("Ngày kết thúc:", end);
-    setStartDate(start);
-    setEndDate(end);
-  };
-  const extractMonthYear = (orderTime) => {
-    // const dateParts = orderTime.split("T")[0].split("-");
-    // const year = dateParts[0];
-    // const month = dateParts[1];
-    // return `${year}-${month}`;
+    setStartDate(dayjs(start).format("YYYY-MM-DD"));
+    setEndDate(dayjs(end).format("YYYY-MM-DD"));
   };
 
-  // Dữ liệu cho biểu đồ thanh
+  const extractMonthYear = (timer: unknown) => {
+    if (timer === undefined || timer === null) {
+      return "N/A";
+    }
+    const orderDate = new Date(String(timer));
+    if (isNaN(orderDate.getTime())) {
+      console.error("Invalid Date:", timer);
+      return "N/A";
+    }
+    const year = orderDate.getFullYear();
+    const month = String(orderDate.getMonth() + 1).padStart(2, "0");
+
+    return `${year}-${month}`;
+  };
+
   useEffect(() => {
     if (orderProduct) {
-      // Xác định dữ liệu cho biểu đồ area
+      const filteredOrders = [];
+      for (const order of orderProduct) {
+        const orderDate = dayjs(order.timer).format("YYYY-MM-DD");
+        if(parseFloat(orderDate.replace(/-/g, "")) >= parseFloat(startDate?.replace(/-/g, "")) && parseFloat(orderDate.replace(/-/g, "")) <= parseFloat(endDate?.replace(/-/g, ""))) {
+          filteredOrders.push(order);
+        }
+      }
+
       const chartData = {
         series: [
           {
             name: "Tổng Giá Đơn Hàng",
-            data: orderProduct.map((order) =>
+            data: filteredOrders.map((order) =>
               order.products.reduce(
                 (acc, product) =>
                   acc + product.productInitialPrice * product.productQuantity,
@@ -75,7 +88,7 @@ const Statistical = () => {
           },
           tooltip: {
             y: {
-              formatter: function (value) {
+              formatter: function (value: { toLocaleString: () => string }) {
                 return value.toLocaleString() + " VND";
               },
             },
@@ -86,7 +99,7 @@ const Statistical = () => {
         series: [
           {
             name: "Tổng Giá Đơn Hàng",
-            data: orderProduct
+            data: filteredOrders
               .filter((order) => order.status === "Chờ Xác Nhận")
               .map((order) =>
                 order.products.reduce(
@@ -110,7 +123,7 @@ const Statistical = () => {
           },
           tooltip: {
             y: {
-              formatter: function (value) {
+              formatter: function (value: { toLocaleString: () => string }) {
                 return value.toLocaleString() + " VND";
               },
             },
@@ -121,7 +134,7 @@ const Statistical = () => {
         series: [
           {
             name: "Tổng Giá Đơn Hàng",
-            data: orderProduct
+            data: filteredOrders
               .filter((order) => order.status === "Đơn Hàng Đã Giao Thành Công")
               .map((order) =>
                 order.products.reduce(
@@ -145,7 +158,7 @@ const Statistical = () => {
           },
           tooltip: {
             y: {
-              formatter: function (value) {
+              formatter: function (value: { toLocaleString: () => string }) {
                 return value.toLocaleString() + " VND";
               },
             },
@@ -156,7 +169,7 @@ const Statistical = () => {
         series: [
           {
             name: "Tổng Giá Đơn Hàng",
-            data: orderProduct
+            data: filteredOrders
               .filter((order) => order.status === "Đã Xác Nhận")
               .map((order) =>
                 order.products.reduce(
@@ -180,7 +193,7 @@ const Statistical = () => {
           },
           tooltip: {
             y: {
-              formatter: function (value) {
+              formatter: function (value: { toLocaleString: () => string }) {
                 return value.toLocaleString() + " VND";
               },
             },
@@ -191,7 +204,7 @@ const Statistical = () => {
         series: [
           {
             name: "Tổng Giá Đơn Hàng",
-            data: orderProduct
+            data: filteredOrders
               .filter((order) => order.status === "Đơn Hàng Đang Giao Đến Bạn")
               .map((order) =>
                 order.products.reduce(
@@ -215,7 +228,7 @@ const Statistical = () => {
           },
           tooltip: {
             y: {
-              formatter: function (value) {
+              formatter: function (value: { toLocaleString: () => string }) {
                 return value.toLocaleString() + " VND";
               },
             },
@@ -226,8 +239,8 @@ const Statistical = () => {
         series: [
           {
             name: "Tổng Giá Đơn Hàng",
-            data: orderProduct
-              .filter((order) => order.status === "Đơn Hàng Đã Hủy")
+            data: filteredOrders
+              .filter((order) => order.status === "Hủy Đơn Hàng")
               .map((order) =>
                 order.products.reduce(
                   (acc, product) =>
@@ -250,7 +263,7 @@ const Statistical = () => {
           },
           tooltip: {
             y: {
-              formatter: function (value) {
+              formatter: function (value: { toLocaleString: () => string }) {
                 return value.toLocaleString() + " VND";
               },
             },
@@ -258,23 +271,23 @@ const Statistical = () => {
         },
       };
 
-      const pendingConfirmationCount = orderProduct.filter(
+      const pendingConfirmationCount = filteredOrders.filter(
         (order) => order.status === "Chờ Xác Nhận"
       ).length;
-      const priceOrderSuccessCount = orderProduct.filter(
+      const priceOrderSuccessCount = filteredOrders.filter(
         (order) => order.status === "Đơn Hàng Đã Giao Thành Công"
       ).length;
-      const testCount = orderProduct.filter(
+      const testCount = filteredOrders.filter(
         (order) => order.status === "Đã Xác Nhận"
       ).length;
-      const canceledCount = orderProduct.filter(
-        (order) => order.status === "Đơn Hàng Đã Hủy"
+      const canceledCount = filteredOrders.filter(
+        (order) => order.status === "Hủy Đơn Hàng"
       ).length;
-      const testCount1 = orderProduct.filter(
+      const testCount1 = filteredOrders.filter(
         (order) => order.status === "Đơn Hàng Đang Giao Đến Bạn"
       ).length;
 
-      const pendingConfirmationTotal = orderProduct
+      const pendingConfirmationTotal = filteredOrders
         .filter((order) => order.status === "Chờ Xác Nhận")
         .reduce((acc, order) => {
           return (
@@ -287,7 +300,7 @@ const Statistical = () => {
             }, 0)
           );
         }, 0);
-      const priceOrderSuccess = orderProduct
+      const priceOrderSuccess = filteredOrders
         .filter((order) => order.status === "Đơn Hàng Đã Giao Thành Công")
         .reduce((acc, order) => {
           return (
@@ -300,7 +313,7 @@ const Statistical = () => {
             }, 0)
           );
         }, 0);
-      const testPrice = orderProduct
+      const testPrice = filteredOrders
         .filter((order) => order.status === "Đã Xác Nhận")
         .reduce((acc, order) => {
           return (
@@ -313,8 +326,8 @@ const Statistical = () => {
             }, 0)
           );
         }, 0);
-      const canceledTotal = orderProduct
-        .filter((order) => order.status === "Đơn Hàng Đã Hủy")
+      const canceledTotal = filteredOrders
+        .filter((order) => order.status === "Hủy Đơn Hàng")
         .reduce((acc, order) => {
           return (
             acc +
@@ -327,7 +340,7 @@ const Statistical = () => {
           );
         }, 0);
 
-      const testPrice1 = orderProduct
+      const testPrice1 = filteredOrders
         .filter((order) => order.status === "Đơn Hàng Đang Giao Đến Bạn")
         .reduce((acc, order) => {
           return (
@@ -341,12 +354,15 @@ const Statistical = () => {
           );
         }, 0);
 
-      const ordersByMonth = orderProduct.reduce((acc, order) => {
-        const monthYear = extractMonthYear(order.orderTime);
-        if (!acc[monthYear]) {
-          acc[monthYear] = 1;
-        } else {
-          acc[monthYear]++;
+      const ordersByMonth = filteredOrders.reduce((acc, order) => {
+        const orderDate = dayjs(order.timer).format("YYYY-MM-DD");
+        if (parseFloat(orderDate.replace(/-/g, "")) >= parseFloat(startDate?.replace(/-/g, "")) && parseFloat(orderDate.replace(/-/g, "")) <= parseFloat(endDate?.replace(/-/g, ""))) {
+          const monthYear = extractMonthYear(order.timer);
+          if (!acc[monthYear]) {
+            acc[monthYear] = 1;
+          } else {
+            acc[monthYear]++;
+          }
         }
         return acc;
       }, {});
@@ -372,58 +388,13 @@ const Statistical = () => {
           },
           tooltip: {
             y: {
-              formatter: function (value) {
+              formatter: function (value: string) {
                 return value + " đơn hàng";
               },
             },
           },
         },
       };
-
-      const ordersByDay = orderProduct.reduce((acc, order) => {
-        const orderDate = new Date(order.orderTime);
-        const day = `${orderDate.getFullYear()}-${String(
-          orderDate.getMonth() + 1
-        ).padStart(2, "0")}-${String(orderDate.getDate()).padStart(2, "0")}`;
-
-        if (!acc[day]) {
-          acc[day] = 1;
-        } else {
-          acc[day]++;
-        }
-        return acc;
-      }, {});
-
-      const dailyChartData = {
-        series: [
-          {
-            name: "Số Đơn Hàng",
-            data: Object.values(ordersByDay),
-          },
-        ],
-        options: {
-          chart: {
-            type: "bar",
-          },
-          xaxis: {
-            categories: Object.keys(ordersByDay),
-          },
-          yaxis: {
-            title: {
-              text: "Số Đơn Hàng",
-            },
-          },
-          tooltip: {
-            y: {
-              formatter: function (value) {
-                return value + " đơn hàng";
-              },
-            },
-          },
-        },
-      };
-
-      setDailyChartData(dailyChartData);
       setMonthlyChartData(monthlyChartData);
       setPendingConfirmationTotal(pendingConfirmationTotal);
       setPendingConfirmationCount(pendingConfirmationCount);
@@ -462,9 +433,6 @@ const Statistical = () => {
   }, 0);
 
 
-  // console.log(orderProduct);
-  
-
   // Tính toán dữ liệu thống kê hàng được đặt nhiều nhất
   const mostOrderedProducts = orderProduct.reduce((acc, order) => {
     order.products.forEach((product) => {
@@ -480,43 +448,43 @@ const Statistical = () => {
           productImage: product.productImage,
           productPrice: product.productPrice,
           productQuantity: product.productQuantity,
-          orderDate: Date(order.timer)
+          orderDate: order.timer,
         });
       }
     });
     return acc;
-  }, []);  
-  console.log(mostOrderedProducts);
-  
+  }, []);
 
-  const mostOrderedProductsInRange = mostOrderedProducts.filter((product) => {
-    const orderDate = new Date(product.orderDate);
-    const isWithinRange =
-      (!startDate || orderDate >= new Date(startDate)) &&
-      (!endDate || orderDate <= new Date(endDate));
-  
-    return isWithinRange;
-  });
+  // const mostOrderedProductsInRange = mostOrderedProducts.filter((product) => {
+    // const orderDate = Date(product.orderDate);
+    // const isWithinRange =
+    //   (!startDate || orderDate >= Date(startDate)) &&
+    //   (!endDate || orderDate <= Date(endDate));
 
-  const sortedMostOrderedProductsInRange = mostOrderedProductsInRange.sort(
+    // return isWithinRange;
+
+    const filteredOrders2 = [];
+      for (const product of mostOrderedProducts) {
+        const orderDate1 = dayjs(product.orderDate).format("YYYY-MM-DD");
+        if(parseFloat(orderDate1.replace(/-/g, "")) >= parseFloat(startDate?.replace(/-/g, "")) && parseFloat(orderDate1.replace(/-/g, "")) <= parseFloat(endDate?.replace(/-/g, ""))) {
+          filteredOrders2.push(product);
+        }
+      }
+  // });
+
+  const sortedMostOrderedProductsInRange = filteredOrders2.sort(
     (a, b) => b.count - a.count
   );
 
   const mostOrderedDataInRange = sortedMostOrderedProductsInRange.map(
     (product) => ({
       key: product._id,
-      productName: product.productName,
-      count: product.count,
-      productImage: product.productImage,
-      totalValue: product.productPrice * product.count,
+      productName: product?.productName,
+      count: product?.count,
+      productImage: product?.productImage,
+      totalValue: product?.productPrice * product?.count,
       priceProduct: product.productPrice,
     })
-  );
-
-  console.log(mostOrderedProductsInRange);
-  // Sắp xếp theo số lượng giảm dần
-  const sortedMostOrderedProducts = mostOrderedProducts.sort(
-    (a, b) => b.count - a.count
   );
 
   // Các cột cho bảng
@@ -546,7 +514,7 @@ const Statistical = () => {
     },
     {
       title: "Chi Tiết Đơn Hàng",
-      render: (text, record) => (
+      render: (record: { key: unknown }) => (
         <Space size="middle">
           <Link to={`detail/${record.key}`}>Chi Tiết</Link>
         </Space>
@@ -616,19 +584,6 @@ const Statistical = () => {
     },
   ];
 
-  // Dữ liệu cho bảng thống kê hàng được đặt nhiều nhất
-  const mostOrderedData = sortedMostOrderedProducts.map((product) => ({
-    key: product._id,
-    productName: product.productName,
-    count: product.count,
-    productImage: product.productImage,
-    totalValue: product.productPrice * product.count,
-    priceProduct: product.productPrice,
-  }));
-
-  // console.log(mostOrderedData);
-  
-
   // Hàm xử lý khi chọn tab
   const handleTabChange = (key: React.SetStateAction<string>) => {
     setActiveTab(key);
@@ -641,20 +596,39 @@ const Statistical = () => {
       </h2>
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab="Tổng Quát">
+          <div className="flex gap-10 mt-5 mb-5">
+            <div className="p-12 bg-gray-300 rounded-xl text-black-400 text-lg">
+              Tổng doanh thu:{" "}
+              <span className="text-2xl">{(priceOrderSuccess + canceledTotal + testPrice1 + testPrice + pendingConfirmationTotal)?.toLocaleString()}VND</span>
+            </div>
+            <div className="p-12 bg-gray-300 rounded-xl text-black-400 text-lg">
+              Tổng doanh thu phải hoàn lại:{" "}
+              <span className="text-2xl">
+                {canceledTotal?.toLocaleString()}VND
+              </span>
+            </div>
+            <div className="p-12 bg-gray-300 rounded-xl text-black-400 text-lg">
+              Tổng doanh thu đã xác nhận:{" "}
+              <span className="text-2xl">
+                {((priceOrderSuccess + canceledTotal + testPrice1 + testPrice + pendingConfirmationTotal) - canceledTotal)?.toLocaleString()}VND
+              </span>
+            </div>
+          </div>
           <div>
             <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
               Tất Cả Đơn Hàng
             </h3>
+            <DatePicker.RangePicker onChange={handleDateChange} />
             <div className="flex items-center justify-between">
               <Statistic
                 className="flex font-bold text-xl gap-2"
                 title="Tổng Số Đơn Hàng:"
-                value={orderProduct.length}
+                value={pendingConfirmationCount + priceOrderSuccessCount + canceledCount+ testCount1 + testCount}
               />
               <Statistic
                 className="flex font-bold text-xl gap-2"
                 title="Tổng Giá Trị:"
-                value={total}
+                value={priceOrderSuccess + canceledTotal + testPrice1 + testPrice + pendingConfirmationTotal}
                 formatter={(value) => `${(+value).toLocaleString()} VND`}
               />
             </div>
@@ -734,7 +708,7 @@ const Statistical = () => {
                 />
                 <Statistic
                   className="flex font-bold text-xl gap-2"
-                  title="Tổng Giá Trị Đơn Hàng Đã Hủy:"
+                  title="Tổng Giá Trị Hủy Đơn Hàng:"
                   value={testPrice1}
                   formatter={(value) => `${(+value).toLocaleString()} VND`}
                 />
@@ -750,7 +724,7 @@ const Statistical = () => {
 
             <div className="w-3/6">
               <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
-                Tất Cả Đơn Hàng Đã Hủy
+                Tất Cả Hủy Đơn Hàng
               </h3>
               <div className="flex items-center justify-between">
                 <Statistic
@@ -760,7 +734,7 @@ const Statistical = () => {
                 />
                 <Statistic
                   className="flex font-bold text-xl gap-2"
-                  title="Tổng Giá Trị Đơn Hàng Đã Hủy:"
+                  title="Tổng Giá Trị Hủy Đơn Hàng:"
                   value={canceledTotal}
                   formatter={(value) => `${(+value).toLocaleString()} VND`}
                 />
@@ -811,25 +785,13 @@ const Statistical = () => {
             dataSource={mostOrderedDataInRange}
           />
         </TabPane>
-        <TabPane tab="Thống Kê Theo Ngày" key="byDay">
-          <div>
-            <h3 className="grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
-              Thống Kê Theo Ngày
-            </h3>
-            <ReactApexChart
-              className="font-bold text-xl gap-2 items-center"
-              options={dailyChartData?.options}
-              series={dailyChartData?.series}
-              type="bar"
-              height={350}
-            />
-          </div>
-        </TabPane>
         <TabPane tab="Thống Kê Theo Tháng" key="byMonth">
           <div>
             <h3 className="grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
               Thống Kê Theo Tháng
             </h3>
+            {/* Step 1: Add Date Range Picker */}
+            <DatePicker.RangePicker onChange={handleDateChange} />
             <ReactApexChart
               className="font-bold text-xl gap-2 items-center"
               options={monthlyChartData?.options}
