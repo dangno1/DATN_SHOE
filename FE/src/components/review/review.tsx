@@ -71,7 +71,7 @@ const Review = (props: PropsType) => {
             }
             {
                 data?.length
-                    ? data?.map((review: IReview) =>
+                    ? data?.filter(data => data.productId == props.data?.productId)?.map((review: IReview) =>
                     (<div key={review._id} className="w-full max-h-[500px] overflow-y-auto">
                         <div className="w-full grid grid-cols-[max-content_auto] gap-x-2 mb-4">
                             <div className="w-[40px] h-[40px] rounded-[50%] grid place-items-center bg-gray-400">

@@ -102,14 +102,6 @@ const Header = () => {
                 Giảm Giá
               </Link>
             </li>
-            <li>
-              <Link
-                to=""
-                className="text-black text-lg font-semibold uppercase hover:underline"
-              >
-                Về chúng tôi
-              </Link>
-            </li>
           </ul>
         </div>
         <div>

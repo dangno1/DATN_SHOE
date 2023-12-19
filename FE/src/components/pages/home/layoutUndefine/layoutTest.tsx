@@ -8,6 +8,33 @@ const LayoutTest = () => {
 
   const { data } = useGetCategoryQuery(id || "");
 
+  const priceMin = (variants: IProduct["variants"][0][]) => {
+    return Math.min(
+      ...[
+        ...new Set(
+          variants.flatMap((variants: IProduct["variants"][0]) => {
+            if (variants.discount) {
+              return variants.discount;
+            } else return variants.price;
+          })
+        ),
+      ]
+    );
+  };
+  const priceMax = (variants: IProduct["variants"][0][]) => {
+    return Math.max(
+      ...[
+        ...new Set(
+          variants.flatMap((variants: IProduct["variants"][0]) => {
+            if (variants.discount) {
+              return variants.discount;
+            } else return variants.price;
+          })
+        ),
+      ]
+    );
+  };
+
   return (
     <div>
       <Slider />
@@ -39,15 +66,21 @@ const LayoutTest = () => {
                     {product?.name}
                   </p>
                   <div className="flex items-center">
-                    <p className="text-lg font-semibold cursor-auto my-3 text-red-500">
-                      {product?.variants[0].discount?.toLocaleString("vi-VN")}{" "}
-                      VND
-                    </p>
-                    <del>
-                      <p className="text-sm text-gray-600 cursor-auto ml-2">
-                        {product?.variants[0].price?.toLocaleString("vi-VN")} VND
+                    {
+                      <p className="text-lg font-semibold cursor-auto my-3 text-red-500">
+                        {priceMin(product?.variants).toLocaleString("vi-VN")}{" "}
+                        VND
                       </p>
-                    </del>
+                    }
+                    {priceMax(product?.variants) >
+                      priceMin(product?.variants) && (
+                      <del>
+                        <p className="text-sm text-gray-600 cursor-auto ml-2">
+                          {priceMax(product?.variants).toLocaleString("vi-VN")}{" "}
+                          VND
+                        </p>
+                      </del>
+                    )}
                   </div>
                 </div>
               </Link>

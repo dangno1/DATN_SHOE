@@ -35,10 +35,6 @@ import Test002 from "./features/statistical/statisticalDetail";
 import LayoutTest from "./components/pages/home/layoutUndefine/layoutTest";
 import ListBrand from "./features/brand/components/list";
 
-
-
-
-
 export const router = createBrowserRouter([
   {
     path: "/",
