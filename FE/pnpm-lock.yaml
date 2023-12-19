@@ -38,6 +38,9 @@ dependencies:
   cookies:
     specifier: ^0.8.0
     version: 0.8.0
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
   heroicons:
     specifier: ^2.0.18
     version: 2.0.18
