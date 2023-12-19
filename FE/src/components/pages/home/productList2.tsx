@@ -42,7 +42,7 @@ const ProductList2 = () => {
               />
               <div className="px-4 py-3 w-72">
                 <span className="text-gray-400 mr-3 uppercase text-xs">
-                  {product?.brandId}
+                  {/* {product?.brandId} */}
                 </span>
                 <p className="text-lg font-bold text-black truncate block capitalize hover:underline">
                   {product?.name}

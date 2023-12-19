@@ -28,7 +28,7 @@ const CartDetail = () => {
   const [otpValue, setOtpValue] = useState("");
   const checkedItems = location.state?.checkedItems || [];
 
-  // console.log(checkedItems);
+  console.log(checkedItems);
 
   console.log(parseFloat(checkedItems[0].amountSold) + parseFloat(checkedItems[0].quantity));
   
@@ -165,12 +165,26 @@ const CartDetail = () => {
       totalPrice: totalPrice,
       orderTime: new Date(),
     };
+    const orderData1 = {
+      userName: name,
+      userEmail: email,
+      userPhone: phoneNumber,
+      userAddress: address,
+      products: productsArray,
+      paymentMethod: selectedPaymentMethod,
+      status: "Chưa Xác Nhận",
+      totalPrice: totalPrice,
+      orderTime: new Date(),
+    };
     updateQy(testQy);
-    deleteProductCart(checkedItems[0]._id);
+
+    checkedItems.map((item: any) => {
+      deleteProductCart(item._id);
+    })
     // return
 
     if (orderData.paymentMethod == "Paymentondelivery") {
-      orderedProduct(orderData);
+      orderedProduct(orderData1);
       openModal();
       return;
     } else {

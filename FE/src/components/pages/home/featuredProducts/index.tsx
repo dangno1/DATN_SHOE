@@ -10,12 +10,12 @@ const Featured = () => {
   const { data: colorData } = useGetColorsQuery();
 
   const variants = data?.flatMap((product) => product.variants.map(variant => {
-    if (variant.amountSold >= 10) {
+    if (variant.amountSold >= 4) {
       return ({ ...variant, name: product.name, _idProduct: product._id, image: String(product.image) })
     }
   }));
 
-  const productFeatured = variants?.sort((a, b) => Number(b?.amountSold) - Number(a?.amountSold))?.slice(0, 8)?.filter(item => item !== undefined)
+  const productFeatured = variants?.sort((a, b) => Number(b?.amountSold) - Number(a?.amountSold))?.slice(0, 4)?.filter(item => item !== undefined)
 
   return (
     <div className=" 2xl:container 2xl:mx-auto md:py-12 lg:px-20 md:px-6 py-9 px-4">
@@ -43,12 +43,12 @@ const Featured = () => {
                       </div>
                     )}
                 </div>
-                <div className="px-4 my-4 h-[40px] max-h-[40px] text-sm text-back line-clamp-2 hover:underline cursor-pointer font-sans">
+                <div className="text-lg font-bold text-black truncate block capitalize hover:underline pl-2 pt-5 pb-5">
                   {product?.name}
                 </div>
-                <div className="px-3 text-orange-500 font-bold">Kích cỡ: {sizeData?.find(size => size._id == product?.sizeId)?.value}, Màu: {colorData?.find(color => color._id == product?.colorId)?.value}</div>
+                {/* <div className="px-3 text-orange-500 font-bold">Kích cỡ: {sizeData?.find(size => size._id == product?.sizeId)?.value}, Màu: {colorData?.find(color => color._id == product?.colorId)?.value}</div> */}
                 <div className="p-3 product__list--price text-left space-x-2 inline-block">
-                  <span className="product__list--initlprice">
+                  <span className="product__list--initlprice text-lg font-semibold cursor-auto my-3 text-red-500">
                     {product?.discount
                       ? product?.discount.toLocaleString('vi-VN')
                       : product?.price.toLocaleString('vi-VN')} VND

@@ -67,12 +67,6 @@ const Index = () => {
             </option>
             <option
               className="text-sm text-indigo-800"
-              value="Chờ Xác Nhận"
-            >
-             Chờ Xác Nhận
-            </option>
-            <option
-              className="text-sm text-indigo-800"
               value=" Đơn Hàng Đang Giao Đến Bạn"
             >
                Đơn Hàng Đang Giao Đến Bạn
@@ -82,6 +76,12 @@ const Index = () => {
               value="Đơn Hàng Đã Giao Thành Công"
             >
               Đơn Hàng Đã Giao Thành Công
+            </option>
+            <option
+              className="text-sm text-indigo-800"
+              value="Hủy Đơn Hàng"
+            >
+              Hủy Đơn Hàng
             </option>
           </select>
         </div>
@@ -217,7 +217,7 @@ const Index = () => {
                           </p>
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                          {order.orderTime && order.orderTime.toString()}
+                          {Date(order.timer)}
                         </td>
                         <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                           <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">

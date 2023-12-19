@@ -1,3 +1,4 @@
+import { useGetBrandQuery } from "@/api/brand";
 import { useGetCategoryQuery } from "@/api/category";
 import { useGetColorsQuery } from "@/api/color";
 import { useGetProductQuery, useRemoveProductMutation } from "@/api/product";
@@ -16,6 +17,7 @@ const DetailProduct = () => {
   useEffect(() => {}, [id]);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: categoryInfo } = useGetCategoryQuery(productData?.categoryId);
+  const { data: brandInfo } = useGetBrandQuery(productData?.brandId);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [deleteProduct] = useRemoveProductMutation();
 
@@ -59,12 +61,12 @@ const DetailProduct = () => {
                   Thương hiệu
                 </label>
                 <div className="flex items-center w-full h-[48px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f]">
-                  <div className="ml-3">{productData.brand}</div>
+                <div className="ml-3">{brandInfo?.name}</div>
                 </div>
               </div>
               <div className="h-max mb-[20px] space-y-2 ">
                 <label className="text-slate-600 font-semibold">Mô tả</label>
-                <div className="w-full h-[100px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] overflow-x-hidden">
+                <div className="w-full h-[340px] mt-[5px] border border-[#d0dbf0] hover:border-gray-500 focus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] overflow-x-hidden">
                   <div className="ml-3">{productData.desc}</div>
                 </div>
               </div>
