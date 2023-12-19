@@ -6,7 +6,7 @@ const productApi = createApi({
   reducerPath: "products",
   tagTypes: ["Product"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
   endpoints: (builder) => ({
     getProducts: builder.query<IProduct[], void | boolean>({

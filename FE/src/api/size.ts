@@ -5,7 +5,7 @@ const sizeApi = createApi({
   reducerPath: "size",
   tagTypes: ["Size"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
   endpoints: (builder) => ({
     getSizes: builder.query<ISize[], void>({

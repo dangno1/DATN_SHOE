@@ -424,7 +424,7 @@ const CartDetail = () => {
             </p>
             <span className="text-gray-900">
               {" "}
-              {totalPrice.toLocaleString("vi-VN")} VND
+              {tolPrice.toLocaleString("vi-VN")} VND
             </span>
           </div>
           <button

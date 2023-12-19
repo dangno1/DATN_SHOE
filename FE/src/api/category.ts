@@ -5,7 +5,7 @@ const categoryApi = createApi({
   reducerPath: "categoryes",
   tagTypes: ["Category"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
   endpoints: (builder) => ({
     getCategoryes: builder.query<ICategory[], void>({

@@ -5,7 +5,7 @@ const colorApi = createApi({
   reducerPath: "colors",
   tagTypes: ["Color"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
   endpoints: (builder) => ({
     getColors: builder.query<IColor[], void>({

@@ -7,7 +7,7 @@ const orderedProductApi = createApi({
   reducerPath: "orderedProduct",
   tagTypes: ["OrderedProduct"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
   endpoints: (builder) => ({
     orderedProduct: builder.mutation<void, void>({

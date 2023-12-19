@@ -38,7 +38,7 @@ function ForgotPassword() {
   const handleSubmitEmail = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/auth/forgotpassword",
+        "https://api.adidas.id.vn/api/auth/forgotpassword",
         {
           method: "PATCH",
           headers: {
@@ -63,7 +63,7 @@ function ForgotPassword() {
 
   const handleResendOTP = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/auth/resendotp", {
+      const response = await fetch("https://api.adidas.id.vn/api/auth/resendotp", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ function ForgotPassword() {
   const handleSubmitOTP = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/auth/otpauthentication",
+        "https://api.adidas.id.vn/api/auth/otpauthentication",
         {
           method: "PATCH",
           headers: {
@@ -109,7 +109,7 @@ function ForgotPassword() {
 
   // const handleSubmitOTP = async () => {
   //   try {
-  //     const response = await fetch(`http://localhost:8000/api/auth/otpauthentication`, {
+  //     const response = await fetch(`https://api.adidas.id.vn/api/auth/otpauthentication`, {
   //       method: 'PATCH',
   //       headers: {
   //         'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ function ForgotPassword() {
     if (newPassword === confirmPassword) {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/auth/resetpassword`,
+          `https://api.adidas.id.vn/api/auth/resetpassword`,
           {
             method: "PATCH",
             headers: {

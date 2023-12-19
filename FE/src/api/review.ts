@@ -5,7 +5,7 @@ const reviewApi = createApi({
   reducerPath: "reviews",
   tagTypes: ["Reviews"],
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api",
+    baseUrl: "https://api.adidas.id.vn/api",
   }),
   endpoints: (builder) => ({
     getAllReview: builder.query<IReview[], void>({

@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const cartApi = createApi({
   reducerPath: "carts",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api",
+    baseUrl: "https://api.adidas.id.vn/api",
   }),
   tagTypes: ["Carts"],
   endpoints: (builder) => ({

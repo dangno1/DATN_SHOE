@@ -5,7 +5,7 @@ const couponsApi = createApi({
   reducerPath: "coupons",
   tagTypes: ["Coupons"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
   endpoints: (builder) => ({
     getAllCoupons: builder.query<ICoupons[], void>({

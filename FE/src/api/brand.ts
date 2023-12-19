@@ -5,7 +5,7 @@ const brandApi = createApi({
   reducerPath: "brand",
   tagTypes: ["Brand"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
   endpoints: (builder) => ({
     getBrands: builder.query<IBrand[], void>({

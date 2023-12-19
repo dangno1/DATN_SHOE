@@ -6,7 +6,7 @@ const userApi = createApi({
   reducerPath: "users",
   tagTypes: ["User"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000`,
+    baseUrl: `https://api.adidas.id.vn`,
   }),
   endpoints: (builder) => ({
     getUser: builder.query<{ datas: IUser[]; message: string }, void>({

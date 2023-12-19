@@ -5,7 +5,7 @@ const commentApi = createApi({
   reducerPath: 'comments',
   tagTypes: ['Comments'],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8000/api`,
+    baseUrl: `https://api.adidas.id.vn/api`,
   }),
     endpoints: (builder) => ({
       getComments: builder.query<IComment[], void>({
