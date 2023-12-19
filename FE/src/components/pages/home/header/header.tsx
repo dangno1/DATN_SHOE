@@ -6,10 +6,11 @@ import "./style.css";
 import { useGetCategoryesQuery } from "@/api/category";
 import { ICategory } from "@/interface/category";
 import { Link, useNavigate } from "react-router-dom";
+import { useGetAllProductCartsQuery } from "@/api/cart";
 
 const Header = () => {
+  const { data: carts } = useGetAllProductCartsQuery();
   const { data } = useGetCategoryesQuery();
-
   const [userData, setUserData] = useState(localStorage);
   const navigate = useNavigate();
   useEffect(() => {
@@ -112,12 +113,13 @@ const Header = () => {
           </ul>
         </div>
         <div>
-          <ul className="flex items-center space-x-6 list-none ">
+          <ul className="flex items-center space-x-6 list-none number_posi">
             <li>
               <Link to="/cart" className="text-3xl">
                 <LiaShoppingBagSolid />
               </Link>
             </li>
+            <div className="number">{carts?.data.length}</div>
             <li>
               <button
                 aria-label="go to cart"
