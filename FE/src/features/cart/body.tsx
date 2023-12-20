@@ -95,7 +95,7 @@ const BodyCart = () => {
                     <Link to={`/detail/${item.productID}`}>
                       <p className="line-clamp-2 hover:underline hover:text-red-500">{item?.productName}</p>
                     </Link>
-                    <div className="">
+                    <div className="pb-24">
                       <div className="text-base font-semibold text-slate-600">Màu: <span className="text-orange-600">{item?.color}</span>, Kích cỡ: <span className="text-orange-600">{item.size}</span></div>
                       <div className="text-base font-semibold text-slate-600">Giá sản phẩm: <span className="text-base font-semibold text-red-500">{item.totalPrice.toLocaleString("vi-VN")}đ</span></div>
                       <div className="pb-2 text-slate-600 text-base font-semibold">
@@ -124,7 +124,6 @@ const BodyCart = () => {
                           +
                         </button>
                       </div>
-
                     </div>
                   </div>
                   <div className="py-3 flex flex-col justify-between items-center">

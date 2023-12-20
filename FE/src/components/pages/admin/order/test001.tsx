@@ -18,8 +18,6 @@ const Test001 = () => {
   const [statusHistory, setStatusHistory] = useState<string[]>([]);
 
   const data = orders?.filter((item) => item?._id == id);
-  // console.log(data?.[0].status);
-  // console.log(data?.[0].products);
 
   const handleStatusChange = (e: {
     target: { value: SetStateAction<string> };
@@ -198,18 +196,73 @@ const Test001 = () => {
                 Thay Đổi Trạng Thái
               </h3>
               <select
-                onChange={handleStatusChange}
-                className="mt-2 w-full h-[48px] mt-[5px] ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+               onChange={handleStatusChange}
+               className="mt-2 w-full h-[48px] mt-[5px] ocus:outline-0 focus:border-blue-700 font-[400] rounded-[5px] text-[#12263f] placeholder:text-slate-400 right-2 px-[10px] focus:shadow-full"
+               value={selectedStatus}
+               disabled={data?.[0].status === "Đơn Hàng Đã Giao Thành Công" || data?.[0].status === "Đã Nhận Được Hàng" || data?.[0].status === "Hủy Đơn Hàng"}
               >
-                <option value="Chưa Xác Nhận">Chưa Xác Nhận</option>
-                <option value="Đã Xác Nhận">Đã Xác Nhận</option>
-                <option value="Đơn Hàng Đang Giao Đến Bạn">
+                <option value="Chưa Xác Nhận" disabled={selectedStatus !== ""}>
+                  Chưa Xác Nhận
+                </option>
+                <option
+                  value="Đã Xác Nhận"
+                  disabled={
+                    selectedStatus === "Chưa Xác Nhận" ||
+                    data?.[0].status === "Hủy Đơn Hàng" ||
+                    data?.[0].status === "Đã Nhận Được Hàng" ||
+                    data?.[0].status === "Đơn Hàng Đang Giao Đến Bạn" ||
+                    data?.[0].status === "Đơn Hàng Đã Giao Thành Công"
+                  }
+                >
+                  Đã Xác Nhận
+                </option>
+                <option
+                  value="Đơn Hàng Đang Giao Đến Bạn"
+                  disabled={
+                    selectedStatus !== "Đã Xác Nhận" ||
+                    data?.[0].status === "Hủy Đơn Hàng" ||
+                    data?.[0].status === "Đã Nhận Được Hàng" ||
+                    data?.[0].status === "Đơn Hàng Đang Giao Đến Bạn" ||
+                    data?.[0].status === "Đơn Hàng Đã Giao Thành Công"
+                  }
+                >
                   Đơn Hàng Đang Giao Đến Bạn
                 </option>
-                <option value="Đơn Hàng Đã Giao Thành Công">
+                <option
+                  value="Đơn Hàng Đã Giao Thành Công"
+                  disabled={
+                    selectedStatus !== "Đơn Hàng Đang Giao Đến Bạn" ||
+                    data?.[0].status === "Hủy Đơn Hàng" ||
+                    data?.[0].status === "Đã Nhận Được Hàng" ||
+                    data?.[0].status === "Đơn Hàng Đã Giao Thành Công"
+                  }
+                >
                   Đơn Hàng Đã Giao Thành Công
                 </option>
-                <option value="Hủy Đơn Hàng">Hủy Đơn Hàng</option>
+                <option
+                  value="Hủy Đơn Hàng"
+                  disabled={
+                    selectedStatus === "Đơn Hàng Đang Giao Đến Bạn" ||
+                    selectedStatus === "Đơn Hàng Đã Giao Thành Công" ||
+                    data?.[0].status === "Hủy Đơn Hàng" ||
+                    data?.[0].status === "Đã Nhận Được Hàng"
+                  }
+                >
+                  Hủy Đơn Hàng
+                </option>
+                <option
+                  value="Đã Nhận Được Hàng"
+                  disabled={
+                    selectedStatus === "Chưa Xác Nhận" ||
+                    selectedStatus === "Đã Xác Nhận" ||
+                    selectedStatus === "Đơn Hàng Đang Giao Đến Bạn" ||
+                    selectedStatus === "Đơn Hàng Đã Giao Thành Công" ||
+                    data?.[0].status === "Hủy Đơn Hàng" ||
+                    data?.[0].status === "Đã Nhận Được Hàng"
+                  }
+                >
+                  Đã Nhận Được Hàng
+                </option>
               </select>
               <button
                 onClick={handleUpdate}

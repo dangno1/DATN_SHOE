@@ -6,16 +6,13 @@ import {
   useUpdateorderMutation,
 } from "@/api/orderedProduct";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useGetAllCouponsQuery } from "@/api/coupons";
+import { Link, useLocation } from "react-router-dom";
 import { useDeleteProductCartMutation } from "@/api/cart";
+import { useGetProductsQuery } from "@/api/product";
 
 const CartDetail = () => {
-  // coupons
+  const { data } = useGetProductsQuery(false);
 
-  const [discountCode, setDiscountCode] = useState<string>("");
-  const { data: coupons = [] } = useGetAllCouponsQuery();
-  const validCoupon = coupons.find((coupon) => coupon.code === discountCode);
   const [deleteProductCart] = useDeleteProductCartMutation();
   const [orderedProduct] = useOrderedProductMutation();
   const [updateQy] = useUpdateQyMutation();
@@ -28,17 +25,29 @@ const CartDetail = () => {
   const [otpValue, setOtpValue] = useState("");
   const checkedItems = location.state?.checkedItems || [];
 
-  console.log(checkedItems);
+  const variants = data?.flatMap((product) =>
+    product.variants.map((variant) => {
+      if (variant.amountSold >= 4) {
+        return {
+          ...variant,
+          name: product.name,
+          _idProduct: product._id,
+          image: String(product.image),
+        };
+      }
+    })
+  );
 
-  console.log(parseFloat(checkedItems[0].amountSold) + parseFloat(checkedItems[0].quantity));
-  
+  const productFeatured = variants
+    ?.sort((a, b) => Number(b?.amountSold) - Number(a?.amountSold))
+    ?.slice(0, 3)
+    ?.filter((item) => item !== undefined);
 
   let tolPrice = 0;
   for (let i = 0; i < checkedItems.length; i++) {
     tolPrice = tolPrice + checkedItems[i].totalPrice;
   }
   console.log(tolPrice);
-  
 
   // user
   const [name, setName] = useState("");
@@ -59,14 +68,9 @@ const CartDetail = () => {
     }
   }, [checkedItems]);
   let totalPrice = 0;
-  let discountedAmount = 0;
 
   checkedItems.forEach((element: { price: number }) => {
     totalPrice += element.price;
-    if (validCoupon) {
-      discountedAmount = totalPrice * (validCoupon.discountValue / 100);
-      totalPrice = totalPrice - discountedAmount;
-    }
   });
 
   const handleOrder = async () => {
@@ -150,9 +154,13 @@ const CartDetail = () => {
     const testQy = {
       productId: productsArray[0].productID,
       variantsId: checkedItems[0].variantsId,
-      newQuantity: parseFloat(productsArray[0].quantityStock) - parseFloat(productsArray[0].productQuantity),
-      amountSold: parseFloat(checkedItems[0].amountSold) + parseFloat(checkedItems[0].quantity),
-    };    
+      newQuantity:
+        parseFloat(productsArray[0].quantityStock) -
+        parseFloat(productsArray[0].productQuantity),
+      amountSold:
+        parseFloat(checkedItems[0].amountSold) +
+        parseFloat(checkedItems[0].quantity),
+    };
 
     const orderData = {
       userName: name,
@@ -180,7 +188,7 @@ const CartDetail = () => {
 
     checkedItems.map((item: any) => {
       deleteProductCart(item._id);
-    })
+    });
     // return
 
     if (orderData.paymentMethod == "Paymentondelivery") {
@@ -294,59 +302,49 @@ const CartDetail = () => {
             LỰA CHỌN HÀNG ĐẦU DÀNH CHO BẠN
           </div>
 
-          <div className="flex gap-2">
-            <div className="pt-10">
-              <div className="relative shadow-slate-800 border rounded-x">
-                <img
-                  src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/d24a194891044c1fb0a17d049d19b86a_9366/IE9704_01_standard.jpg"
-                  alt=""
-                  width={"100%"}
-                />
-                <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000VND
-                </span>
-                <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
-              </div>
-            </div>
-            <div className="pt-10">
-              <div className="relative shadow-slate-800 border rounded-x">
-                <img
-                  src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/c6875e65e704417daeccb1d414cb5e21_9366/IG8980_01_standard.jpg"
-                  alt=""
-                  width={"100%"}
-                />
-                <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000VND
-                </span>
-                <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
-              </div>
-            </div>
-            <div className="pt-10">
-              <div className="relative shadow-slate-800 border rounded-x">
-                <img
-                  src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/27a43e53d1dc43c29df7eebc35869087_9366/IG9841_01_standard.jpg"
-                  alt=""
-                  width={"100%"}
-                />
-                <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000VND
-                </span>
-                <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
-              </div>
-            </div>
-            <div className="pt-10">
-              <div className="relative shadow-slate-800 border rounded-x">
-                <img
-                  src="https://assets.adidas.com/images/w_276,h_276,f_auto,q_auto:sensitive,fl_lossy,c_fill,g_auto/ba9ded80550147deb919ae6f01380bb3_9366/GX4285_01_standard.jpg"
-                  alt=""
-                  width={"100%"}
-                />
-                <span className="absolute bottom-16 left-2 bg-white">
-                  1,050,000VND
-                </span>
-                <div className="pt-6 pb-5 pl-2">Alphaboost V1 Shoes</div>
-              </div>
-            </div>
+          <div className="flex gap-10 mt-10">
+            {productFeatured?.map((product) => (
+              <Link
+                key={product?._id}
+                to={`/detail/${product?._idProduct}`}
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                <div className="product__list--item shadow-md rounded-xl duration-500 hover:scale-105">
+                  <div className="product__list--img">
+                    <img
+                      className="h-[250px] w-full object-cover "
+                      src={product?.image}
+                      alt=""
+                    />
+                    {product?.discount && product?.price && (
+                      <div className="product__item--sale">
+                        -
+                        {Math.floor(
+                          ((product?.price - product?.discount) /
+                            product?.price) *
+                            100
+                        )}
+                        %
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-lg font-bold text-black truncate block capitalize hover:underline pl-2 pt-5 pb-5">
+                    {product?.name}
+                  </div>
+                  <div className="p-3 product__list--price text-left space-x-2 inline-block">
+                    <span className="product__list--initlprice text-lg font-semibold cursor-auto my-3 text-red-500">
+                      {product?.discount
+                        ? product?.discount.toLocaleString("vi-VN")
+                        : product?.price.toLocaleString("vi-VN")}{" "}
+                      VND
+                    </span>
+                  </div>
+                  <div className="p-3 inline-block float-right text-sm">
+                    Đã bán {product?.amountSold}
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
         <div className="pt-20 lg:pr-24">
@@ -391,40 +389,13 @@ const CartDetail = () => {
             <p className="text-gray-900">Miễn Phí</p>
           </div>
 
-          <div className="pt-5">
-            <input
-              className={`border w-full p-4 ${
-                validCoupon ? "" : "border-red-500"
-              }`}
-              type="text"
-              placeholder="Mã giảm giá"
-              value={discountCode}
-              onChange={(e) => {
-                const enteredCode = e.target.value;
-                const isValidCoupon = coupons.find(
-                  (coupon) => coupon.code === enteredCode
-                );
-
-                setDiscountCode(enteredCode);
-
-                setErrors((prevErrors) => ({
-                  ...prevErrors,
-                  discountCode: isValidCoupon ? "" : "Mã giảm giá không hợp lệ",
-                }));
-              }}
-            />
-            {errors?.discountCode && (
-              <div className="text-red-500 pl-1">{errors?.discountCode}</div>
-            )}
-          </div>
-
           <div className="flex justify-between items-center pt-5">
             <p className="text-gray-800 text-lg font-semibold font-sans leading-10">
               Tổng Giá
             </p>
             <span className="text-gray-900">
               {" "}
-              {totalPrice.toLocaleString("vi-VN")} VND
+              {tolPrice.toLocaleString("vi-VN")} VND
             </span>
           </div>
           <button

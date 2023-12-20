@@ -31,6 +31,10 @@ const Statistical = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
+  const [test2, setTest2] = useState([]);
+  const [testCount2, setTestCount2] = useState(0);
+  const [testPrice2, setTestPrice2] = useState(0);
+
   const handleDateChange = (dates) => {
     const [start, end] = dates;
     setStartDate(dayjs(start).format("YYYY-MM-DD"));
@@ -57,7 +61,12 @@ const Statistical = () => {
       const filteredOrders = [];
       for (const order of orderProduct) {
         const orderDate = dayjs(order.timer).format("YYYY-MM-DD");
-        if(parseFloat(orderDate.replace(/-/g, "")) >= parseFloat(startDate?.replace(/-/g, "")) && parseFloat(orderDate.replace(/-/g, "")) <= parseFloat(endDate?.replace(/-/g, ""))) {
+        if (
+          parseFloat(orderDate.replace(/-/g, "")) >=
+            parseFloat(startDate?.replace(/-/g, "")) &&
+          parseFloat(orderDate.replace(/-/g, "")) <=
+            parseFloat(endDate?.replace(/-/g, ""))
+        ) {
           filteredOrders.push(order);
         }
       }
@@ -271,6 +280,42 @@ const Statistical = () => {
         },
       };
 
+      const test2 = {
+        series: [
+          {
+            name: "Tổng Giá Đơn Hàng",
+            data: filteredOrders
+              .filter((order) => order.status === "Đã Nhận Được Hàng")
+              .map((order) =>
+                order.products.reduce(
+                  (acc, product) =>
+                    acc + product.productInitialPrice * product.productQuantity,
+                  0
+                )
+              ),
+          },
+        ],
+        options: {
+          chart: {
+            type: "area",
+          },
+          yaxis: {
+            labels: {
+              formatter: function (value: { toLocaleString: () => string }) {
+                return value.toLocaleString() + " VND";
+              },
+            },
+          },
+          tooltip: {
+            y: {
+              formatter: function (value: { toLocaleString: () => string }) {
+                return value.toLocaleString() + " VND";
+              },
+            },
+          },
+        },
+      };
+
       const pendingConfirmationCount = filteredOrders.filter(
         (order) => order.status === "Chờ Xác Nhận"
       ).length;
@@ -285,6 +330,10 @@ const Statistical = () => {
       ).length;
       const testCount1 = filteredOrders.filter(
         (order) => order.status === "Đơn Hàng Đang Giao Đến Bạn"
+      ).length;
+
+      const testCount2 = filteredOrders.filter(
+        (order) => order.status === "Đã Nhận Được Hàng"
       ).length;
 
       const pendingConfirmationTotal = filteredOrders
@@ -354,9 +403,28 @@ const Statistical = () => {
           );
         }, 0);
 
+      const testPrice2 = filteredOrders
+        .filter((order) => order.status === "Đã Nhận Được Hàngn")
+        .reduce((acc, order) => {
+          return (
+            acc +
+            order.products.reduce((productTotal, product) => {
+              return (
+                productTotal +
+                product.productInitialPrice * product.productQuantity
+              );
+            }, 0)
+          );
+        }, 0);
+
       const ordersByMonth = filteredOrders.reduce((acc, order) => {
         const orderDate = dayjs(order.timer).format("YYYY-MM-DD");
-        if (parseFloat(orderDate.replace(/-/g, "")) >= parseFloat(startDate?.replace(/-/g, "")) && parseFloat(orderDate.replace(/-/g, "")) <= parseFloat(endDate?.replace(/-/g, ""))) {
+        if (
+          parseFloat(orderDate.replace(/-/g, "")) >=
+            parseFloat(startDate?.replace(/-/g, "")) &&
+          parseFloat(orderDate.replace(/-/g, "")) <=
+            parseFloat(endDate?.replace(/-/g, ""))
+        ) {
           const monthYear = extractMonthYear(order.timer);
           if (!acc[monthYear]) {
             acc[monthYear] = 1;
@@ -404,6 +472,8 @@ const Statistical = () => {
       setTestPrice(testPrice);
       setTestCount1(testCount1);
       setTestPrice1(testPrice1);
+      setTestCount2(testCount2);
+      setTestPrice2(testPrice2);
       setCanceledTotal(canceledTotal);
       setCanceledCount(canceledCount);
       setCanceledOrders(canceledOrders);
@@ -412,6 +482,7 @@ const Statistical = () => {
       setChartDataStatus(pendingConfirmationChartData);
       setTest(test);
       setTest1(test1);
+      setTest2(test2);
     }
   }, [orderProduct, startDate, endDate]);
 
@@ -431,7 +502,6 @@ const Statistical = () => {
       }, 0)
     );
   }, 0);
-
 
   // Tính toán dữ liệu thống kê hàng được đặt nhiều nhất
   const mostOrderedProducts = orderProduct.reduce((acc, order) => {
@@ -455,21 +525,18 @@ const Statistical = () => {
     return acc;
   }, []);
 
-  // const mostOrderedProductsInRange = mostOrderedProducts.filter((product) => {
-    // const orderDate = Date(product.orderDate);
-    // const isWithinRange =
-    //   (!startDate || orderDate >= Date(startDate)) &&
-    //   (!endDate || orderDate <= Date(endDate));
-
-    // return isWithinRange;
-
-    const filteredOrders2 = [];
-      for (const product of mostOrderedProducts) {
-        const orderDate1 = dayjs(product.orderDate).format("YYYY-MM-DD");
-        if(parseFloat(orderDate1.replace(/-/g, "")) >= parseFloat(startDate?.replace(/-/g, "")) && parseFloat(orderDate1.replace(/-/g, "")) <= parseFloat(endDate?.replace(/-/g, ""))) {
-          filteredOrders2.push(product);
-        }
-      }
+  const filteredOrders2 = [];
+  for (const product of mostOrderedProducts) {
+    const orderDate1 = dayjs(product.orderDate).format("YYYY-MM-DD");
+    if (
+      parseFloat(orderDate1.replace(/-/g, "")) >=
+        parseFloat(startDate?.replace(/-/g, "")) &&
+      parseFloat(orderDate1.replace(/-/g, "")) <=
+        parseFloat(endDate?.replace(/-/g, ""))
+    ) {
+      filteredOrders2.push(product);
+    }
+  }
   // });
 
   const sortedMostOrderedProductsInRange = filteredOrders2.sort(
@@ -599,7 +666,16 @@ const Statistical = () => {
           <div className="flex gap-10 mt-5 mb-5">
             <div className="p-12 bg-gray-300 rounded-xl text-black-400 text-lg">
               Tổng doanh thu:{" "}
-              <span className="text-2xl">{(priceOrderSuccess + canceledTotal + testPrice1 + testPrice + pendingConfirmationTotal)?.toLocaleString()}VND</span>
+              <span className="text-2xl">
+                {(
+                  priceOrderSuccess +
+                  canceledTotal +
+                  testPrice1 +
+                  testPrice +
+                  pendingConfirmationTotal
+                )?.toLocaleString()}
+                VND
+              </span>
             </div>
             <div className="p-12 bg-gray-300 rounded-xl text-black-400 text-lg">
               Tổng doanh thu phải hoàn lại:{" "}
@@ -610,7 +686,15 @@ const Statistical = () => {
             <div className="p-12 bg-gray-300 rounded-xl text-black-400 text-lg">
               Tổng doanh thu đã xác nhận:{" "}
               <span className="text-2xl">
-                {((priceOrderSuccess + canceledTotal + testPrice1 + testPrice + pendingConfirmationTotal) - canceledTotal)?.toLocaleString()}VND
+                {(
+                  priceOrderSuccess +
+                  canceledTotal +
+                  testPrice1 +
+                  testPrice +
+                  pendingConfirmationTotal -
+                  canceledTotal
+                )?.toLocaleString()}
+                VND
               </span>
             </div>
           </div>
@@ -623,12 +707,24 @@ const Statistical = () => {
               <Statistic
                 className="flex font-bold text-xl gap-2"
                 title="Tổng Số Đơn Hàng:"
-                value={pendingConfirmationCount + priceOrderSuccessCount + canceledCount+ testCount1 + testCount}
+                value={
+                  pendingConfirmationCount +
+                  priceOrderSuccessCount +
+                  canceledCount +
+                  testCount1 +
+                  testCount
+                }
               />
               <Statistic
                 className="flex font-bold text-xl gap-2"
                 title="Tổng Giá Trị:"
-                value={priceOrderSuccess + canceledTotal + testPrice1 + testPrice + pendingConfirmationTotal}
+                value={
+                  priceOrderSuccess +
+                  canceledTotal +
+                  testPrice1 +
+                  testPrice +
+                  pendingConfirmationTotal
+                }
                 formatter={(value) => `${(+value).toLocaleString()} VND`}
               />
             </div>
@@ -693,7 +789,6 @@ const Statistical = () => {
               />
             </div>
           </div>
-          {/* rtyuiop */}
           <br />
           <div className="flex gap-10">
             <div className="w-3/6">
@@ -749,30 +844,57 @@ const Statistical = () => {
             </div>
           </div>
           <br />
-          <div>
-            <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
-              Tất Cả Đơn Hàng Đã Giao Thành Công
-            </h3>
-            <div className="flex items-center justify-between">
-              <Statistic
-                className="flex font-bold text-xl gap-2"
-                title="Số Đơn Hàng Đã Giao Thành Công:"
-                value={priceOrderSuccessCount}
-              />
-              <Statistic
-                className="flex font-bold text-xl gap-2"
-                title="Tổng Giá Trị Đơn Hàng Đã Giao Thành Công:"
-                value={priceOrderSuccess}
-                formatter={(value) => `${(+value).toLocaleString()} VND`}
+          <div className="flex gap-10">
+            <div className="w-3/6">
+              <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+                Tất Cả Đơn Hàng Đã Giao Thành Công
+              </h3>
+              <div className="flex items-center justify-between">
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Số Đơn Hàng Đã Giao Thành Công:"
+                  value={priceOrderSuccessCount}
+                />
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Tổng Giá Trị Đơn Hàng Đã Giao Thành Công:"
+                  value={priceOrderSuccess}
+                  formatter={(value) => `${(+value).toLocaleString()} VND`}
+                />
+              </div>
+              <ReactApexChart
+                className="font-bold text-xl gap-2 items-center"
+                options={orderSuccessfully?.options}
+                series={orderSuccessfully?.series}
+                type="area"
+                height={350}
               />
             </div>
-            <ReactApexChart
-              className="font-bold text-xl gap-2 items-center"
-              options={orderSuccessfully?.options}
-              series={orderSuccessfully?.series}
-              type="area"
-              height={350}
-            />
+            <div className="w-3/6">
+            <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+                Tất Cả Đơn Hàng Đã Nhận
+              </h3>
+              <div className="flex items-center justify-between">
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Số Đơn Hàng Đã Giao Thành Công:"
+                  value={testCount2}
+                />
+                <Statistic
+                  className="flex font-bold text-xl gap-2"
+                  title="Tổng Giá Trị Đơn Hàng Đã Giao Thành Công:"
+                  value={testPrice2}
+                  formatter={(value) => `${(+value).toLocaleString()} VND`}
+                />
+              </div>
+              <ReactApexChart
+                className="font-bold text-xl gap-2 items-center"
+                options={test2?.options}
+                series={test2?.series}
+                type="area"
+                height={350}
+              />
+            </div>
           </div>
         </TabPane>
         <TabPane tab="Chi Tiết Đơn Hàng" key="total">
