@@ -404,7 +404,7 @@ const Statistical = () => {
         }, 0);
 
       const testPrice2 = filteredOrders
-        .filter((order) => order.status === "Đã Nhận Được Hàngn")
+        .filter((order) => order.status === "Đã Nhận Được Hàng")
         .reduce((acc, order) => {
           return (
             acc +
@@ -712,7 +712,8 @@ const Statistical = () => {
                   priceOrderSuccessCount +
                   canceledCount +
                   testCount1 +
-                  testCount
+                  testCount +
+                  testCount2
                 }
               />
               <Statistic
@@ -723,7 +724,8 @@ const Statistical = () => {
                   canceledTotal +
                   testPrice1 +
                   testPrice +
-                  pendingConfirmationTotal
+                  pendingConfirmationTotal +
+                  testPrice2
                 }
                 formatter={(value) => `${(+value).toLocaleString()} VND`}
               />
@@ -871,7 +873,7 @@ const Statistical = () => {
               />
             </div>
             <div className="w-3/6">
-            <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
+              <h3 className=" grid items-center font-bold uppercase text-base md:text-xl lg:text-2xl text-slate-700">
                 Tất Cả Đơn Hàng Đã Nhận
               </h3>
               <div className="flex items-center justify-between">
