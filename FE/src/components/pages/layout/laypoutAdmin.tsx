@@ -116,7 +116,7 @@ const LayoutAdmin = () => {
                 icon: <AiOutlineShopping />
               },
               {
-                key: 13,
+                key: 14,
                 label: <NavLink to="/admin/comment">Bình luận</NavLink>,
                 icon: <AiOutlineComment />
               }
